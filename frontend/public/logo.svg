@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB" />
+      <stop offset="50%" stop-color="#4F7CFF" />
+      <stop offset="100%" stop-color="#7C3AED" />
+    </linearGradient>
+    <!-- Accent Ring Glow -->
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.3" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Main Rounded Glassmorphic Card Backdrop -->
+  <rect x="24" y="24" width="464" height="464" rx="100" fill="url(#bgGrad)" />
+
+  <!-- Soft Overlay Glow -->
+  <circle cx="256" cy="200" r="160" fill="url(#glow)" />
+
+  <!-- Robot / AI Brain Mesh Silhouette -->
+  <!-- Outer Ring representing networks -->
+  <circle cx="256" cy="256" r="130" fill="none" stroke="#ffffff" stroke-width="8" stroke-dasharray="15, 10" opacity="0.45" />
+
+  <!-- Inner core neural nodes -->
+  <circle cx="256" cy="256" r="90" fill="none" stroke="#ffffff" stroke-width="12" />
+
+  <!-- Connection Lines representing candidates and jobs -->
+  <line x1="256" y1="126" x2="256" y2="386" stroke="#ffffff" stroke-width="6" opacity="0.8" />
+  <line x1="126" y1="256" x2="386" y2="256" stroke="#ffffff" stroke-width="6" opacity="0.8" />
+  <line x1="164" y1="164" x2="348" y2="348" stroke="#ffffff" stroke-width="4" stroke-dasharray="8, 6" opacity="0.6" />
+  <line x1="164" y1="348" x2="348" y2="164" stroke="#ffffff" stroke-width="4" stroke-dasharray="8, 6" opacity="0.6" />
+
+  <!-- Nodes (Dots) -->
+  <circle cx="256" cy="256" r="28" fill="#ffffff" />
+  <circle cx="256" cy="126" r="14" fill="#60A5FA" stroke="#ffffff" stroke-width="4" />
+  <circle cx="256" cy="386" r="14" fill="#C084FC" stroke="#ffffff" stroke-width="4" />
+  <circle cx="126" cy="256" r="14" fill="#34D399" stroke="#ffffff" stroke-width="4" />
+  <circle cx="386" cy="256" r="14" fill="#F472B6" stroke="#ffffff" stroke-width="4" />
+
+  <circle cx="164" cy="164" r="10" fill="#38BDF8" />
+  <circle cx="348" cy="348" r="10" fill="#A78BFA" />
+  <circle cx="164" cy="348" r="10" fill="#F472B6" />
+  <circle cx="348" cy="164" r="10" fill="#34D399" />
+</svg>

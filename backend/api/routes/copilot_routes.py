@@ -1,0 +1,117 @@
+"""Copilot Routes Blueprint — Phase 15 & 17.
+
+Exposes endpoints for recruiter copilot report generation, candidate comparison, and hiring manager proposals.
+"""
+
+from flask import Blueprint, request, jsonify, current_app
+from pydantic import BaseModel, Field, ValidationError
+
+from services.jd_analyzer import JdAnalyzer
+from services.copilot_service import CopilotService
+from utils.logger import get_logger
+
+logger = get_logger(__name__)
+
+copilot_bp = Blueprint("copilot", __name__)
+
+_jd_analyzer = JdAnalyzer()
+_copilot_service = CopilotService()
+
+
+# Simple inline request models to validate inputs
+class CopilotReportRequest(BaseModel):
+    candidate_id: str = Field(..., pattern=r"^CAND_[0-9]{7}$")
+    job_description: str = Field(..., min_length=20)
+
+
+class CopilotCompareRequest(BaseModel):
+    candidate_id_a: str = Field(..., pattern=r"^CAND_[0-9]{7}$")
+    candidate_id_b: str = Field(..., pattern=r"^CAND_[0-9]{7}$")
+    job_description: str = Field(..., min_length=20)
+
+
+@copilot_bp.route("/report", methods=["POST"])
+def get_candidate_report():
+    """POST /api/v1/copilot/report
+
+    Generates the recruiter copilot report for a single candidate.
+    """
+    logger.info("Received request to generate recruiter copilot report.")
+    try:
+        data = request.get_json() or {}
+        req = CopilotReportRequest(**data)
+
+        # Parse job description
+        parsed_jd = _jd_analyzer.analyze_jd(req.job_description)
+
+        # Generate report
+        report = _copilot_service.generate_candidate_report(req.candidate_id, parsed_jd)
+        if not report:
+            return jsonify({"error": f"Candidate {req.candidate_id} not found."}), 404
+
+        return jsonify(report.model_dump()), 200
+
+    except ValidationError as ve:
+        logger.warning(f"Request validation failed: {ve}")
+        return jsonify({"error": "Validation Error", "details": ve.errors()}), 400
+    except Exception as e:
+        logger.error(f"Error generating recruiter report: {e}", exc_info=True)
+        return jsonify({"error": "Internal Server Error"}), 500
+
+
+@copilot_bp.route("/compare", methods=["POST"])
+def compare_candidates():
+    """POST /api/v1/copilot/compare
+
+    Compares two finalists side-by-side.
+    """
+    logger.info("Received request to compare candidates.")
+    try:
+        data = request.get_json() or {}
+        req = CopilotCompareRequest(**data)
+
+        # Parse job description
+        parsed_jd = _jd_analyzer.analyze_jd(req.job_description)
+
+        # Generate comparison
+        result = _copilot_service.compare_candidates(req.candidate_id_a, req.candidate_id_b, parsed_jd)
+        if not result:
+            return jsonify({"error": "One or both candidates could not be loaded."}), 400
+
+        return jsonify(result.model_dump()), 200
+
+    except ValidationError as ve:
+        logger.warning(f"Request validation failed: {ve}")
+        return jsonify({"error": "Validation Error", "details": ve.errors()}), 400
+    except Exception as e:
+        logger.error(f"Error comparing candidates: {e}", exc_info=True)
+        return jsonify({"error": "Internal Server Error"}), 500
+
+
+@copilot_bp.route("/decision", methods=["POST"])
+def get_hiring_decision():
+    """POST /api/v1/copilot/decision
+
+    Evaluates a candidate and generates a hiring manager decision proposal.
+    """
+    logger.info("Received request to generate hiring proposal decision.")
+    try:
+        data = request.get_json() or {}
+        req = CopilotReportRequest(**data)
+
+        # Parse job description
+        parsed_jd = _jd_analyzer.analyze_jd(req.job_description)
+
+        # Generate hiring decision
+        decision = _copilot_service.generate_hiring_decision(req.candidate_id, parsed_jd)
+        if not decision:
+            return jsonify({"error": f"Candidate {req.candidate_id} not found."}), 404
+
+        return jsonify(decision.model_dump()), 200
+
+    except ValidationError as ve:
+        logger.warning(f"Request validation failed: {ve}")
+        return jsonify({"error": "Validation Error", "details": ve.errors()}), 400
+    except Exception as e:
+        logger.error(f"Error generating hiring decision: {e}", exc_info=True)
+        return jsonify({"error": "Internal Server Error"}), 500

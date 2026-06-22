@@ -1,0 +1,3 @@
+candidate_id,rank,final_score,confidence,explanation
+CAND_0000001,1,0.9500,0.7410,Candidate is classified as a 'Strong Match' for the Founding AI Engineer role. They bring 10.0 years of experience as a Lead Backend Dev. Their profile shows high matching alignment (41%) and strong technical suitability. Strengths include: strong engagement indicators and active platform responsiveness.
+CAND_0000002,2,0.2000,0.7254,Candidate is classified as a 'High Risk / Not Recommended' for the Founding AI Engineer role. They bring 3.0 years of experience as a ML Engineer. This recommendation is lowered due to specific match gaps or reliability concerns. Key risks to note: missing must-have skills: python programming.

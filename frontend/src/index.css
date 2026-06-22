@@ -1,0 +1,32 @@
+@import "./theme/theme.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: var(--background);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+  }
+}
+
+/* Scrollbar customizations and layout styles */
+@layer utilities {
+  .bg-glass {
+    background-color: var(--glass);
+  }
+  .border-glass {
+    border-color: var(--glass-border);
+  }
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  .shadow-neon {
+    box-shadow: var(--shadow-neon);
+  }
+  .shadow-glass {
+    box-shadow: var(--shadow-glass);
+  }
+}

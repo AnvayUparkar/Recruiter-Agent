@@ -1,0 +1,25 @@
+{
+  "short_name": "Antigravity TA",
+  "name": "Antigravity Talent Acquisition - Recruiter Copilot",
+  "description": "Enterprise AI Candidate Ranking & Recruiter Copilot",
+  "icons": [
+    {
+      "src": "/logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#09090B",
+  "theme_color": "#4F7CFF",
+  "display": "standalone",
+  "orientation": "portrait",
+  "categories": ["business", "productivity", "utilities"]
+}
