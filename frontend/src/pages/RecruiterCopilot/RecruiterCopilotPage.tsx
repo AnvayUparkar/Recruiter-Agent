@@ -230,7 +230,7 @@ const RecruiterCopilotPage: React.FC = () => {
 
   const { data: rankingData } = useRanking({
     jobDescription: jdText,
-    enabled: !!jdText && !selectedCandidateId,
+    enabled: !!jdText,
   });
 
   const { data: candidate, isLoading: isCandidateLoading } = useCandidateDetails(
