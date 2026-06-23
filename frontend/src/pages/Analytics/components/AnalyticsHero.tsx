@@ -74,10 +74,10 @@ export const AnalyticsHero: React.FC<AnalyticsHeroProps> = ({
     <div className="flex flex-col gap-6 mb-6">
       {/* Welcome Title */}
       <div>
-        <h1 className="text-3xl font-black tracking-tight text-white font-heading">
+        <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white font-heading">
           AI Recruiter Analytics Center
         </h1>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-600 dark:text-slate-400">
           Monitor ranking quality, hiring insights, system latency, and AI evaluation metrics in real time.
         </p>
       </div>
@@ -98,7 +98,7 @@ export const AnalyticsHero: React.FC<AnalyticsHeroProps> = ({
             className={`p-4 rounded-2xl glass-panel border border-white/5 bg-gradient-to-br ${kpi.bg} ${kpi.border} shadow-md flex flex-col gap-3 group hover-sweep overflow-hidden`}
           >
             <div className="flex items-center justify-between">
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+              <span className="text-[10px] text-slate-700 dark:text-slate-400 font-bold uppercase tracking-wider">
                 {kpi.label}
               </span>
               <div className="shrink-0 group-hover:scale-110 transition-transform duration-200">
@@ -106,10 +106,10 @@ export const AnalyticsHero: React.FC<AnalyticsHeroProps> = ({
               </div>
             </div>
             <div className="flex items-baseline gap-1 mt-1">
-              <span className="text-2xl font-black text-white font-mono">
+              <span className="text-2xl font-black text-slate-900 dark:text-white font-mono">
                 {kpi.value}
               </span>
-              <span className="text-xs font-bold text-slate-400 font-mono">
+              <span className="text-xs font-bold text-slate-700 dark:text-slate-400 font-mono">
                 {kpi.suffix}
               </span>
             </div>

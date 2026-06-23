@@ -35,7 +35,19 @@ export const AnalyticsDashboardPage: React.FC = () => {
   const fallbackJd = "We are seeking a Senior Developer with competence in Python, distributed systems, and ML pipelines.";
   const activeJd = jdText.length >= 20 ? jdText : fallbackJd;
 
-  // 1. Fetch system metrics (NDCG, Precision, MRR, Latency)
+  // 1. Fetch comprehensive dashboard analytics
+  const {
+    data: dashboardAnalytics,
+    isLoading: isDashboardLoading,
+    error: dashboardError,
+    refetch: refetchDashboard,
+  } = useQuery({
+    queryKey: ["dashboardAnalytics"],
+    queryFn: () => analyticsService.fetchDashboardAnalytics(),
+    staleTime: 60 * 1000,
+  });
+
+  // 2. Fetch system metrics (NDCG, Precision, MRR, Latency)
   const {
     data: metrics,
     isLoading: isMetricsLoading,
@@ -47,7 +59,7 @@ export const AnalyticsDashboardPage: React.FC = () => {
     staleTime: 60 * 1000,
   });
 
-  // 2. Fetch API version details
+  // 3. Fetch API version details
   const {
     data: versionData,
     isLoading: isVersionLoading,
@@ -73,12 +85,13 @@ export const AnalyticsDashboardPage: React.FC = () => {
   });
 
   const handleRefresh = () => {
+    refetchDashboard();
     refetchMetrics();
     refetchVersion();
     queryClient.invalidateQueries({ queryKey: ["ranking"] });
   };
 
-  const isAnyLoading = isMetricsLoading || isRankingLoading || isVersionLoading;
+  const isAnyLoading = isDashboardLoading || isMetricsLoading || isRankingLoading || isVersionLoading;
 
   // Gather candidate records
   const rawCandidates = useMemo(() => {
@@ -259,7 +272,7 @@ export const AnalyticsDashboardPage: React.FC = () => {
   }
 
   // Error screen
-  if (rankingError || metricsError) {
+  if (rankingError || metricsError || dashboardError) {
     return (
       <div className="max-w-2xl mx-auto py-12 px-4">
         <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-450 flex flex-col gap-3 shadow-lg">
@@ -284,27 +297,43 @@ export const AnalyticsDashboardPage: React.FC = () => {
     );
   }
 
+  // Use backend data if available, otherwise fall back to calculated stats
+  const totalCandidates = dashboardAnalytics?.total_candidates ?? rawCandidates.length;
+  const avgReliabilityScore = dashboardAnalytics?.avg_reliability_score ?? stats.avgReliability;
+  const avgMatchScore = dashboardAnalytics?.avg_match_score ?? stats.avgMatch;
+  const processingTimeMs = dashboardAnalytics?.processing_time_ms ?? latency;
+  const reportsExported = dashboardAnalytics?.reports_exported ?? totalQueries;
+
   // Render variables
   const jobList = parsedJD ? [{ id: "active", title: parsedJD.jobTitle || parsedJD.job_title || "Active JD" }] : [];
   const uniqueLocations = Array.from(new Set(rawCandidates.map((c) => c.location || "Remote")));
   const reportCandidates = rawCandidates.slice(0, 5).map((c) => ({ id: c.candidateId, name: c.name }));
 
-  const ndcg = metrics?.ndcgAt5 ?? (metrics as any)?.ndcg_at_5 ?? 0.95;
-  const precision = metrics?.precisionAt5 ?? (metrics as any)?.precision_at_5 ?? 0.90;
-  const mrr = metrics?.mrr ?? 0.92;
-  const latency = metrics?.systemLatencyAvgMs ?? (metrics as any)?.system_latency_avg_ms ?? 115.4;
-  const totalQueries = metrics?.totalQueriesLogged ?? (metrics as any)?.total_queries_logged ?? 450;
+  // Use dashboard analytics data if available, otherwise fall back to metrics or defaults
+  const ndcg = dashboardAnalytics?.quality_metrics.ndcg_at_5 
+    ?? metrics?.ndcgAt5 
+    ?? (metrics as any)?.ndcg_at_5 
+    ?? 0.95;
+  const precision = dashboardAnalytics?.quality_metrics.precision_at_5 
+    ?? metrics?.precisionAt5 
+    ?? (metrics as any)?.precision_at_5 
+    ?? 0.90;
+  const mrr = dashboardAnalytics?.quality_metrics.mrr 
+    ?? metrics?.mrr 
+    ?? 0.92;
+  const latency = processingTimeMs;
+  const totalQueries = reportsExported;
 
   return (
     <div className="max-w-6xl mx-auto py-6 px-4">
       {/* Hero section */}
       <AnalyticsHero
-        totalCandidates={rawCandidates.length}
+        totalCandidates={totalCandidates}
         shortlistedCount={filteredCandidates.length}
-        avgReliability={stats.avgReliability || 0.82}
-        avgMatchScore={stats.avgMatch || 0.78}
-        processingTime={Math.round(latency)}
-        reportsCount={totalQueries}
+        avgReliability={avgReliabilityScore}
+        avgMatchScore={avgMatchScore}
+        processingTime={Math.round(processingTimeMs)}
+        reportsCount={reportsExported}
       />
 
       {/* KPI Cards Row */}
@@ -352,13 +381,13 @@ export const AnalyticsDashboardPage: React.FC = () => {
 
         {/* Health Panel */}
         <SystemHealthPanel
-          apiStatus={versionData?.status || "online"}
+          apiStatus={dashboardAnalytics?.system_health.status ?? versionData?.status ?? "online"}
           latencyMs={latency}
-          candidateCount={rawCandidates.length}
+          candidateCount={totalCandidates}
           environment={versionData?.environment || "Windows"}
           version={versionData?.version || "1.0.0"}
-          faissLoaded={versionData?.faissLoaded ?? true}
-          bm25Loaded={versionData?.bm25Loaded ?? true}
+          faissLoaded={dashboardAnalytics?.system_health.faiss_loaded ?? versionData?.faissLoaded ?? true}
+          bm25Loaded={dashboardAnalytics?.system_health.bm25_loaded ?? versionData?.bm25Loaded ?? true}
           onRefresh={handleRefresh}
         />
       </div>
