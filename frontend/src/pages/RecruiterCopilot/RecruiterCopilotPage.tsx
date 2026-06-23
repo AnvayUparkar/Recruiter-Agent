@@ -411,6 +411,21 @@ const RecruiterCopilotPage: React.FC = () => {
             exit={{ opacity: 0 }}
             className="flex flex-col gap-3"
           >
+            {/* Context card */}
+            <CandidateContextCard
+              candidate={candidate}
+              rankedData={rankedData}
+              isLoading={isCandidateLoading}
+              collapsed={contextCollapsed}
+              onToggleCollapse={undefined}
+            />
+
+            {/* Hiring decision */}
+            <HiringDecisionPanel
+              decision={hiringDecision}
+              isLoading={isDecisionLoading && !!selectedCandidateId}
+            />
+
             {/* Candidate selector */}
             {rankingData?.rankedCandidates && rankingData.rankedCandidates.length > 0 && (
               <div className="rounded-2xl border border-border bg-surface backdrop-blur-xl overflow-hidden">
@@ -430,7 +445,7 @@ const RecruiterCopilotPage: React.FC = () => {
                         }`}
                     >
                       <span className="font-semibold truncate max-w-[70%]">
-                        #{c.rank} {c.candidateId}
+                        #{c.rank} {c.profile?.anonymizedName || c.candidateId}
                       </span>
                       <span className="font-black text-[10px]" style={{ color: selectedCandidateId === c.candidateId ? "#60a5fa" : "var(--text-muted)" }}>
                         {Math.round(c.finalScore * 100)}%
@@ -440,21 +455,6 @@ const RecruiterCopilotPage: React.FC = () => {
                 </div>
               </div>
             )}
-
-            {/* Context card */}
-            <CandidateContextCard
-              candidate={candidate}
-              rankedData={rankedData}
-              isLoading={isCandidateLoading}
-              collapsed={contextCollapsed}
-              onToggleCollapse={undefined}
-            />
-
-            {/* Hiring decision */}
-            <HiringDecisionPanel
-              decision={hiringDecision}
-              isLoading={isDecisionLoading && !!selectedCandidateId}
-            />
 
             {/* Suggested actions */}
             <SuggestedActions
