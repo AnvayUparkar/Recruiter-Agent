@@ -85,12 +85,13 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
       className="rounded-2xl border overflow-hidden"
       style={{
         borderColor: `${cfg.color}30`,
-        background: `radial-gradient(ellipse at top, ${cfg.glow}, transparent 70%), rgba(15,23,42,0.8)`,
+        background: `radial-gradient(ellipse at top, ${cfg.glow}, transparent 70%), rgba(248,250,252,0.8)`,
         boxShadow: `0 0 40px ${cfg.glow}`,
         backdropFilter: "blur(16px)",
       }}
     >
-      <div className="p-6 md:p-8 flex flex-col items-center text-center gap-4">
+      <div className="dark:bg-[rgba(15,23,42,0.8)] bg-transparent absolute inset-0 -z-10" />
+      <div className="p-6 md:p-8 flex flex-col items-center text-center gap-4 relative z-10">
         {/* Glow icon */}
         <motion.div
           className="w-16 h-16 rounded-2xl flex items-center justify-center"
@@ -124,36 +125,36 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
           <h2 className="text-2xl font-black tracking-tight" style={{ color: cfg.color }}>
             {cfg.label}
           </h2>
-          <p className="text-sm text-slate-400 mt-1">{cfg.sublabel}</p>
+          <p className="text-sm text-slate-700 dark:text-slate-400 mt-1">{cfg.sublabel}</p>
         </div>
 
         {/* Score + confidence row */}
         {scorePct > 0 && (
-          <div className="flex items-center gap-6 pt-2 border-t border-white/5 w-full justify-center">
+          <div className="flex items-center gap-6 pt-2 border-t border-slate-200/30 dark:border-white/5 w-full justify-center">
             <div className="flex flex-col items-center">
               <span className="text-3xl font-black tabular-nums" style={{ color: cfg.color }}>
                 {scorePct}
               </span>
-              <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+              <span className="text-[10px] text-slate-600 dark:text-slate-500 font-semibold uppercase tracking-wider">
                 AI Score
               </span>
             </div>
             {confidence !== null && (
               <div className="flex flex-col items-center">
-                <span className="text-3xl font-black tabular-nums text-slate-300">
+                <span className="text-3xl font-black tabular-nums text-slate-800 dark:text-slate-300">
                   {confidence}%
                 </span>
-                <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+                <span className="text-[10px] text-slate-600 dark:text-slate-500 font-semibold uppercase tracking-wider">
                   Confidence
                 </span>
               </div>
             )}
             {rankedData?.rank && (
               <div className="flex flex-col items-center">
-                <span className="text-3xl font-black tabular-nums text-amber-400">
+                <span className="text-3xl font-black tabular-nums text-amber-500 dark:text-amber-400">
                   #{rankedData.rank}
                 </span>
-                <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+                <span className="text-[10px] text-slate-600 dark:text-slate-500 font-semibold uppercase tracking-wider">
                   Rank
                 </span>
               </div>
@@ -163,7 +164,7 @@ const RecommendationCard: React.FC<RecommendationCardProps> = ({
 
         {/* Summary */}
         {(rankedData?.summary || explanation?.summary) && (
-          <p className="text-xs text-slate-400 leading-relaxed max-w-md">
+          <p className="text-xs text-slate-700 dark:text-slate-400 leading-relaxed max-w-md">
             {rankedData?.summary || explanation?.summary}
           </p>
         )}

@@ -83,10 +83,10 @@ const QuestionCard: React.FC<{ q: Question; idx: number }> = ({ q, idx }) => {
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.08 * idx }}
-      className="flex gap-3 p-4 rounded-xl border border-white/6 bg-white/2 hover:bg-white/4 group transition-colors"
+      className="flex gap-3 p-4 rounded-xl border border-slate-200/30 dark:border-white/6 bg-slate-50 dark:bg-white/2 hover:bg-slate-100 dark:hover:bg-white/4 group transition-colors"
     >
       {/* Index badge */}
-      <span className="w-5 h-5 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-[10px] font-black text-slate-400 shrink-0 mt-0.5">
+      <span className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 flex items-center justify-center text-[10px] font-black text-slate-700 dark:text-slate-400 shrink-0 mt-0.5">
         {idx + 1}
       </span>
 
@@ -100,13 +100,13 @@ const QuestionCard: React.FC<{ q: Question; idx: number }> = ({ q, idx }) => {
           </span>
           <button
             onClick={handleCopy}
-            className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-600 hover:text-slate-300"
+            className="opacity-0 group-hover:opacity-100 transition-opacity text-slate-500 dark:text-slate-600 hover:text-slate-800 dark:hover:text-slate-300"
             aria-label="Copy question"
           >
-            {copied ? <CheckCheck size={13} className="text-emerald-400" /> : <Copy size={13} />}
+            {copied ? <CheckCheck size={13} className="text-emerald-500 dark:text-emerald-400" /> : <Copy size={13} />}
           </button>
         </div>
-        <p className="text-sm text-slate-300 leading-relaxed">{q.question}</p>
+        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{q.question}</p>
       </div>
     </motion.div>
   );
@@ -130,21 +130,21 @@ const InterviewPrepCard: React.FC<InterviewPrepCardProps> = ({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: 0.3 }}
-      className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-xl overflow-hidden"
+      className="rounded-2xl border border-slate-200/20 dark:border-white/10 bg-slate-100/80 dark:bg-slate-900/60 backdrop-blur-xl overflow-hidden"
     >
       {/* Header */}
-      <div className="px-6 pt-6 pb-4 border-b border-white/6 flex items-center justify-between">
+      <div className="px-6 pt-6 pb-4 border-b border-slate-200/40 dark:border-white/6 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-violet-500/20 flex items-center justify-center">
-            <MessageSquare size={14} className="text-violet-400" />
+            <MessageSquare size={14} className="text-violet-600 dark:text-violet-400" />
           </div>
-          <span className="text-sm font-bold text-slate-100 tracking-tight">
+          <span className="text-sm font-bold text-slate-900 dark:text-slate-100 tracking-tight">
             Interview Prep Guide
           </span>
         </div>
         <button
           onClick={() => setSeed((s) => s + 1)}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/8 bg-white/4 hover:bg-white/8 text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/8 bg-slate-100 dark:bg-white/4 hover:bg-slate-200 dark:hover:bg-white/8 text-xs font-semibold text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 transition-all"
         >
           <RefreshCw size={12} />
           Refresh
@@ -156,7 +156,7 @@ const InterviewPrepCard: React.FC<InterviewPrepCardProps> = ({
           Array.from({ length: 5 }).map((_, i) => (
             <div
               key={i}
-              className="h-14 rounded-xl bg-slate-800/60 animate-pulse"
+              className="h-14 rounded-xl bg-slate-200 dark:bg-slate-800/60 animate-pulse"
               style={{ opacity: 1 - i * 0.15 }}
             />
           ))
@@ -164,8 +164,8 @@ const InterviewPrepCard: React.FC<InterviewPrepCardProps> = ({
           questions.map((q, i) => <QuestionCard key={`${seed}-${i}`} q={q} idx={i} />)
         ) : (
           <div className="flex flex-col items-center gap-2 py-8 text-center">
-            <MessageSquare size={28} className="text-slate-700" />
-            <p className="text-sm text-slate-500">
+            <MessageSquare size={28} className="text-slate-400 dark:text-slate-700" />
+            <p className="text-sm text-slate-600 dark:text-slate-500">
               Run a JD analysis to generate tailored interview questions.
             </p>
           </div>

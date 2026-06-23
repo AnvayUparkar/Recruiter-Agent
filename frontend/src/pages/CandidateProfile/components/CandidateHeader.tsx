@@ -111,7 +111,7 @@ const CandidateHeader: React.FC<CandidateHeaderProps> = ({
       initial={{ opacity: 0, y: -16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-slate-900/80 via-slate-800/60 to-slate-900/80 backdrop-blur-xl shadow-2xl"
+      className="relative overflow-hidden rounded-2xl border border-slate-200/20 dark:border-white/10 bg-gradient-to-br from-slate-100/90 via-slate-50/80 to-slate-100/90 dark:from-slate-900/80 dark:via-slate-800/60 dark:to-slate-900/80 backdrop-blur-xl shadow-2xl"
       style={{ boxShadow: `0 0 60px ${scoreMeta.color}18` }}
     >
       {/* Ambient glow stripe */}
@@ -127,7 +127,7 @@ const CandidateHeader: React.FC<CandidateHeaderProps> = ({
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-slate-100 transition-colors group"
+            className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors group"
           >
             <ArrowLeft
               size={15}
@@ -140,14 +140,14 @@ const CandidateHeader: React.FC<CandidateHeaderProps> = ({
             {onExport && (
               <button
                 onClick={onExport}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 text-xs font-semibold text-slate-300 transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-xs font-semibold text-slate-700 dark:text-slate-300 transition-all"
               >
                 <Download size={13} />
                 Export
               </button>
             )}
             <button
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 text-xs font-semibold text-slate-300 transition-all"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-xs font-semibold text-slate-700 dark:text-slate-300 transition-all"
               aria-label="Share profile"
             >
               <Share2 size={13} />
@@ -185,7 +185,7 @@ const CandidateHeader: React.FC<CandidateHeaderProps> = ({
           {/* Identity block */}
           <div className="flex-1 min-w-0">
             <div className="flex flex-wrap items-center gap-3 mb-1">
-              <h1 className="text-2xl md:text-3xl font-black text-slate-50 tracking-tight truncate">
+              <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-slate-50 tracking-tight truncate">
                 {displayName}
               </h1>
               {verdict && (
@@ -202,28 +202,28 @@ const CandidateHeader: React.FC<CandidateHeaderProps> = ({
               )}
             </div>
 
-            <p className="text-sm font-semibold text-slate-300 mb-3">
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-3">
               {profile?.headline || profile?.currentTitle || "Senior Professional"}
             </p>
 
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-400">
+            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-600 dark:text-slate-400">
               <span className="flex items-center gap-1.5">
-                <MapPin size={12} className="text-slate-500" />
+                <MapPin size={12} className="text-slate-500 dark:text-slate-500" />
                 {profile?.location || candidate.location || "Remote"}
                 {profile?.country && `, ${profile.country}`}
               </span>
               <span className="flex items-center gap-1.5">
-                <Briefcase size={12} className="text-slate-500" />
+                <Briefcase size={12} className="text-slate-500 dark:text-slate-500" />
                 {profile?.yearsOfExperience || candidate.experienceYears || 0} yrs experience
               </span>
               <span className="flex items-center gap-1.5">
-                <Clock size={12} className="text-slate-500" />
+                <Clock size={12} className="text-slate-500 dark:text-slate-500" />
                 Notice:{" "}
                 {candidate.availability ||
                   `${candidate.redrob_signals?.noticePeriodDays ?? 0} days`}
               </span>
               {candidate.redrob_signals?.openToWorkFlag && (
-                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/12 border border-emerald-500/25 text-emerald-400 font-bold text-[10px] uppercase tracking-wider">
+                <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/12 border border-emerald-500/25 text-emerald-600 dark:text-emerald-400 font-bold text-[10px] uppercase tracking-wider">
                   <Star size={10} />
                   Open to Work
                 </span>
@@ -235,10 +235,10 @@ const CandidateHeader: React.FC<CandidateHeaderProps> = ({
           {finalScore > 0 && (
             <div className="flex flex-col items-center gap-1.5 shrink-0">
               <ScoreRing score={finalScore} />
-              <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+              <span className="text-[10px] font-bold text-slate-600 dark:text-slate-500 uppercase tracking-wider">
                 AI Score
               </span>
-              <span className="text-[10px] text-slate-600">
+              <span className="text-[10px] text-slate-500 dark:text-slate-600">
                 {Math.round(confidence * 100)}% conf.
               </span>
             </div>

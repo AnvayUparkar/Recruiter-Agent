@@ -16,12 +16,12 @@ const StatCell: React.FC<{
   color?: string;
 }> = ({ label, value, unit, color = "#94a3b8" }) => (
   <div className="flex flex-col gap-0.5">
-    <span className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+    <span className="text-[10px] text-slate-600 dark:text-slate-500 font-semibold uppercase tracking-wider">
       {label}
     </span>
     <span className="text-lg font-black tabular-nums" style={{ color }}>
       {value}
-      {unit && <span className="text-xs font-semibold text-slate-500 ml-0.5">{unit}</span>}
+      {unit && <span className="text-xs font-semibold text-slate-600 dark:text-slate-500 ml-0.5">{unit}</span>}
     </span>
   </div>
 );
@@ -36,12 +36,12 @@ const GaugeBar: React.FC<{ value: number; color: string; label: string; delay: n
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-center justify-between">
-        <span className="text-xs text-slate-400 font-semibold">{label}</span>
+        <span className="text-xs text-slate-700 dark:text-slate-400 font-semibold">{label}</span>
         <span className="text-xs font-black tabular-nums" style={{ color }}>
           {pct}
         </span>
       </div>
-      <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+      <div className="h-1.5 rounded-full bg-slate-200 dark:bg-white/5 overflow-hidden">
         <motion.div
           className="h-full rounded-full"
           style={{ backgroundColor: color, boxShadow: `0 0 6px ${color}50` }}
@@ -69,21 +69,21 @@ const BehaviorInsights: React.FC<BehaviorInsightsProps> = ({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: 0.2 }}
-      className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-xl overflow-hidden"
+      className="rounded-2xl border border-slate-200/20 dark:border-white/10 bg-slate-100/80 dark:bg-slate-900/60 backdrop-blur-xl overflow-hidden"
     >
       {/* Header */}
-      <div className="px-6 pt-6 pb-4 border-b border-white/6 flex items-center justify-between">
+      <div className="px-6 pt-6 pb-4 border-b border-slate-200/40 dark:border-white/6 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-cyan-500/20 flex items-center justify-center">
-            <Activity size={14} className="text-cyan-400" />
+            <Activity size={14} className="text-cyan-500 dark:text-cyan-400" />
           </div>
-          <span className="text-sm font-bold text-slate-100 tracking-tight">
+          <span className="text-sm font-bold text-slate-900 dark:text-slate-100 tracking-tight">
             Behavioral Insights
           </span>
         </div>
         {joinProbability !== null && (
           <div className="text-right">
-            <span className="text-[10px] text-slate-500 uppercase tracking-wider block">
+            <span className="text-[10px] text-slate-600 dark:text-slate-500 uppercase tracking-wider block">
               Join Probability
             </span>
             <span
@@ -140,7 +140,7 @@ const BehaviorInsights: React.FC<BehaviorInsightsProps> = ({
         {/* Behavioral scores */}
         {behaviorProfile && (
           <div className="flex flex-col gap-3">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-500">
               Engagement Dimensions
             </span>
             <GaugeBar
@@ -179,14 +179,14 @@ const BehaviorInsights: React.FC<BehaviorInsightsProps> = ({
         {/* Evidence tags */}
         {behaviorProfile?.evidence && behaviorProfile.evidence.length > 0 && (
           <div className="flex flex-col gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-600 dark:text-slate-500">
               Evidence
             </span>
             <div className="flex flex-wrap gap-2">
               {behaviorProfile.evidence.map((e, i) => (
                 <span
                   key={i}
-                  className="px-2.5 py-1 rounded-lg text-[11px] text-slate-300 bg-slate-800/60 border border-slate-700/50"
+                  className="px-2.5 py-1 rounded-lg text-[11px] text-slate-700 dark:text-slate-300 bg-slate-200/60 dark:bg-slate-800/60 border border-slate-300/60 dark:border-slate-700/50"
                 >
                   {e}
                 </span>
@@ -197,7 +197,7 @@ const BehaviorInsights: React.FC<BehaviorInsightsProps> = ({
 
         {/* Signals extras */}
         {signals && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2 border-t border-white/5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-2 border-t border-slate-200/40 dark:border-white/5">
             <StatCell
               label="Notice Period"
               value={signals.noticePeriodDays ?? 0}

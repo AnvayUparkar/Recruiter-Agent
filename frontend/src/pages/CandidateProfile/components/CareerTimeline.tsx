@@ -33,19 +33,19 @@ const CareerTimeline: React.FC<CareerTimelineProps> = ({ careerHistory }) => {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: 0.25 }}
-      className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-xl overflow-hidden"
+      className="rounded-2xl border border-slate-200/20 dark:border-white/10 bg-slate-100/80 dark:bg-slate-900/60 backdrop-blur-xl overflow-hidden"
     >
       {/* Header */}
-      <div className="px-6 pt-6 pb-4 border-b border-white/6 flex items-center justify-between">
+      <div className="px-6 pt-6 pb-4 border-b border-slate-200/40 dark:border-white/6 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-blue-500/20 flex items-center justify-center">
-            <TrendingUp size={14} className="text-blue-400" />
+            <TrendingUp size={14} className="text-blue-500 dark:text-blue-400" />
           </div>
-          <span className="text-sm font-bold text-slate-100 tracking-tight">
+          <span className="text-sm font-bold text-slate-900 dark:text-slate-100 tracking-tight">
             Career Timeline
           </span>
         </div>
-        <span className="text-xs text-slate-500 font-semibold">
+        <span className="text-xs text-slate-600 dark:text-slate-500 font-semibold">
           {careerHistory.length} positions
         </span>
       </div>
@@ -53,7 +53,7 @@ const CareerTimeline: React.FC<CareerTimelineProps> = ({ careerHistory }) => {
       <div className="p-6">
         <div className="relative flex flex-col gap-0">
           {/* Vertical track */}
-          <div className="absolute left-[19px] top-4 bottom-4 w-px bg-gradient-to-b from-blue-500/40 via-slate-700/40 to-transparent" />
+          <div className="absolute left-[19px] top-4 bottom-4 w-px bg-gradient-to-b from-blue-500/40 via-slate-400/40 dark:via-slate-700/40 to-transparent" />
 
           {careerHistory.map((job, idx) => {
             const meta = getTenureMeta(job.durationMonths);
@@ -84,32 +84,32 @@ const CareerTimeline: React.FC<CareerTimelineProps> = ({ careerHistory }) => {
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <h3 className="text-sm font-bold text-slate-100 truncate">
+                    <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 truncate">
                       {job.title}
                     </h3>
                     {job.isCurrent && (
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/12 border border-emerald-500/25 text-emerald-400">
+                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/12 border border-emerald-500/25 text-emerald-600 dark:text-emerald-400">
                         Current
                       </span>
                     )}
                   </div>
 
                   <div className="flex flex-wrap items-center gap-3 mb-2">
-                    <span className="flex items-center gap-1 text-xs font-semibold text-blue-400">
+                    <span className="flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-blue-400">
                       <Building2 size={11} />
                       {job.company}
                     </span>
                     {job.companySize && (
-                      <span className="text-[10px] text-slate-500">{job.companySize}</span>
+                      <span className="text-[10px] text-slate-600 dark:text-slate-500">{job.companySize}</span>
                     )}
                     {job.isProductCompany && (
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-violet-500/12 border border-violet-500/20 text-violet-400 font-bold">
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-violet-500/12 border border-violet-500/20 text-violet-600 dark:text-violet-400 font-bold">
                         Product Co.
                       </span>
                     )}
                   </div>
 
-                  <div className="flex items-center gap-3 text-[10px] text-slate-500 mb-2">
+                  <div className="flex items-center gap-3 text-[10px] text-slate-600 dark:text-slate-500 mb-2">
                     <span className="flex items-center gap-1">
                       <Calendar size={10} />
                       {job.startDate} — {job.endDate || "Present"}
@@ -123,18 +123,18 @@ const CareerTimeline: React.FC<CareerTimelineProps> = ({ careerHistory }) => {
                     >
                       {formatDuration(job.durationMonths)}
                     </span>
-                    <span className="italic text-slate-600">{meta.label}</span>
+                    <span className="italic text-slate-500 dark:text-slate-600">{meta.label}</span>
                   </div>
 
                   {job.description && (
-                    <p className="text-xs text-slate-400 leading-relaxed line-clamp-3">
+                    <p className="text-xs text-slate-700 dark:text-slate-400 leading-relaxed line-clamp-3">
                       {job.description}
                     </p>
                   )}
 
                   {job.hasProductionKeywords && (
                     <div className="mt-2 flex items-center gap-1.5">
-                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/10 border border-blue-500/20 text-blue-400">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400">
                         ⚡ Production Keywords
                       </span>
                     </div>

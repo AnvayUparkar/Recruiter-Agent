@@ -28,23 +28,23 @@ const CATEGORY_META: Record<
 > = {
   "must-have": {
     label: "Required Match",
-    color: "text-emerald-400",
+    color: "text-emerald-600 dark:text-emerald-400",
     bg: "bg-emerald-500/10",
     border: "border-emerald-500/25",
     dot: "bg-emerald-500",
   },
   preferred: {
     label: "Preferred Match",
-    color: "text-blue-400",
+    color: "text-blue-600 dark:text-blue-400",
     bg: "bg-blue-500/10",
     border: "border-blue-500/25",
     dot: "bg-blue-500",
   },
   additional: {
     label: "Additional Skills",
-    color: "text-slate-400",
-    bg: "bg-slate-800/60",
-    border: "border-slate-700/50",
+    color: "text-slate-700 dark:text-slate-400",
+    bg: "bg-slate-200/80 dark:bg-slate-800/60",
+    border: "border-slate-300/60 dark:border-slate-700/50",
     dot: "bg-slate-500",
   },
 };
@@ -115,28 +115,28 @@ const SkillCoverage: React.FC<SkillCoverageProps> = ({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: 0.2 }}
-      className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-xl overflow-hidden"
+      className="rounded-2xl border border-slate-200/20 dark:border-white/10 bg-slate-100/80 dark:bg-slate-900/60 backdrop-blur-xl overflow-hidden"
     >
       {/* Header */}
-      <div className="px-6 pt-6 pb-4 border-b border-white/6 flex items-center justify-between">
+      <div className="px-6 pt-6 pb-4 border-b border-slate-200/40 dark:border-white/6 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-            <Tag size={14} className="text-emerald-400" />
+            <Tag size={14} className="text-emerald-500 dark:text-emerald-400" />
           </div>
-          <span className="text-sm font-bold text-slate-100 tracking-tight">
+          <span className="text-sm font-bold text-slate-900 dark:text-slate-100 tracking-tight">
             Skill Coverage
           </span>
         </div>
         {jdRequired.length > 0 && (
           <div className="flex items-center gap-2 text-xs">
-            <span className="text-slate-500">Required coverage</span>
+            <span className="text-slate-600 dark:text-slate-500">Required coverage</span>
             <span
               className={`font-black ${
                 coveragePct >= 70
-                  ? "text-emerald-400"
+                  ? "text-emerald-600 dark:text-emerald-400"
                   : coveragePct >= 40
-                  ? "text-blue-400"
-                  : "text-amber-400"
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-amber-600 dark:text-amber-400"
               }`}
             >
               {coveragePct}%
@@ -150,7 +150,7 @@ const SkillCoverage: React.FC<SkillCoverageProps> = ({
         <div className="flex flex-wrap gap-4">
           {(Object.entries(CATEGORY_META) as [SkillCategory, (typeof CATEGORY_META)[SkillCategory]][]).map(
             ([cat, meta]) => (
-              <span key={cat} className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+              <span key={cat} className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-500">
                 <span className={`w-2 h-2 rounded-full ${meta.dot}`} />
                 {meta.label}
               </span>
@@ -161,7 +161,7 @@ const SkillCoverage: React.FC<SkillCoverageProps> = ({
         {/* Must-have */}
         {mustHave.length > 0 && (
           <div className="flex flex-col gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-500">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-500">
               ✓ Required Matches ({mustHave.length}/{jdRequired.length || mustHave.length})
             </span>
             <div className="flex flex-wrap gap-2">
@@ -175,7 +175,7 @@ const SkillCoverage: React.FC<SkillCoverageProps> = ({
         {/* Preferred */}
         {preferred.length > 0 && (
           <div className="flex flex-col gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-blue-500">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-blue-600 dark:text-blue-500">
               ◎ Preferred Matches ({preferred.length})
             </span>
             <div className="flex flex-wrap gap-2">
@@ -189,7 +189,7 @@ const SkillCoverage: React.FC<SkillCoverageProps> = ({
         {/* Additional */}
         {additional.length > 0 && (
           <div className="flex flex-col gap-2">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-600">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-700 dark:text-slate-600">
               Additional ({additional.length})
             </span>
             <div className="flex flex-wrap gap-2">
@@ -201,9 +201,9 @@ const SkillCoverage: React.FC<SkillCoverageProps> = ({
         )}
 
         {/* Proficiency legend */}
-        <div className="pt-2 border-t border-white/5 flex flex-wrap gap-3">
+        <div className="pt-2 border-t border-slate-200/40 dark:border-white/5 flex flex-wrap gap-3">
           {PROFICIENCY_ORDER.map((p) => (
-            <span key={p} className="text-[10px] text-slate-600 font-semibold">
+            <span key={p} className="text-[10px] text-slate-600 dark:text-slate-600 font-semibold">
               {proficiencyLabel(p)}
             </span>
           ))}

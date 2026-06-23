@@ -13,33 +13,33 @@ const TIER_META: Record<
 > = {
   tier_1: {
     label: "Tier 1",
-    color: "text-emerald-400",
+    color: "text-emerald-600 dark:text-emerald-400",
     bg: "bg-emerald-500/10",
     border: "border-emerald-500/25",
   },
   tier_2: {
     label: "Tier 2",
-    color: "text-blue-400",
+    color: "text-blue-600 dark:text-blue-400",
     bg: "bg-blue-500/10",
     border: "border-blue-500/25",
   },
   tier_3: {
     label: "Tier 3",
-    color: "text-slate-400",
-    bg: "bg-slate-700/40",
-    border: "border-slate-700/50",
+    color: "text-slate-600 dark:text-slate-400",
+    bg: "bg-slate-200/60 dark:bg-slate-700/40",
+    border: "border-slate-300/60 dark:border-slate-700/50",
   },
   tier_4: {
     label: "Tier 4",
-    color: "text-slate-500",
-    bg: "bg-slate-800/40",
-    border: "border-slate-800/50",
+    color: "text-slate-600 dark:text-slate-500",
+    bg: "bg-slate-200/60 dark:bg-slate-800/40",
+    border: "border-slate-300/60 dark:border-slate-800/50",
   },
   unknown: {
     label: "Unranked",
-    color: "text-slate-500",
-    bg: "bg-slate-800/40",
-    border: "border-slate-800/50",
+    color: "text-slate-600 dark:text-slate-500",
+    bg: "bg-slate-200/60 dark:bg-slate-800/40",
+    border: "border-slate-300/60 dark:border-slate-800/50",
   },
 };
 
@@ -51,14 +51,14 @@ const EducationSection: React.FC<EducationSectionProps> = ({ education }) => {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, delay: 0.3 }}
-      className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-xl overflow-hidden"
+      className="rounded-2xl border border-slate-200/20 dark:border-white/10 bg-slate-100/80 dark:bg-slate-900/60 backdrop-blur-xl overflow-hidden"
     >
       {/* Header */}
-      <div className="px-6 pt-6 pb-4 border-b border-white/6 flex items-center gap-2.5">
+      <div className="px-6 pt-6 pb-4 border-b border-slate-200/40 dark:border-white/6 flex items-center gap-2.5">
         <div className="w-7 h-7 rounded-lg bg-amber-500/20 flex items-center justify-center">
-          <GraduationCap size={14} className="text-amber-400" />
+          <GraduationCap size={14} className="text-amber-500 dark:text-amber-400" />
         </div>
-        <span className="text-sm font-bold text-slate-100 tracking-tight">Education</span>
+        <span className="text-sm font-bold text-slate-900 dark:text-slate-100 tracking-tight">Education</span>
       </div>
 
       <div className="p-6 flex flex-col gap-4">
@@ -71,17 +71,17 @@ const EducationSection: React.FC<EducationSectionProps> = ({ education }) => {
               initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 + idx * 0.07 }}
-              className="flex gap-4 items-start p-4 rounded-xl border border-white/5 bg-white/2 hover:bg-white/4 transition-colors"
+              className="flex gap-4 items-start p-4 rounded-xl border border-slate-200/30 dark:border-white/5 bg-slate-50 dark:bg-white/2 hover:bg-slate-100 dark:hover:bg-white/4 transition-colors"
             >
               {/* Icon */}
               <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-                <Award size={16} className="text-amber-400" />
+                <Award size={16} className="text-amber-500 dark:text-amber-400" />
               </div>
 
               {/* Details */}
               <div className="flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <span className="text-sm font-bold text-slate-100">
+                  <span className="text-sm font-bold text-slate-900 dark:text-slate-100">
                     {edu.degree}
                   </span>
                   <span
@@ -90,16 +90,16 @@ const EducationSection: React.FC<EducationSectionProps> = ({ education }) => {
                     {tierMeta.label}
                   </span>
                 </div>
-                <p className="text-xs font-semibold text-blue-400 mb-0.5">
+                <p className="text-xs font-semibold text-blue-600 dark:text-blue-400 mb-0.5">
                   {edu.fieldOfStudy}
                 </p>
-                <p className="text-xs text-slate-400">{edu.institution}</p>
-                <div className="flex items-center gap-3 mt-1.5 text-[10px] text-slate-600">
+                <p className="text-xs text-slate-600 dark:text-slate-400">{edu.institution}</p>
+                <div className="flex items-center gap-3 mt-1.5 text-[10px] text-slate-500 dark:text-slate-600">
                   <span>
                     {edu.startYear} — {edu.endYear}
                   </span>
                   {edu.grade && (
-                    <span className="text-slate-500 font-semibold">
+                    <span className="text-slate-600 dark:text-slate-500 font-semibold">
                       Grade: {edu.grade}
                     </span>
                   )}
