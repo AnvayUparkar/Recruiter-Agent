@@ -77,20 +77,20 @@ export const MetricCards: React.FC<MetricCardsProps> = ({
             damping: 20,
             delay: idx * 0.05 + 0.1,
           }}
-          className="p-5 rounded-2xl glass-panel border-white/5 bg-white/2 hover:border-white/10 transition-all duration-200 flex items-center justify-between group cursor-default relative overflow-hidden"
+          className="p-5 rounded-2xl glass-panel border-border bg-surface/40 hover:bg-surface-hover/20 transition-all duration-200 flex items-center justify-between group cursor-default relative overflow-hidden"
         >
           {/* Subtle hover glow circle */}
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/1 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
           <div className="flex flex-col gap-1.5 min-w-0">
-            <span className="text-xs text-slate-400 font-semibold truncate">
+            <span className="text-xs text-text-muted font-bold truncate">
               {card.title}
             </span>
             <div className="flex items-baseline gap-1 mt-0.5">
-              <span className="text-2xl font-black text-white font-mono">
+              <span className="text-2xl font-black text-text-primary font-mono">
                 {card.value}
               </span>
-              <span className="text-xs font-bold text-slate-500 font-mono">
+              <span className="text-xs font-bold text-text-muted/60 font-mono">
                 {card.suffix}
               </span>
             </div>

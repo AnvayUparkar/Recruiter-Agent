@@ -133,6 +133,13 @@ def rank_candidates():
                 profile_dict["skills"] = [s.model_dump() for s in cand.skills]
                 signals_dict = cand.redrob_signals.model_dump()
 
+            # Serialize score_details if present
+            score_details_dict = {}
+            if rc.score_details:
+                score_details_dict = rc.score_details.model_dump()
+                # Ensure it maps properly to snake_case dictionary
+                score_details_dict["candidate_id"] = rc.candidate_id
+
             ranked_list.append(CandidateRankInfo(
                 candidate_id=rc.candidate_id,
                 rank=rc.rank,
@@ -144,7 +151,8 @@ def rank_candidates():
                 fit_verdict=verdict,
                 reasoning=summary,
                 profile=profile_dict,
-                redrob_signals=signals_dict
+                redrob_signals=signals_dict,
+                score_details=score_details_dict
             ))
 
         response_payload = RankingResponse(

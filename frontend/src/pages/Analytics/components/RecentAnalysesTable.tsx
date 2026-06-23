@@ -79,26 +79,26 @@ export const RecentAnalysesTable: React.FC = () => {
   };
 
   return (
-    <div className="w-full glass-panel rounded-2xl border-white/10 shadow-xl p-5 md:p-6 mb-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 pb-3 border-b border-white/5">
+    <div className="w-full glass-panel rounded-2xl border-border shadow-xl p-5 md:p-6 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5 pb-3 border-b border-border">
         <div>
-          <h2 className="text-sm font-bold text-white uppercase tracking-wider font-heading">
+          <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider font-heading">
             Recent Analysis Log
           </h2>
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] text-text-muted">
             Historical index matching jobs parsed and candidate pools evaluated.
           </p>
         </div>
 
         {/* Search */}
         <div className="relative max-w-xs w-full">
-          <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search job titles..."
-            className="w-full pl-9 pr-4 py-1.5 rounded-lg bg-black/40 border border-white/10 text-white text-xs outline-none focus:border-blue-500 transition-colors"
+            className="w-full pl-9 pr-4 py-1.5 rounded-lg bg-surface/50 border border-border text-text-primary text-xs outline-none focus:border-blue-500 transition-colors"
           />
         </div>
       </div>
@@ -106,7 +106,7 @@ export const RecentAnalysesTable: React.FC = () => {
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-white/10 text-slate-400 text-xs font-bold uppercase bg-white/2 cursor-pointer">
+            <tr className="border-b border-border text-text-muted text-xs font-bold uppercase bg-surface-hover/30 cursor-pointer">
               <th className="py-3 px-4" onClick={() => handleSort("timestamp")}>
                 <div className="flex items-center gap-1">
                   <span>Timestamp</span>
@@ -140,20 +140,20 @@ export const RecentAnalysesTable: React.FC = () => {
               <th className="py-3 px-4 text-center w-28">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5 font-sans">
+          <tbody className="divide-y divide-border/40 font-sans">
             {processedData.length === 0 ? (
               <tr>
-                <td colSpan={6} className="py-8 text-center text-slate-500 text-xs">
+                <td colSpan={6} className="py-8 text-center text-text-disabled text-xs">
                   No matches found in analysis history.
                 </td>
               </tr>
             ) : (
               processedData.map((log) => (
-                <tr key={log.id} className="hover:bg-white/1 text-xs text-slate-300 transition-colors">
+                <tr key={log.id} className="hover:bg-surface-hover/20 text-xs text-text-muted transition-colors">
                   <td className="py-3 px-4 font-mono">{formatDate(log.timestamp)}</td>
-                  <td className="py-3 px-4 font-semibold text-white">{log.jobTitle}</td>
+                  <td className="py-3 px-4 font-semibold text-text-primary">{log.jobTitle}</td>
                   <td className="py-3 px-4 text-center font-mono">{log.candidatesCount}</td>
-                  <td className="py-3 px-4 text-center font-mono font-bold text-emerald-400">
+                  <td className="py-3 px-4 text-center font-mono font-bold text-emerald-500 dark:text-emerald-400">
                     {log.topScore}%
                   </td>
                   <td className="py-3 px-4 text-center font-mono">{log.processingTimeMs}ms</td>
@@ -161,14 +161,14 @@ export const RecentAnalysesTable: React.FC = () => {
                     <div className="flex justify-center gap-2">
                       <button
                         onClick={() => alert(`Reviewing calibration logs for ${log.jobTitle}...`)}
-                        className="p-1 rounded bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+                        className="p-1 rounded bg-surface-hover border border-border hover:bg-surface-hover/80 text-text-muted hover:text-text-primary transition-colors"
                         title="View calibration charts"
                       >
                         <Eye size={12} />
                       </button>
                       <button
                         onClick={() => alert(`Exporting metadata manifest for ${log.jobTitle}...`)}
-                        className="p-1 rounded bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition-colors"
+                        className="p-1 rounded bg-surface-hover border border-border hover:bg-surface-hover/80 text-text-muted hover:text-text-primary transition-colors"
                         title="Export manifest"
                       >
                         <FileSpreadsheet size={12} />

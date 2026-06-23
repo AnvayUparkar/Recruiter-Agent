@@ -46,6 +46,7 @@ class CandidateRankInfo(BaseModel):
     reasoning: str = Field(..., description="Brief recruiter reasoning alias.")
     profile: Dict[str, Any] = Field(default_factory=dict, description="Full candidate profile information.")
     redrob_signals: Dict[str, Any] = Field(default_factory=dict, description="Full candidate behavioral signals.")
+    score_details: Dict[str, Any] = Field(default_factory=dict, description="Full breakdown of composite scores.")
 
 
 class RankingResponse(BaseModel):

@@ -34,6 +34,23 @@ export const rankingService = {
       const profile = c.profile || {};
       const signals = c.redrob_signals || {};
 
+      const scoreDetailsRaw = c.score_details || c.scoreDetails || {};
+      const scoreDetails = {
+        candidateId: scoreDetailsRaw.candidate_id || scoreDetailsRaw.candidateId || candidateId,
+        technicalScore: scoreDetailsRaw.technical_score ?? scoreDetailsRaw.technicalScore ?? 0.0,
+        careerScore: scoreDetailsRaw.career_score ?? scoreDetailsRaw.careerScore ?? 0.0,
+        behavioralScore: scoreDetailsRaw.behavioral_score ?? scoreDetailsRaw.behavioralScore ?? 0.0,
+        trustScore: scoreDetailsRaw.trust_score ?? scoreDetailsRaw.trustScore ?? 0.0,
+        matchingScore: scoreDetailsRaw.matching_score ?? scoreDetailsRaw.matchingScore ?? 0.0,
+        retrievalScore: scoreDetailsRaw.retrieval_score ?? scoreDetailsRaw.retrievalScore ?? 0.0,
+        leadershipScore: scoreDetailsRaw.leadership_score ?? scoreDetailsRaw.leadershipScore ?? 0.0,
+        marketScore: scoreDetailsRaw.market_score ?? scoreDetailsRaw.marketScore ?? 0.0,
+        totalBonus: scoreDetailsRaw.total_bonus ?? scoreDetailsRaw.totalBonus ?? 0.0,
+        totalPenalty: scoreDetailsRaw.total_penalty ?? scoreDetailsRaw.totalPenalty ?? 0.0,
+        finalScore: scoreDetailsRaw.final_score ?? scoreDetailsRaw.finalScore ?? score,
+        confidence: scoreDetailsRaw.confidence ?? c.confidence ?? 0.85,
+      };
+
       const mappedProfile = {
         anonymizedName: profile.anonymized_name || profile.name || candidateId,
         headline: profile.headline || "",
@@ -102,7 +119,8 @@ export const rankingService = {
         reasoning,
         details,
         profile: mappedProfile,
-        redrob_signals: details.redrob_signals
+        redrob_signals: details.redrob_signals,
+        scoreDetails
       };
     });
 

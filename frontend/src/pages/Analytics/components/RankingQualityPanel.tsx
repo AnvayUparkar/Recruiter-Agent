@@ -50,38 +50,38 @@ export const RankingQualityPanel: React.FC<RankingQualityPanelProps> = ({
   ];
 
   return (
-    <div className="w-full glass-panel rounded-2xl border-white/10 shadow-xl p-5 md:p-6 mb-6">
-      <div className="mb-5 border-b border-white/5 pb-3">
-        <h2 className="text-sm font-bold text-white uppercase tracking-wider font-heading">
+    <div className="w-full glass-panel rounded-2xl border-border shadow-xl p-5 md:p-6 mb-6">
+      <div className="mb-5 border-b border-border pb-3">
+        <h2 className="text-sm font-bold text-text-primary uppercase tracking-wider font-heading">
           AI Ranking Quality & Calibration
         </h2>
-        <p className="text-[11px] text-slate-400 mt-0.5">
+        <p className="text-[11px] text-text-muted mt-0.5">
           Information retrieval metrics evaluating matching calibration.
         </p>
       </div>
 
       <div className="flex flex-col gap-4">
         {metrics.map((m, idx) => (
-          <div key={idx} className="flex flex-col md:flex-row gap-3 md:items-start justify-between p-3.5 rounded-xl bg-white/2 border border-white/5">
+          <div key={idx} className="flex flex-col md:flex-row gap-3 md:items-start justify-between p-3.5 rounded-xl bg-surface/50 border border-border">
             <div className="flex gap-3 items-start max-w-xl">
-              <div className="p-2 rounded-lg bg-white/5 border border-white/10 shrink-0">
+              <div className="p-2 rounded-lg bg-surface-hover border border-border shrink-0">
                 {m.icon}
               </div>
               <div className="flex flex-col gap-0.5">
-                <span className="text-xs font-bold text-white font-heading">
+                <span className="text-xs font-bold text-text-primary font-heading">
                   {m.label}
                 </span>
-                <span className="text-[10px] text-slate-400 leading-relaxed font-sans">
+                <span className="text-[10px] text-text-muted leading-relaxed font-sans">
                   {m.desc}
                 </span>
               </div>
             </div>
 
             <div className="flex flex-col items-end shrink-0 pt-2 md:pt-0">
-              <span className="text-2xl font-black text-white font-mono leading-none">
+              <span className="text-2xl font-black text-text-primary font-mono leading-none">
                 {m.value}%
               </span>
-              <div className="w-24 h-1.5 rounded-full bg-white/5 overflow-hidden mt-2 border border-white/5">
+              <div className="w-24 h-1.5 rounded-full bg-surface-hover overflow-hidden mt-2 border border-border">
                 <div
                   className="h-full rounded-full bg-blue-500"
                   style={{ width: `${m.value}%` }}
