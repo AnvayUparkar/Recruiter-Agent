@@ -29,10 +29,10 @@ const getDM = (dec: string) => {
 const HiringDecisionPanel: React.FC<HiringDecisionPanelProps> = ({ decision, isLoading }) => {
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-xl p-5 flex flex-col gap-3">
-        <div className="h-3 w-28 rounded bg-slate-800 animate-pulse" />
-        <div className="h-12 rounded-xl bg-slate-800/60 animate-pulse" />
-        <div className="h-16 rounded-xl bg-slate-800/40 animate-pulse" />
+      <div className="rounded-2xl border border-border bg-surface backdrop-blur-xl p-5 flex flex-col gap-3">
+        <div className="h-3 w-28 rounded bg-surface-hover animate-pulse" />
+        <div className="h-12 rounded-xl bg-surface-hover animate-pulse" />
+        <div className="h-16 rounded-xl bg-surface-hover animate-pulse" />
       </div>
     );
   }
@@ -49,7 +49,7 @@ const HiringDecisionPanel: React.FC<HiringDecisionPanelProps> = ({ decision, isL
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       className="rounded-2xl border overflow-hidden"
-      style={{ borderColor: `${meta.color}28`, background: "rgba(15,23,42,0.7)", backdropFilter: "blur(16px)" }}
+      style={{ borderColor: `${meta.color}28`, background: "var(--surface)", backdropFilter: "blur(16px)" }}
     >
       {/* Verdict row */}
       <div
@@ -64,7 +64,7 @@ const HiringDecisionPanel: React.FC<HiringDecisionPanelProps> = ({ decision, isL
             <Icon size={16} style={{ color: meta.color } as React.CSSProperties} />
           </div>
           <div>
-            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">
+            <span className="text-[10px] text-text-muted font-bold uppercase tracking-wider block">
               Hiring Decision
             </span>
             <span className="text-sm font-black" style={{ color: meta.color }}>
@@ -73,7 +73,7 @@ const HiringDecisionPanel: React.FC<HiringDecisionPanelProps> = ({ decision, isL
           </div>
         </div>
         <div className="text-right">
-          <span className="text-[10px] text-slate-600 block">Confidence</span>
+          <span className="text-[10px] text-text-disabled block">Confidence</span>
           <span className="text-lg font-black" style={{ color: meta.color }}>
             {confidencePct}%
           </span>
@@ -83,7 +83,7 @@ const HiringDecisionPanel: React.FC<HiringDecisionPanelProps> = ({ decision, isL
       <div className="p-5 flex flex-col gap-4">
         {/* Confidence bar */}
         <div>
-          <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
+          <div className="h-1.5 rounded-full bg-border overflow-hidden">
             <motion.div
               className="h-full rounded-full"
               style={{ backgroundColor: meta.color }}
@@ -97,32 +97,34 @@ const HiringDecisionPanel: React.FC<HiringDecisionPanelProps> = ({ decision, isL
         {/* Rationale */}
         {decision.rationale && (
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-1 block">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted mb-1 block">
               Rationale
             </span>
-            <p className="text-xs text-slate-300 leading-relaxed">{decision.rationale}</p>
+            <p className="text-xs text-text-muted leading-relaxed">{decision.rationale}</p>
           </div>
         )}
 
         {/* Risk summary */}
-        {decision.riskSummary && (
+        {(decision.riskSummary || (decision as any).risk_summary) && (
           <div className="p-3 rounded-xl border border-amber-500/15 bg-amber-500/5">
             <span className="text-[10px] font-bold text-amber-500 uppercase tracking-wider flex items-center gap-1 mb-1">
               <AlertCircle size={10} /> Risk Summary
             </span>
-            <p className="text-xs text-slate-400 leading-relaxed">{decision.riskSummary}</p>
+            <p className="text-xs text-text-muted leading-relaxed">
+              {decision.riskSummary || (decision as any).risk_summary}
+            </p>
           </div>
         )}
 
         {/* Evidence */}
         {evidence.length > 0 && (
           <div className="flex flex-col gap-1.5">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-text-muted">
               Supporting Evidence
             </span>
             {evidence.slice(0, 3).map((e, i) => (
-              <div key={i} className="flex items-start gap-2 text-xs text-slate-400">
-                <span className="text-slate-600 mt-0.5 shrink-0">•</span>
+              <div key={i} className="flex items-start gap-2 text-xs text-text-muted">
+                <span className="text-text-disabled mt-0.5 shrink-0">•</span>
                 {e}
               </div>
             ))}

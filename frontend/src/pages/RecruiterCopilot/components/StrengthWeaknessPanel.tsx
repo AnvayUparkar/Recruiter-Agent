@@ -33,7 +33,7 @@ const StrengthWeaknessPanel: React.FC<StrengthWeaknessPanelProps> = ({
                 initial={{ opacity: 0, x: -6 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className="flex items-start gap-2 text-xs text-slate-300 leading-relaxed"
+                className="flex items-start gap-2 text-xs text-text-muted leading-relaxed"
               >
                 <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
                 {s}
@@ -62,7 +62,7 @@ const StrengthWeaknessPanel: React.FC<StrengthWeaknessPanelProps> = ({
                 initial={{ opacity: 0, x: -6 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.05 }}
-                className="flex items-start gap-2 text-xs text-slate-300 leading-relaxed"
+                className="flex items-start gap-2 text-xs text-text-muted leading-relaxed"
               >
                 <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
                 {w}

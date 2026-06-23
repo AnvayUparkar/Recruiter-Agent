@@ -174,10 +174,10 @@ class FileManager:
         if not self.file_exists(file_path):
             raise DatasetNotFoundError(f"Target file does not exist: {file_path}")
 
-        valid_extensions = {".jsonl", ".gz"}
+        valid_extensions = {".jsonl", ".json", ".gz"}
         if file_path.suffix not in valid_extensions and not file_path.name.endswith(".jsonl.gz"):
             raise ValueError(
-                f"Unsupported file format: {file_path.suffix}. Must be .jsonl or .jsonl.gz"
+                f"Unsupported file format: {file_path.suffix}. Must be .jsonl, .json, or .jsonl.gz"
             )
 
         return True

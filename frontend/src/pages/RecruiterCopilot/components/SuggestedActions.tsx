@@ -70,9 +70,9 @@ const SuggestedActions: React.FC<SuggestedActionsProps> = ({
   ];
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-xl overflow-hidden">
-      <div className="px-5 pt-5 pb-3 border-b border-white/6">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+    <div className="rounded-2xl border border-border bg-surface backdrop-blur-xl overflow-hidden">
+      <div className="px-5 pt-5 pb-3 border-b border-border">
+        <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">
           Suggested Actions
         </span>
       </div>
@@ -91,8 +91,8 @@ const SuggestedActions: React.FC<SuggestedActionsProps> = ({
               disabled={action.disabled}
               className={`flex items-center gap-2 p-2.5 rounded-xl border text-xs font-semibold text-left transition-all ${
                 action.disabled
-                  ? "border-white/4 text-slate-600 cursor-not-allowed"
-                  : "border-white/6 text-slate-300 hover:text-slate-100 hover:bg-white/5 hover:border-white/10 cursor-pointer"
+                  ? "border-border text-text-disabled cursor-not-allowed"
+                  : "border-border text-text-muted hover:text-text-primary hover:bg-surface-hover cursor-pointer"
               }`}
             >
               <div

@@ -5,9 +5,11 @@ Exposes endpoints for recruiter copilot report generation, candidate comparison,
 
 from flask import Blueprint, request, jsonify, current_app
 from pydantic import BaseModel, Field, ValidationError
+from typing import Dict, Any, Optional
 
 from services.jd_analyzer import JdAnalyzer
 from services.copilot_service import CopilotService
+from services.gemini_service import GeminiService
 from utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -16,6 +18,7 @@ copilot_bp = Blueprint("copilot", __name__)
 
 _jd_analyzer = JdAnalyzer()
 _copilot_service = CopilotService()
+_gemini_service = GeminiService()
 
 
 # Simple inline request models to validate inputs
@@ -114,4 +117,45 @@ def get_hiring_decision():
         return jsonify({"error": "Validation Error", "details": ve.errors()}), 400
     except Exception as e:
         logger.error(f"Error generating hiring decision: {e}", exc_info=True)
+        return jsonify({"error": "Internal Server Error"}), 500
+
+
+class GenerateInterviewQuestionsRequest(BaseModel):
+    candidate: Dict[str, Any]
+    job_description: Dict[str, Any]
+    ranking: Optional[Dict[str, Any]] = None
+    behavior: Optional[Dict[str, Any]] = None
+    reliability: Optional[Dict[str, Any]] = None
+
+
+@copilot_bp.route("/generate-interview-questions", methods=["POST"])
+def generate_interview_questions():
+    """POST /api/v1/copilot/generate-interview-questions
+
+    Generates personalized dynamic questions using Gemini.
+    """
+    logger.info("Received request to generate interview questions using Gemini.")
+    try:
+        data = request.get_json() or {}
+        req = GenerateInterviewQuestionsRequest(**data)
+
+        # Call Gemini service
+        questions = _gemini_service.generate_interview_questions(
+            candidate=req.candidate,
+            job_description=req.job_description,
+            ranking=req.ranking,
+            behavior=req.behavior,
+            reliability=req.reliability
+        )
+
+        return jsonify(questions), 200
+
+    except ValidationError as ve:
+        logger.warning(f"Request validation failed: {ve}")
+        return jsonify({"error": "Validation Error", "details": ve.errors()}), 400
+    except ValueError as ve:
+        logger.warning(f"API key missing: {ve}")
+        return jsonify({"error": "Configuration Error", "message": str(ve)}), 400
+    except Exception as e:
+        logger.error(f"Error generating interview questions: {e}", exc_info=True)
         return jsonify({"error": "Internal Server Error"}), 500

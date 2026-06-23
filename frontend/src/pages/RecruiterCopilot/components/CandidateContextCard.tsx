@@ -30,7 +30,7 @@ const MiniRing: React.FC<{ pct: number; size?: number }> = ({ pct, size = 48 }) 
   const color = scoreColor(pct);
   return (
     <svg width={size} height={size} className="shrink-0">
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={4} />
+      <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--border)" strokeWidth={4} />
       <motion.circle
         cx={size / 2} cy={size / 2} r={r} fill="none"
         stroke={color} strokeWidth={4} strokeLinecap="round"
@@ -49,7 +49,7 @@ const MiniRing: React.FC<{ pct: number; size?: number }> = ({ pct, size = 48 }) 
 };
 
 const Skeleton: React.FC<{ className?: string }> = ({ className = "" }) => (
-  <div className={`rounded-lg bg-slate-800/60 animate-pulse ${className}`} />
+  <div className={`rounded-lg bg-surface-hover animate-pulse ${className}`} />
 );
 
 const CandidateContextCard: React.FC<CandidateContextCardProps> = ({
@@ -61,7 +61,7 @@ const CandidateContextCard: React.FC<CandidateContextCardProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-xl p-5 flex flex-col gap-4">
+      <div className="rounded-2xl border border-border bg-surface backdrop-blur-xl p-5 flex flex-col gap-4">
         <Skeleton className="h-4 w-28" />
         <div className="flex gap-3">
           <Skeleton className="w-12 h-12 rounded-xl" />
@@ -78,11 +78,11 @@ const CandidateContextCard: React.FC<CandidateContextCardProps> = ({
 
   if (!candidate) {
     return (
-      <div className="rounded-2xl border border-white/8 bg-slate-900/50 backdrop-blur-xl p-5 flex flex-col items-center gap-2 text-center">
-        <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center">
+      <div className="rounded-2xl border border-border bg-surface backdrop-blur-xl p-5 flex flex-col items-center gap-2 text-center">
+        <div className="w-10 h-10 rounded-xl bg-surface-hover flex items-center justify-center">
           <span className="text-xl">👤</span>
         </div>
-        <p className="text-xs text-slate-500">No candidate selected</p>
+        <p className="text-xs text-text-muted">No candidate selected</p>
       </div>
     );
   }
@@ -102,12 +102,12 @@ const CandidateContextCard: React.FC<CandidateContextCardProps> = ({
   const topSkills = (candidate.skills ?? []).slice(0, 5);
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-xl overflow-hidden">
+    <div className="rounded-2xl border border-border bg-surface backdrop-blur-xl overflow-hidden">
       {/* Header toggle (mobile) */}
       {onToggleCollapse && (
         <button
           onClick={onToggleCollapse}
-          className="w-full flex items-center justify-between px-5 pt-4 pb-2 text-xs font-bold text-slate-400 hover:text-slate-200 transition-colors"
+          className="w-full flex items-center justify-between px-5 pt-4 pb-2 text-xs font-bold text-text-muted hover:text-text-primary transition-colors"
           aria-expanded={!collapsed}
         >
           <span>Candidate Context</span>
@@ -117,7 +117,7 @@ const CandidateContextCard: React.FC<CandidateContextCardProps> = ({
 
       {!onToggleCollapse && (
         <div className="px-5 pt-5 pb-2">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+          <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">
             Candidate Context
           </span>
         </div>
@@ -131,7 +131,7 @@ const CandidateContextCard: React.FC<CandidateContextCardProps> = ({
               {initials}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-slate-100 truncate">{displayName}</p>
+              <p className="text-sm font-bold text-text-primary truncate">{displayName}</p>
               <p className="text-xs text-blue-400 truncate">
                 {profile?.headline || profile?.currentTitle || "Professional"}
               </p>
@@ -143,13 +143,13 @@ const CandidateContextCard: React.FC<CandidateContextCardProps> = ({
             {finalScore > 0 && (
               <div className="flex flex-col items-center gap-0.5">
                 <MiniRing pct={finalScore} />
-                <span className="text-[9px] text-slate-600 uppercase tracking-wider">AI Score</span>
+                <span className="text-[9px] text-text-disabled uppercase tracking-wider">AI Score</span>
               </div>
             )}
             {reliability !== null && (
               <div className="flex flex-col items-center gap-0.5">
                 <MiniRing pct={reliability} size={44} />
-                <span className="text-[9px] text-slate-600 uppercase tracking-wider">Trust</span>
+                <span className="text-[9px] text-text-disabled uppercase tracking-wider">Trust</span>
               </div>
             )}
             {verdict && (
@@ -160,19 +160,19 @@ const CandidateContextCard: React.FC<CandidateContextCardProps> = ({
           </div>
 
           {/* Quick facts */}
-          <div className="flex flex-col gap-1.5 text-xs text-slate-400">
+          <div className="flex flex-col gap-1.5 text-xs text-text-muted">
             {(profile?.location || candidate.location) && (
               <span className="flex items-center gap-1.5">
-                <MapPin size={11} className="text-slate-600" />
+                <MapPin size={11} className="text-text-disabled" />
                 {profile?.location || candidate.location}
               </span>
             )}
             <span className="flex items-center gap-1.5">
-              <Briefcase size={11} className="text-slate-600" />
+              <Briefcase size={11} className="text-text-disabled" />
               {profile?.yearsOfExperience || candidate.experienceYears || 0} yrs experience
             </span>
             <span className="flex items-center gap-1.5">
-              <Clock size={11} className="text-slate-600" />
+              <Clock size={11} className="text-text-disabled" />
               Notice: {candidate.availability || `${candidate.redrob_signals?.noticePeriodDays ?? 0}d`}
             </span>
             {candidate.redrob_signals?.openToWorkFlag && (
@@ -186,14 +186,14 @@ const CandidateContextCard: React.FC<CandidateContextCardProps> = ({
           {/* Top skills */}
           {topSkills.length > 0 && (
             <div className="flex flex-col gap-1.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-text-disabled">
                 Top Skills
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {topSkills.map((s) => (
                   <span
                     key={s.name}
-                    className="px-2 py-0.5 rounded-lg text-[10px] font-semibold bg-slate-800/60 border border-slate-700/50 text-slate-300"
+                    className="px-2 py-0.5 rounded-lg text-[10px] font-semibold bg-surface-hover border border-border text-text-muted"
                   >
                     {s.name}
                   </span>
@@ -204,8 +204,8 @@ const CandidateContextCard: React.FC<CandidateContextCardProps> = ({
 
           {/* Rank */}
           {rankedData?.rank && (
-            <div className="flex items-center justify-between pt-2 border-t border-white/5">
-              <span className="text-[10px] text-slate-600 font-semibold">Pool Rank</span>
+            <div className="flex items-center justify-between pt-2 border-t border-border">
+              <span className="text-[10px] text-text-disabled font-semibold">Pool Rank</span>
               <span className="text-sm font-black text-amber-400">#{rankedData.rank}</span>
             </div>
           )}

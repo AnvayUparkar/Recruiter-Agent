@@ -28,9 +28,8 @@ class ExpectedSalaryRange(BaseModel):
     def validate_salary_range(self) -> "ExpectedSalaryRange":
         """Ensures that max salary expectation is equal or greater than min expectation."""
         if self.max < self.min:
-            raise ValueError(
-                f"max expected salary ({self.max}) cannot be less than min expected salary ({self.min})"
-            )
+            # Swap min and max expected salary values if they are inverted
+            self.min, self.max = self.max, self.min
         return self
 
 

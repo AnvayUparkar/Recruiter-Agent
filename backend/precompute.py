@@ -21,12 +21,19 @@ from models.vector_index_metadata import VectorIndexMetadata
 from rank_bm25 import BM25Okapi
 
 def stream_candidates(file_path: Path):
-    """Generator to stream candidate JSON objects from JSONL file."""
-    with open(file_path, "r", encoding="utf-8") as f:
-        for line in f:
-            stripped = line.strip()
-            if stripped:
-                yield json.loads(stripped)
+    """Generator to stream candidate JSON objects from JSON or JSONL file."""
+    if file_path.suffix == ".json":
+        with open(file_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        if isinstance(data, list):
+            for candidate in data:
+                yield candidate
+    else:
+        with open(file_path, "r", encoding="utf-8") as f:
+            for line in f:
+                stripped = line.strip()
+                if stripped:
+                    yield json.loads(stripped)
 
 def main():
     dataset_path = Config.DATASET_PATH

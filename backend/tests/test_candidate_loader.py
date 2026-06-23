@@ -310,3 +310,60 @@ def test_jsonl_candidate_repository(temp_jsonl_file: Path):
     stats = repo.get_statistics()
     assert stats["storage_type"] == "JSONL"
     assert stats["total_candidate_records"] == 2
+
+
+@pytest.fixture
+def temp_json_file(tmp_path: Path, mock_candidate_data: list[dict]) -> Path:
+    """Fixture writing mock profiles into a temporary .json file as a JSON array."""
+    file_path = tmp_path / "test_candidates.json"
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(mock_candidate_data, f)
+    return file_path
+
+
+def test_candidate_loader_json_streaming(temp_json_file: Path):
+    """Tests loader iterate_candidates works with JSON arrays."""
+    loader = CandidateLoader()
+    results = list(loader.iterate_candidates(temp_json_file))
+
+    assert len(results) == 2
+    assert results[0].success is True
+    assert results[0].candidate.candidate_id == "CAND_0000001"
+    assert results[1].success is True
+    assert results[1].candidate.candidate_id == "CAND_0000002"
+
+
+def test_candidate_loader_json_lookups(temp_json_file: Path):
+    """Tests load_candidate search by ID and load_batch batch creation for JSON arrays."""
+    loader = CandidateLoader()
+    c1 = loader.get_candidate_by_id("CAND_0000001", temp_json_file)
+    assert c1 is not None
+    assert c1.candidate_id == "CAND_0000001"
+
+    # Search non-existent
+    c_none = loader.get_candidate_by_id("CAND_9999999", temp_json_file)
+    assert c_none is None
+
+    # Load batch check
+    batch = loader.load_batch(temp_json_file, batch_size=1)
+    assert len(batch) == 1
+    assert batch[0].candidate_id == "CAND_0000001"
+
+
+def test_json_candidate_repository_with_json_file(temp_json_file: Path):
+    """Tests JSONLCandidateRepository lookup and statistics with JSON files."""
+    repo = JSONLCandidateRepository(temp_json_file)
+
+    # find_by_id
+    c1 = repo.find_by_id("CAND_0000001")
+    assert c1 is not None
+    assert c1.candidate_id == "CAND_0000001"
+
+    # find_many single-pass search
+    candidates = repo.find_many(["CAND_0000001", "CAND_0000002"])
+    assert len(candidates) == 2
+
+    # get_statistics
+    stats = repo.get_statistics()
+    assert stats["storage_type"] == "JSON"
+    assert stats["total_candidate_records"] == 2

@@ -17,7 +17,7 @@ const TypingIndicator: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center gap-1.5 px-4 py-3 rounded-2xl rounded-bl-sm bg-slate-800/60 border border-white/8 w-fit">
+    <div className="flex items-center gap-1.5 px-4 py-3 rounded-2xl rounded-bl-sm bg-surface-hover border border-border w-fit">
       {[0, 1, 2].map((i) => (
         <motion.span
           key={i}

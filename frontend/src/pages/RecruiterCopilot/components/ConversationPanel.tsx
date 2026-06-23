@@ -21,15 +21,15 @@ const UserBubble: React.FC<{ message: ChatMessage }> = ({ message }) => (
       <div className="bg-gradient-to-br from-blue-600 to-violet-700 text-white rounded-2xl rounded-tr-sm px-4 py-3 text-sm leading-relaxed shadow-lg shadow-blue-500/15">
         {message.content}
       </div>
-      <p className="text-[10px] text-slate-700 mt-1 mr-1 text-right">
+      <p className="text-[10px] text-text-disabled mt-1 mr-1 text-right">
         {new Date(message.timestamp).toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
         })}
       </p>
     </div>
-    <div className="w-7 h-7 rounded-full bg-slate-700 border border-white/10 flex items-center justify-center shrink-0 mt-1">
-      <User size={13} className="text-slate-300" />
+    <div className="w-7 h-7 rounded-full bg-surface-hover border border-border flex items-center justify-center shrink-0 mt-1">
+      <User size={13} className="text-text-muted" />
     </div>
   </motion.div>
 );
@@ -51,7 +51,7 @@ const ConversationPanel: React.FC<ConversationPanelProps> = ({
         <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-blue-600/20 to-violet-600/20 border border-blue-500/20 flex items-center justify-center">
           <span className="text-2xl">🤖</span>
         </div>
-        <p className="text-sm text-slate-500 max-w-xs leading-relaxed">
+        <p className="text-sm text-text-muted max-w-xs leading-relaxed">
           Select a candidate and ask anything about them. I'll provide AI-grounded hiring insights.
         </p>
       </div>

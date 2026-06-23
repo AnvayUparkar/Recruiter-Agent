@@ -21,6 +21,7 @@ class BaseConfig:
     SECRET_KEY: str = os.environ.get(
         "SECRET_KEY", "change_me_default_secret_key_38472948"
     )
+    GEMINI_API_KEY: str = os.environ.get("GEMINI_API_KEY", "")
 
     # Server settings
     HOST: str = os.environ.get("HOST", "0.0.0.0")
@@ -42,7 +43,7 @@ class BaseConfig:
     # Main candidate dataset path
     DATASET_PATH: Path = Path(os.environ.get(
         "DATASET_PATH",
-        "d:/Engineering/Hackathon Projects/Finance Agent/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/candidates.jsonl"
+        BASE_DIR.parent / "[PUB] India_runs_data_and_ai_challenge" / "India_runs_data_and_ai_challenge" / "candidates.jsonl"
     ))
 
 

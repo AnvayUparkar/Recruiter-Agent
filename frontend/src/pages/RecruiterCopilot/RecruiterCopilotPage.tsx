@@ -10,6 +10,7 @@ import { useCopilotReport, useHiringDecision } from "../../hooks/queries/useCopi
 import { useRanking } from "../../hooks/queries/useRanking";
 import { useCandidateDetails } from "../../hooks/queries/useCandidate";
 import { RecruiterReport } from "../../types/copilot";
+import { interviewQuestionService, GeneratedQuestionsResponse } from "../../services/interviewQuestionService";
 
 import CopilotChatLayout from "./components/CopilotChatLayout";
 import CandidateContextCard from "./components/CandidateContextCard";
@@ -184,13 +185,13 @@ const buildResponse = (
 
 const NoJDGate: React.FC = () => (
   <div className="flex-1 flex items-center justify-center p-8">
-    <div className="max-w-md text-center rounded-2xl border border-white/10 bg-slate-900/70 backdrop-blur-xl p-10 flex flex-col items-center gap-5">
+    <div className="max-w-md text-center rounded-2xl border border-border bg-surface backdrop-blur-xl p-10 flex flex-col items-center gap-5 shadow-lg">
       <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-600/20 to-violet-600/20 border border-blue-500/20 flex items-center justify-center">
-        <Bot size={28} className="text-blue-400" />
+        <Bot size={28} className="text-blue-500" />
       </div>
       <div>
-        <h2 className="text-lg font-bold text-slate-100">JD Context Required</h2>
-        <p className="text-sm text-slate-400 mt-2 leading-relaxed">
+        <h2 className="text-lg font-bold text-text-primary">JD Context Required</h2>
+        <p className="text-sm text-text-muted mt-2 leading-relaxed">
           The AI Recruiter Copilot needs an active parsed Job Description to cross-reference candidates and generate grounded insights.
         </p>
       </div>
@@ -255,6 +256,41 @@ const RecruiterCopilotPage: React.FC = () => {
       rankingData?.rankedCandidates?.find((c) => c.candidateId === selectedCandidateId) ?? null,
     [rankingData, selectedCandidateId]
   );
+
+  // States for dynamic questions generation
+  const [generatedQuestions, setGeneratedQuestions] = useState<GeneratedQuestionsResponse | null>(null);
+  const [isGeneratingQuestions, setIsGeneratingQuestions] = useState(false);
+  const [questionsError, setQuestionsError] = useState<string | null>(null);
+  const [hasGeneratedQuestions, setHasGeneratedQuestions] = useState(false);
+
+  // Reset generated questions status when selected candidate changes
+  useEffect(() => {
+    setGeneratedQuestions(null);
+    setHasGeneratedQuestions(false);
+    setQuestionsError(null);
+  }, [selectedCandidateId]);
+
+  const handleGenerateQuestions = useCallback(async () => {
+    if (!candidate || !parsedJD) return;
+    setIsGeneratingQuestions(true);
+    setQuestionsError(null);
+    try {
+      const response = await interviewQuestionService.generateInterviewQuestions({
+        candidate,
+        job_description: parsedJD,
+        ranking: rankedData,
+        behavior: candidate?.behaviorProfile || hiringDecision,
+        reliability: candidate?.reliabilityProfile,
+      });
+      setGeneratedQuestions(response);
+      setHasGeneratedQuestions(true);
+    } catch (err: any) {
+      console.error("Error generating dynamic questions:", err);
+      setQuestionsError(err?.response?.data?.message || err?.message || "Failed to generate dynamic questions");
+    } finally {
+      setIsGeneratingQuestions(false);
+    }
+  }, [candidate, parsedJD, rankedData, hiringDecision]);
 
   // Active messages
   const conv = activeConversation();
@@ -335,7 +371,7 @@ const RecruiterCopilotPage: React.FC = () => {
 
   const handleCopySummary = useCallback(() => {
     const summary = report?.recruiter_summary ?? (report as any)?.recruiterSummary ?? "";
-    if (summary) navigator.clipboard.writeText(summary).catch(() => {});
+    if (summary) navigator.clipboard.writeText(summary).catch(() => { });
   }, [report]);
 
   // ── No JD ─────────────────────────────────────────────────────────────────
@@ -351,16 +387,15 @@ const RecruiterCopilotPage: React.FC = () => {
   const sidebar = (
     <>
       {/* Tab toggle */}
-      <div className="flex rounded-xl border border-white/8 bg-slate-900/60 p-1 gap-1">
+      <div className="flex rounded-xl border border-border bg-surface p-1 gap-1">
         {(["context", "history"] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setSidebarTab(tab)}
-            className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${
-              sidebarTab === tab
+            className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-all capitalize ${sidebarTab === tab
                 ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
-                : "text-slate-500 hover:text-slate-300"
-            }`}
+                : "text-text-muted hover:text-text-primary"
+              }`}
           >
             {tab}
           </button>
@@ -378,9 +413,9 @@ const RecruiterCopilotPage: React.FC = () => {
           >
             {/* Candidate selector */}
             {rankingData?.rankedCandidates && rankingData.rankedCandidates.length > 0 && (
-              <div className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-xl overflow-hidden">
-                <div className="px-4 pt-4 pb-2 border-b border-white/6">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+              <div className="rounded-2xl border border-border bg-surface backdrop-blur-xl overflow-hidden">
+                <div className="px-4 pt-4 pb-2 border-b border-border">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">
                     Candidate Pool
                   </span>
                 </div>
@@ -389,16 +424,15 @@ const RecruiterCopilotPage: React.FC = () => {
                     <button
                       key={c.candidateId}
                       onClick={() => setSelectedCandidateId(c.candidateId)}
-                      className={`flex items-center justify-between px-3 py-2 rounded-lg text-left text-xs transition-all border ${
-                        selectedCandidateId === c.candidateId
-                          ? "bg-blue-500/10 border-blue-500/25 text-blue-300"
-                          : "border-transparent text-slate-400 hover:bg-white/4 hover:text-slate-200"
-                      }`}
+                      className={`flex items-center justify-between px-3 py-2 rounded-lg text-left text-xs transition-all border ${selectedCandidateId === c.candidateId
+                          ? "bg-blue-500/10 border-blue-500/25 text-blue-500"
+                          : "border-transparent text-text-muted hover:bg-surface-hover hover:text-text-primary"
+                        }`}
                     >
                       <span className="font-semibold truncate max-w-[70%]">
                         #{c.rank} {c.candidateId}
                       </span>
-                      <span className="font-black text-[10px]" style={{ color: selectedCandidateId === c.candidateId ? "#60a5fa" : "#64748b" }}>
+                      <span className="font-black text-[10px]" style={{ color: selectedCandidateId === c.candidateId ? "#60a5fa" : "var(--text-muted)" }}>
                         {Math.round(c.finalScore * 100)}%
                       </span>
                     </button>
@@ -435,10 +469,10 @@ const RecruiterCopilotPage: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-xl p-3"
+            className="rounded-2xl border border-border bg-surface backdrop-blur-xl p-3"
           >
             <div className="flex items-center justify-between mb-3">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">
                 Chat History
               </span>
               {selectedCandidateId && (
@@ -468,19 +502,19 @@ const RecruiterCopilotPage: React.FC = () => {
   // ── Chat area ─────────────────────────────────────────────────────────────
   const chat = (
     <div
-      className="flex flex-col rounded-2xl border border-white/10 bg-slate-900/50 backdrop-blur-xl overflow-hidden"
+      className="flex flex-col rounded-2xl border border-border bg-surface backdrop-blur-xl overflow-hidden shadow-sm"
       style={{ minHeight: "600px" }}
     >
       {/* Chat header */}
-      <div className="flex items-center justify-between px-5 py-3.5 border-b border-white/8 shrink-0">
+      <div className="flex items-center justify-between px-5 py-3.5 border-b border-border shrink-0">
         <div className="flex items-center gap-2.5">
           <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-blue-600 to-violet-600 flex items-center justify-center">
             <Bot size={13} className="text-white" />
           </div>
           <div>
-            <span className="text-sm font-bold text-slate-100">AI Recruiter Copilot</span>
+            <span className="text-sm font-bold text-text-primary">AI Recruiter Copilot</span>
             {selectedCandidateId && (
-              <span className="text-[10px] text-slate-500 ml-2">
+              <span className="text-[10px] text-text-muted ml-2">
                 {candidate?.profile?.anonymizedName ?? selectedCandidateId}
               </span>
             )}
@@ -501,8 +535,8 @@ const RecruiterCopilotPage: React.FC = () => {
       {/* No candidate selected state */}
       {!selectedCandidateId ? (
         <div className="flex-1 flex flex-col items-center justify-center gap-3 text-center p-8">
-          <AlertTriangle size={28} className="text-slate-700" />
-          <p className="text-sm text-slate-500">
+          <AlertTriangle size={28} className="text-text-disabled" />
+          <p className="text-sm text-text-muted">
             Select a candidate from the pool to begin the AI analysis.
           </p>
         </div>
@@ -529,7 +563,11 @@ const RecruiterCopilotPage: React.FC = () => {
       {messages.length > 0 && report && (
         <div className="px-4 pb-3">
           <InterviewQuestionsPanel
-            focusAreas={report.interviewFocus ?? (report as any).interview_focus}
+            questions={generatedQuestions}
+            isGenerating={isGeneratingQuestions}
+            error={questionsError}
+            onGenerate={handleGenerateQuestions}
+            hasGenerated={hasGeneratedQuestions}
           />
         </div>
       )}

@@ -110,7 +110,10 @@ class JSONLCandidateRepository(CandidateRepository):
         abs_path = Path(self.file_path).resolve()
         with _repo_lock:
             if abs_path not in _line_count_cache:
-                _line_count_cache[abs_path] = self.file_manager.count_lines(self.file_path)
+                if abs_path.suffix == ".json":
+                    _line_count_cache[abs_path] = self.loader.count_candidates(self.file_path)
+                else:
+                    _line_count_cache[abs_path] = self.file_manager.count_lines(self.file_path)
             return _line_count_cache[abs_path]
 
     def find_by_id(self, candidate_id: str) -> Optional[Candidate]:
@@ -132,6 +135,22 @@ class JSONLCandidateRepository(CandidateRepository):
             return matched_candidates
 
         import json as _json
+
+        if self.file_path.suffix == ".json":
+            try:
+                with open(self.file_path, "r", encoding="utf-8") as f:
+                    data = _json.load(f)
+                if isinstance(data, list):
+                    for record in data:
+                        cid = record.get("candidate_id")
+                        if cid in target_ids:
+                            candidate_obj = Candidate.model_validate(record)
+                            matched_candidates.append(candidate_obj)
+                            if len(matched_candidates) == len(target_ids):
+                                break
+            except Exception as e:
+                logger.error(f"Error loading candidates from JSON: {e}")
+            return matched_candidates
 
         for _line_number, line in self.loader.iterate_raw_records(self.file_path):
             # Fast string extraction — avoids json.loads for the 99%+ lines that don't match.
@@ -165,7 +184,7 @@ class JSONLCandidateRepository(CandidateRepository):
             size_bytes = self.file_manager.get_file_size(self.file_path)
             line_count = self._count_lines()
             return {
-                "storage_type": "JSONL",
+                "storage_type": "JSON" if self.file_path.suffix == ".json" else "JSONL",
                 "file_path": str(self.file_path),
                 "file_size_bytes": size_bytes,
                 "file_size_mb": round(size_bytes / (1024 * 1024), 2),
@@ -174,7 +193,7 @@ class JSONLCandidateRepository(CandidateRepository):
         except Exception as e:
             logger.error(f"Failed to gather file statistics: {e}")
             return {
-                "storage_type": "JSONL",
+                "storage_type": "JSON" if self.file_path.suffix == ".json" else "JSONL",
                 "error": str(e),
             }
 

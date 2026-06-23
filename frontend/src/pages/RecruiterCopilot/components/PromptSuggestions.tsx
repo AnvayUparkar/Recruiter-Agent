@@ -19,10 +19,10 @@ const PromptSuggestions: React.FC<PromptSuggestionsProps> = ({
         <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600/20 to-violet-600/20 border border-blue-500/20 flex items-center justify-center mx-auto mb-3">
           <span className="text-2xl">🤖</span>
         </div>
-        <h3 className="text-sm font-bold text-slate-200">
+        <h3 className="text-sm font-bold text-text-primary">
           AI Recruiter Copilot
         </h3>
-        <p className="text-xs text-slate-500 mt-1">
+        <p className="text-xs text-text-muted mt-1">
           {candidateName
             ? `Ready to analyze ${candidateName}. What would you like to know?`
             : "Select a candidate to begin your AI-powered hiring analysis."}
@@ -38,14 +38,14 @@ const PromptSuggestions: React.FC<PromptSuggestionsProps> = ({
             transition={{ delay: reduced ? 0 : i * 0.06 }}
             whileHover={{ scale: 1.02, y: -1 }}
             onClick={() => onSelect(qp.prompt)}
-            className="flex items-start gap-3 p-3 rounded-xl border border-white/6 bg-white/2 hover:bg-white/5 hover:border-blue-500/25 text-left transition-all group"
+            className="flex items-start gap-3 p-3 rounded-xl border border-border bg-surface hover:bg-surface-hover hover:border-blue-500/25 text-left transition-all group"
           >
             <span className="text-lg leading-none mt-0.5">{qp.icon}</span>
             <div>
-              <span className="text-xs font-bold text-slate-200 group-hover:text-blue-300 transition-colors">
+              <span className="text-xs font-bold text-text-primary group-hover:text-blue-500 transition-colors">
                 {qp.label}
               </span>
-              <p className="text-[10px] text-slate-600 mt-0.5 leading-relaxed line-clamp-2">
+              <p className="text-[10px] text-text-muted mt-0.5 leading-relaxed line-clamp-2">
                 {qp.prompt}
               </p>
             </div>

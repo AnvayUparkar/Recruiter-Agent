@@ -264,7 +264,9 @@ class Bm25IndexManager:
                 from services.candidate_repository import JSONLCandidateRepository
                 from config import Config
                 
-                dataset_path = Config.DATASET_PATH if hasattr(Config, "DATASET_PATH") else Path("d:/Engineering/Hackathon Projects/Finance Agent/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/candidates.jsonl")
+                dataset_path = Config.DATASET_PATH if hasattr(Config, "DATASET_PATH") else (
+                    Path(__file__).resolve().parent.parent.parent / "[PUB] India_runs_data_and_ai_challenge" / "India_runs_data_and_ai_challenge" / "candidates.jsonl"
+                )
                 repo = JSONLCandidateRepository(dataset_path)
                 
                 # Retrieve actual candidate list

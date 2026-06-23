@@ -55,11 +55,13 @@ class CopilotService:
         except Exception:
             pass
 
-        # Fallback to Config or hardcoded path
+        # Fallback to Config or dynamically resolved path
         from config import Config
-        return Config.DATASET_PATH if hasattr(Config, "DATASET_PATH") else Path(
-            "d:/Engineering/Hackathon Projects/Finance Agent/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/candidates.jsonl"
-        )
+        if hasattr(Config, "DATASET_PATH"):
+            return Config.DATASET_PATH
+        
+        base_dir = Path(__file__).resolve().parent.parent
+        return base_dir.parent / "[PUB] India_runs_data_and_ai_challenge" / "India_runs_data_and_ai_challenge" / "candidates.jsonl"
 
     def generate_candidate_report(self, candidate_id: str, parsed_jd: ParsedJD) -> Optional[RecruiterReport]:
         """Loads candidate details and generates the recruiter copilot report.

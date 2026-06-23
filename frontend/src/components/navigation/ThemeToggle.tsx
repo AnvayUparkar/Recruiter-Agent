@@ -43,7 +43,7 @@ export const ThemeToggle: React.FC = () => {
   return (
     <button
       onClick={handleToggle}
-      className="p-2.5 rounded-xl border border-slate-200/10 dark:border-slate-800/50 hover:bg-slate-200/50 dark:hover:bg-slate-800/40 text-slate-650 dark:text-slate-400 transition-all duration-300 relative focus-ring outline-none"
+      className="p-2.5 rounded-xl border border-border hover:bg-surface-hover text-text-muted hover:text-text-primary transition-all duration-300 relative focus-ring outline-none"
       title={`Current: ${getThemeLabel()}. Click to cycle.`}
       aria-label="Toggle interface theme"
     >

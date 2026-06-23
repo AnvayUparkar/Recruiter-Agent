@@ -68,8 +68,49 @@ class CandidateLoader:
             file_path: Dataset file path.
 
         Yields:
-            IngestionResult: Parsing outcome details for each line.
+            IngestionResult: Parsing outcome details for each line or element.
         """
+        if file_path.suffix == ".json":
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                if not isinstance(data, list):
+                    raise ValueError("JSON file must contain a list of candidates.")
+                for idx, record in enumerate(data, start=1):
+                    is_valid, errors = validate_candidate(record)
+                    if not is_valid:
+                        errors = errors or []
+                        yield IngestionResult(
+                            record_number=idx,
+                            success=False,
+                            error_message="Schema validation failed",
+                            validation_errors=errors,
+                        )
+                        continue
+                    try:
+                        candidate_obj = Candidate.model_validate(record)
+                        yield IngestionResult(
+                            record_number=idx,
+                            success=True,
+                            candidate=candidate_obj,
+                        )
+                    except Exception as e:
+                        yield IngestionResult(
+                            record_number=idx,
+                            success=False,
+                            error_message=f"Model creation exception: {e}",
+                            validation_errors=[str(e)],
+                        )
+            except Exception as e:
+                logger.error(f"Error reading JSON dataset at {file_path}: {e}")
+                yield IngestionResult(
+                    record_number=1,
+                    success=False,
+                    error_message=f"JSON load exception: {e}",
+                    validation_errors=[str(e)],
+                )
+            return
+
         for line_number, line in self.iterate_raw_records(file_path):
             stripped_line = line.strip()
             if not stripped_line:
@@ -118,11 +159,25 @@ class CandidateLoader:
                 )
 
     def load_candidate(self, candidate_id: str, file_path: Path) -> Optional[Candidate]:
-        """Searches the dataset line-by-line and extracts a specific candidate.
+        """Searches the dataset and extracts a specific candidate.
 
         Returns:
             Optional[Candidate]: Candidate instance if found, or None.
         """
+        if file_path.suffix == ".json":
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                if isinstance(data, list):
+                    for record in data:
+                        if record.get("candidate_id") == candidate_id:
+                            return Candidate.model_validate(record)
+            except Exception as e:
+                logger.warning(
+                    f"Error matching record candidate {candidate_id} from JSON: {e}"
+                )
+            return None
+
         for line_number, line in self.iterate_raw_records(file_path):
             # Optimisation: Use substring search before calling expensive json loads
             if candidate_id in line:
@@ -164,11 +219,19 @@ class CandidateLoader:
         return self.load_candidate(candidate_id, file_path)
 
     def count_candidates(self, file_path: Path) -> int:
-        """Determines total lines count in the dataset file.
+        """Determines total lines count or record count in the dataset file.
 
         Args:
             file_path: Dataset path.
         """
+        if file_path.suffix == ".json":
+            try:
+                with open(file_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                return len(data)
+            except Exception as e:
+                logger.error(f"Error counting candidates in JSON: {e}")
+                return 0
         return self.file_manager.count_lines(file_path)
 
     def yield_valid_candidates(self, file_path: Path) -> Generator[Candidate, None, None]:

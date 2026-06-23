@@ -34,7 +34,6 @@ const PromptComposer: React.FC<PromptComposerProps> = ({
     if (!trimmed || isLoading || disabled) return;
     onSend(trimmed);
     setValue("");
-    // Reset height
     if (textareaRef.current) textareaRef.current.style.height = "auto";
   }, [value, isLoading, disabled, onSend]);
 
@@ -54,19 +53,17 @@ const PromptComposer: React.FC<PromptComposerProps> = ({
         animate={{
           boxShadow: focused
             ? "0 0 0 2px rgba(59,130,246,0.35), 0 4px 24px rgba(59,130,246,0.12)"
-            : "0 0 0 1px rgba(255,255,255,0.06)",
+            : "0 0 0 1px var(--border)",
         }}
         transition={{ duration: 0.2 }}
-        className="relative rounded-2xl border border-white/8 bg-slate-900/80 backdrop-blur-xl overflow-hidden"
+        className="relative rounded-2xl border border-border bg-surface-hover backdrop-blur-xl overflow-hidden"
       >
         {/* Textarea */}
         <textarea
           ref={textareaRef}
           id="copilot-prompt-input"
           value={value}
-          onChange={(e) => {
-            if (e.target.value.length <= MAX_CHARS) setValue(e.target.value);
-          }}
+          onChange={(e) => { if (e.target.value.length <= MAX_CHARS) setValue(e.target.value); }}
           onKeyDown={handleKeyDown}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
@@ -74,16 +71,15 @@ const PromptComposer: React.FC<PromptComposerProps> = ({
           rows={2}
           disabled={isLoading || disabled}
           aria-label="Recruiter prompt input"
-          className="w-full bg-transparent px-4 pt-4 pb-12 text-sm text-slate-100 placeholder-slate-600 resize-none focus:outline-none leading-relaxed disabled:opacity-50"
+          className="w-full bg-transparent px-4 pt-4 pb-12 text-sm text-text-primary placeholder-text-disabled resize-none focus:outline-none leading-relaxed disabled:opacity-50"
         />
 
         {/* Bottom toolbar */}
         <div className="absolute bottom-0 left-0 right-0 flex items-center justify-between px-3 pb-3">
-          {/* Char counter + hint */}
           <div className="flex items-center gap-3">
             {value.length > MAX_CHARS * 0.7 && (
               <div className="flex items-center gap-1.5">
-                <div className="w-14 h-1 rounded-full bg-white/10 overflow-hidden">
+                <div className="w-14 h-1 rounded-full bg-border overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all"
                     style={{
@@ -92,25 +88,22 @@ const PromptComposer: React.FC<PromptComposerProps> = ({
                     }}
                   />
                 </div>
-                <span className="text-[10px] text-slate-500">
-                  {MAX_CHARS - value.length}
-                </span>
+                <span className="text-[10px] text-text-muted">{MAX_CHARS - value.length}</span>
               </div>
             )}
-            <span className="text-[10px] text-slate-700 hidden sm:flex items-center gap-1">
+            <span className="text-[10px] text-text-disabled hidden sm:flex items-center gap-1">
               <CornerDownLeft size={10} />
               Ctrl+Enter to send
             </span>
           </div>
 
-          {/* Actions */}
           <div className="flex items-center gap-2">
             {value.length > 0 && (
               <motion.button
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 onClick={() => setValue("")}
-                className="w-7 h-7 rounded-lg flex items-center justify-center text-slate-500 hover:text-slate-300 hover:bg-white/5 transition-colors"
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-surface transition-colors"
                 aria-label="Clear input"
               >
                 <X size={13} />
@@ -125,7 +118,7 @@ const PromptComposer: React.FC<PromptComposerProps> = ({
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${
                 canSend
                   ? "bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white shadow-lg shadow-blue-500/20"
-                  : "bg-slate-800 text-slate-600 cursor-not-allowed"
+                  : "bg-surface text-text-disabled cursor-not-allowed"
               }`}
               aria-label="Send message"
             >

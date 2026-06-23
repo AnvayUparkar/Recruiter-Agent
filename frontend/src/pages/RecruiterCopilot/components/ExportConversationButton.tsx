@@ -79,7 +79,7 @@ const ExportConversationButton: React.FC<ExportConversationButtonProps> = ({
         onClick={() => setMenuOpen((v) => !v)}
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/8 bg-white/4 hover:bg-white/8 text-xs font-semibold text-slate-400 hover:text-slate-200 transition-all"
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-surface hover:bg-surface-hover text-xs font-semibold text-text-muted hover:text-text-primary transition-all"
       >
         <AnimatePresence mode="wait">
           {exported ? (
@@ -107,18 +107,18 @@ const ExportConversationButton: React.FC<ExportConversationButtonProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -4 }}
             transition={{ duration: 0.15 }}
-            className="absolute right-0 top-full mt-1 z-50 rounded-xl border border-white/10 bg-slate-900 shadow-xl shadow-black/30 overflow-hidden w-36"
+            className="absolute right-0 top-full mt-1 z-50 rounded-xl border border-border bg-surface shadow-lg overflow-hidden w-36"
           >
             <button
               onClick={() => handleExport("markdown")}
-              className="w-full flex items-center gap-2 px-3 py-2.5 text-xs text-slate-300 hover:bg-white/5 transition-colors"
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-xs text-text-muted hover:bg-surface-hover transition-colors"
             >
               <FileText size={12} className="text-blue-400" />
               Markdown
             </button>
             <button
               onClick={() => handleExport("text")}
-              className="w-full flex items-center gap-2 px-3 py-2.5 text-xs text-slate-300 hover:bg-white/5 transition-colors"
+              className="w-full flex items-center gap-2 px-3 py-2.5 text-xs text-text-muted hover:bg-surface-hover transition-colors"
             >
               <Type size={12} className="text-slate-400" />
               Plain Text
