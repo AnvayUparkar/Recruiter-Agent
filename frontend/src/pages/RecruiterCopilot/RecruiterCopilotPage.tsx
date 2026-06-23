@@ -420,12 +420,6 @@ const RecruiterCopilotPage: React.FC = () => {
               onToggleCollapse={undefined}
             />
 
-            {/* Hiring decision */}
-            <HiringDecisionPanel
-              decision={hiringDecision}
-              isLoading={isDecisionLoading && !!selectedCandidateId}
-            />
-
             {/* Candidate selector */}
             {rankingData?.rankedCandidates && rankingData.rankedCandidates.length > 0 && (
               <div className="rounded-2xl border border-border bg-surface backdrop-blur-xl overflow-hidden">
@@ -455,6 +449,12 @@ const RecruiterCopilotPage: React.FC = () => {
                 </div>
               </div>
             )}
+
+            {/* Hiring decision */}
+            <HiringDecisionPanel
+              decision={hiringDecision}
+              isLoading={isDecisionLoading && !!selectedCandidateId}
+            />
 
             {/* Suggested actions */}
             <SuggestedActions
