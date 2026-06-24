@@ -21,6 +21,16 @@ const Demo = lazy(() => import("../pages/Demo"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 const LaunchCenterPage = lazy(() => import("../pages/System/LaunchCenterPage"));
 
+// Auth pages
+const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
+const SignupPage = lazy(() => import("../pages/auth/SignupPage"));
+const ForgotPasswordPlaceholder = lazy(() => import("../pages/auth/ForgotPasswordPlaceholder"));
+
+// User pages
+const UserProfilePage = lazy(() => import("../pages/user/UserProfilePage"));
+const UserDashboardPage = lazy(() => import("../pages/user/UserDashboardPage"));
+const UserResumePage = lazy(() => import("../pages/user/UserResumePage"));
+
 // Layout wrappers
 const AppLayout = lazy(() => import("../layouts/AppLayout/AppLayout"));
 const EmptyLayout = lazy(() => import("../components/common/EmptyLayout"));
@@ -32,12 +42,14 @@ const EmptyLayout = lazy(() => import("../components/common/EmptyLayout"));
 interface RouteWrapperProps {
   element: React.ReactNode;
   protectedRoute?: boolean;
+  allowedRoles?: ("user" | "recruiter")[];
   useAppLayout?: boolean;
 }
 
 const RouteWrapper: React.FC<RouteWrapperProps> = ({
   element,
   protectedRoute = true,
+  allowedRoles,
   useAppLayout = true,
 }) => {
   const content = (
@@ -49,7 +61,7 @@ const RouteWrapper: React.FC<RouteWrapperProps> = ({
   );
 
   const guardedContent = protectedRoute ? (
-    <ProtectedRoute>{content}</ProtectedRoute>
+    <ProtectedRoute allowedRoles={allowedRoles}>{content}</ProtectedRoute>
   ) : (
     content
   );
@@ -81,14 +93,27 @@ export const router = createBrowserRouter([
       />
     ),
   },
-  // Dashboard & TA Pages (Protected, using AppLayout)
+  // Auth Pages
+  {
+    path: "/login",
+    element: <RouteWrapper element={<LoginPage />} protectedRoute={false} useAppLayout={false} />,
+  },
+  {
+    path: "/signup",
+    element: <RouteWrapper element={<SignupPage />} protectedRoute={false} useAppLayout={false} />,
+  },
+  {
+    path: "/forgot-password",
+    element: <RouteWrapper element={<ForgotPasswordPlaceholder />} protectedRoute={false} useAppLayout={false} />,
+  },
+  // Recruiter TA Pages (Protected, using AppLayout)
   {
     path: "/dashboard",
-    element: <RouteWrapper element={<RankingDashboard />} />,
+    element: <RouteWrapper element={<RankingDashboard />} allowedRoles={["recruiter"]} />,
   },
   {
     path: "/jd-analysis",
-    element: <RouteWrapper element={<JDAnalysis />} />,
+    element: <RouteWrapper element={<JDAnalysis />} allowedRoles={["recruiter"]} />,
   },
   {
     path: "/candidates",
@@ -96,36 +121,50 @@ export const router = createBrowserRouter([
   },
   {
     path: "/candidates/:candidateId",
-    element: <RouteWrapper element={<CandidateProfile />} />,
+    element: <RouteWrapper element={<CandidateProfile />} allowedRoles={["recruiter"]} />,
   },
   {
     path: "/copilot",
-    element: <RouteWrapper element={<RecruiterCopilot />} />,
+    element: <RouteWrapper element={<RecruiterCopilot />} allowedRoles={["recruiter"]} />,
   },
   {
     path: "/comparison",
-    element: <RouteWrapper element={<CandidateComparison />} />,
+    element: <RouteWrapper element={<CandidateComparison />} allowedRoles={["recruiter"]} />,
   },
   {
     path: "/analytics",
-    element: <RouteWrapper element={<Analytics />} />,
+    element: <RouteWrapper element={<Analytics />} allowedRoles={["recruiter"]} />,
   },
   {
     path: "/reports",
-    element: <RouteWrapper element={<Reports />} />,
+    element: <RouteWrapper element={<Reports />} allowedRoles={["recruiter"]} />,
   },
   {
     path: "/settings",
-    element: <RouteWrapper element={<Settings />} />,
+    element: <RouteWrapper element={<Settings />} allowedRoles={["recruiter", "user"]} />,
   },
   {
     path: "/admin",
-    element: <RouteWrapper element={<Admin />} />,
+    element: <RouteWrapper element={<Admin />} allowedRoles={["recruiter"]} />,
   },
   {
     path: "/launch",
-    element: <RouteWrapper element={<LaunchCenterPage />} />,
+    element: <RouteWrapper element={<LaunchCenterPage />} allowedRoles={["recruiter"]} />,
   },
+  // User Pages
+  {
+    path: "/profile",
+    element: <RouteWrapper element={<UserProfilePage />} allowedRoles={["user"]} />,
+  },
+  {
+    path: "/user-dashboard",
+    element: <RouteWrapper element={<UserDashboardPage />} allowedRoles={["user"]} />,
+  },
+  {
+    path: "/resume",
+    element: <RouteWrapper element={<UserResumePage />} allowedRoles={["user"]} />,
+  },
+  // Public Shared
   {
     path: "/demo",
     element: (

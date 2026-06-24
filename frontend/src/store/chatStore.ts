@@ -52,6 +52,7 @@ interface ChatStoreState {
   updateMessage: (conversationId: string, messageId: string, patch: Partial<ChatMessage>) => void;
   removeMessage: (conversationId: string, messageId: string) => void;
   clearConversation: (conversationId: string) => void;
+  clearConversationKeepFirst: (conversationId: string) => void;
 }
 
 export const useChatStore = create<ChatStoreState>()(
@@ -140,6 +141,15 @@ export const useChatStore = create<ChatStoreState>()(
           conversations: state.conversations.map((c) =>
             c.id === conversationId
               ? { ...c, messages: [], updatedAt: Date.now() }
+              : c
+          ),
+        })),
+
+      clearConversationKeepFirst: (conversationId) =>
+        set((state) => ({
+          conversations: state.conversations.map((c) =>
+            c.id === conversationId
+              ? { ...c, messages: c.messages.slice(0, 1), updatedAt: Date.now() }
               : c
           ),
         })),

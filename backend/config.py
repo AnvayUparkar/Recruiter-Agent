@@ -21,7 +21,13 @@ class BaseConfig:
     SECRET_KEY: str = os.environ.get(
         "SECRET_KEY", "change_me_default_secret_key_38472948"
     )
+    JWT_SECRET: str = os.environ.get(
+        "JWT_SECRET", "change_me_jwt_secret_4892348"
+    )
     GEMINI_API_KEY: str = os.environ.get("GEMINI_API_KEY", "")
+
+    # Database
+    MONGO_URI: str = os.environ.get("MONGO_URI", "mongodb://localhost:27017/recruiter_agent")
 
     # Server settings
     HOST: str = os.environ.get("HOST", "0.0.0.0")

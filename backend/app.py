@@ -98,6 +98,10 @@ def create_app(config_name: str = None) -> Flask:
     app = Flask(__name__)
     app.config.from_object(config_obj)
 
+    # Initialize DB
+    from api.db import init_app as init_db
+    init_db(app)
+
     # Warm up candidate repository singleton at startup and store in app extensions
     from services.candidate_repository import JSONLCandidateRepository
     app.extensions["candidate_repos"] = {
@@ -125,7 +129,9 @@ def create_app(config_name: str = None) -> Flask:
     from api.routes.health_routes import health_bp as api_health_bp
     from api.routes.copilot_routes import copilot_bp
     from api.routes.submission_routes import submission_bp
+    from api.auth import auth_bp
 
+    api_v1.register_blueprint(auth_bp, url_prefix="/auth")
     api_v1.register_blueprint(jd_bp)
     api_v1.register_blueprint(retrieval_bp)
     api_v1.register_blueprint(ranking_bp)

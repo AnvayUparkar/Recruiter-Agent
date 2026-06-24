@@ -1,0 +1,9 @@
+
+export default function UserResumePage() {
+  return (
+    <div className="p-8">
+      <h1 className="text-3xl font-bold text-white mb-4">Resume</h1>
+      <p className="text-gray-400">Upload and manage your resume.</p>
+    </div>
+  );
+}

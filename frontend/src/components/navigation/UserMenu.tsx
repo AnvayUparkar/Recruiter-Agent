@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { User, Settings, LogOut, ChevronDown } from "lucide-react";
 import { useTheme } from "../../providers/ThemeProvider";
+import { useAuthStore } from "../../store/authStore";
 
 export const UserMenu: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,14 +11,17 @@ export const UserMenu: React.FC = () => {
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const shouldReduceMotion = useReducedMotion();
+  const { user, logout, isAuthenticated } = useAuthStore();
 
-  // Mock User details
-  const user = {
-    name: "Alex Rivera",
-    email: "alex.rivera@antigravity.ai",
-    avatarInitials: "AR",
-    role: "Lead Tech Recruiter",
-  };
+  // If not authenticated, we could return a login button, but TopNavbar can also handle it.
+  // For now, let's show login/signup if not authenticated.
+  
+  const displayUser = user ? {
+    name: user.full_name || "User",
+    email: user.email || "",
+    avatarInitials: user.full_name ? user.full_name.substring(0, 2).toUpperCase() : "U",
+    role: user.role === "recruiter" ? "Recruiter" : "Candidate",
+  } : null;
 
   // Click outside to close
   useEffect(() => {
@@ -42,12 +46,19 @@ export const UserMenu: React.FC = () => {
   }, []);
 
   const handleLogout = () => {
-    // Perform mock logout by clearing recruiter_authenticated flag
-    localStorage.setItem("recruiter_authenticated", "false");
+    logout();
     setIsOpen(false);
-    // Redirect to home route
     navigate("/");
   };
+
+  if (!isAuthenticated || !displayUser) {
+    return (
+      <div className="flex items-center gap-2">
+        <Link to="/login" className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-primary transition-colors">Log In</Link>
+        <Link to="/signup" className="px-3 py-1.5 text-sm font-medium bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors">Sign Up</Link>
+      </div>
+    );
+  }
 
   return (
     <div className="relative" ref={dropdownRef}>
@@ -60,14 +71,14 @@ export const UserMenu: React.FC = () => {
         aria-label="User menu"
       >
         <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-xs shadow-md shadow-blue-500/10 shrink-0">
-          {user.avatarInitials}
+          {displayUser.avatarInitials}
         </div>
         <div className="hidden sm:flex flex-col min-w-0 pr-1">
           <span className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate max-w-[100px]">
-            {user.name}
+            {displayUser.name}
           </span>
           <span className="text-[9px] text-slate-400 font-medium truncate max-w-[100px]">
-            {user.role}
+            {displayUser.role}
           </span>
         </div>
         <ChevronDown size={14} className={`text-slate-450 dark:text-slate-600 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />
@@ -88,10 +99,10 @@ export const UserMenu: React.FC = () => {
             {/* Header info */}
             <div className="p-4 border-b border-slate-200/10 dark:border-slate-800/50 bg-slate-200/30 dark:bg-slate-900/40">
               <span className="text-xs font-bold text-slate-900 dark:text-slate-100 block truncate">
-                {user.name}
+                {displayUser.name}
               </span>
               <span className="text-[10px] text-slate-500 truncate block mt-0.5">
-                {user.email}
+                {displayUser.email}
               </span>
             </div>
 

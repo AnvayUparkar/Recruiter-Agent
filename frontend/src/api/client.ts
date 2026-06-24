@@ -63,6 +63,17 @@ apiClient.interceptors.response.use(
       return apiClient(config);
     }
 
+    // Handle 401 Unauthorized globally
+    if (error.response && error.response.status === 401) {
+      // Dynamically import to avoid circular dependencies at boot
+      import("../store/authStore").then(({ useAuthStore }) => {
+        useAuthStore.getState().logout();
+        if (window.location.pathname !== "/login" && window.location.pathname !== "/" && window.location.pathname !== "/signup") {
+          window.location.href = "/login";
+        }
+      });
+    }
+
     return Promise.reject(normalizeError(error));
   }
 );

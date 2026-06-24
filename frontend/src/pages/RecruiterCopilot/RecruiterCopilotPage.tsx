@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { Bot, Plus, RefreshCw, AlertTriangle } from "lucide-react";
+import { Bot, Plus, RefreshCw, AlertTriangle, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { useAppStore } from "../../store/appStore";
 import { useCandidateStore } from "../../store/candidateStore";
@@ -219,11 +219,15 @@ const RecruiterCopilotPage: React.FC = () => {
     selectConversation,
     addMessage,
     updateMessage,
+    clearConversationKeepFirst,
   } = useChatStore();
 
   const [isSending, setIsSending] = useState(false);
   const [contextCollapsed] = useState(false);
   const [sidebarTab, setSidebarTab] = useState<"context" | "history">("context");
+  const [poolPage, setPoolPage] = useState(0);
+
+  const POOL_PAGE_SIZE = 10;
 
   // ── Queries ────────────────────────────────────────────────────────────────
   const jdText = parsedJD?.raw_text ?? parsedJD?.rawText ?? "";
@@ -421,34 +425,89 @@ const RecruiterCopilotPage: React.FC = () => {
             />
 
             {/* Candidate selector */}
-            {rankingData?.rankedCandidates && rankingData.rankedCandidates.length > 0 && (
-              <div className="rounded-2xl border border-border bg-surface backdrop-blur-xl overflow-hidden">
-                <div className="px-4 pt-4 pb-2 border-b border-border">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">
-                    Candidate Pool
-                  </span>
-                </div>
-                <div className="p-3 flex flex-col gap-1 max-h-48 overflow-y-auto">
-                  {rankingData.rankedCandidates.slice(0, 10).map((c) => (
-                    <button
-                      key={c.candidateId}
-                      onClick={() => setSelectedCandidateId(c.candidateId)}
-                      className={`flex items-center justify-between px-3 py-2 rounded-lg text-left text-xs transition-all border ${selectedCandidateId === c.candidateId
-                          ? "bg-blue-500/10 border-blue-500/25 text-blue-500"
-                          : "border-transparent text-text-muted hover:bg-surface-hover hover:text-text-primary"
+            {rankingData?.rankedCandidates && rankingData.rankedCandidates.length > 0 && (() => {
+              const total = rankingData.rankedCandidates.length;
+              const totalPages = Math.ceil(total / POOL_PAGE_SIZE);
+              const pageCandidates = rankingData.rankedCandidates.slice(
+                poolPage * POOL_PAGE_SIZE,
+                (poolPage + 1) * POOL_PAGE_SIZE
+              );
+              return (
+                <div className="rounded-2xl border border-border bg-surface backdrop-blur-xl overflow-hidden">
+                  {/* Header */}
+                  <div className="px-4 pt-3 pb-2 border-b border-border flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-text-muted">
+                      Candidate Pool
+                    </span>
+                    <span className="text-[10px] text-text-muted">
+                      {poolPage * POOL_PAGE_SIZE + 1}–{Math.min((poolPage + 1) * POOL_PAGE_SIZE, total)} of {total}
+                    </span>
+                  </div>
+
+                  {/* Candidate rows */}
+                  <div className="p-2 flex flex-col gap-0.5">
+                    {pageCandidates.map((c) => (
+                      <button
+                        key={c.candidateId}
+                        onClick={() => setSelectedCandidateId(c.candidateId)}
+                        className={`flex items-center justify-between px-3 py-2 rounded-lg text-left text-xs transition-all border ${
+                          selectedCandidateId === c.candidateId
+                            ? "bg-blue-500/10 border-blue-500/25 text-blue-500"
+                            : "border-transparent text-text-muted hover:bg-surface-hover hover:text-text-primary"
                         }`}
-                    >
-                      <span className="font-semibold truncate max-w-[70%]">
-                        #{c.rank} {c.profile?.anonymizedName || c.candidateId}
-                      </span>
-                      <span className="font-black text-[10px]" style={{ color: selectedCandidateId === c.candidateId ? "#60a5fa" : "var(--text-muted)" }}>
-                        {Math.round(c.finalScore * 100)}%
-                      </span>
-                    </button>
-                  ))}
+                      >
+                        <span className="font-semibold truncate max-w-[70%]">
+                          #{c.rank} {c.profile?.anonymizedName || c.candidateId}
+                        </span>
+                        <span
+                          className="font-black text-[10px]"
+                          style={{ color: selectedCandidateId === c.candidateId ? "#60a5fa" : "var(--text-muted)" }}
+                        >
+                          {Math.round(c.finalScore * 100)}%
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Pagination controls */}
+                  {totalPages > 1 && (
+                    <div className="flex items-center justify-between px-3 py-2 border-t border-border">
+                      <button
+                        onClick={() => setPoolPage((p) => Math.max(0, p - 1))}
+                        disabled={poolPage === 0}
+                        className="flex items-center gap-1 text-[10px] font-semibold text-text-muted hover:text-text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors px-2 py-1 rounded-lg hover:bg-surface-hover"
+                      >
+                        <ChevronLeft size={12} />
+                        Prev
+                      </button>
+                      <div className="flex items-center gap-1">
+                        {Array.from({ length: totalPages }).map((_, i) => (
+                          <button
+                            key={i}
+                            onClick={() => setPoolPage(i)}
+                            className={`w-4 h-4 rounded-full text-[8px] font-bold transition-all ${
+                              i === poolPage
+                                ? "bg-blue-600 text-white"
+                                : "bg-surface-hover text-text-muted hover:bg-blue-500/20"
+                            }`}
+                          >
+                            {i + 1}
+                          </button>
+                        ))}
+                      </div>
+                      <button
+                        onClick={() => setPoolPage((p) => Math.min(totalPages - 1, p + 1))}
+                        disabled={poolPage === totalPages - 1}
+                        className="flex items-center gap-1 text-[10px] font-semibold text-text-muted hover:text-text-primary disabled:opacity-30 disabled:cursor-not-allowed transition-colors px-2 py-1 rounded-lg hover:bg-surface-hover"
+                      >
+                        Next
+                        <ChevronRight size={12} />
+                      </button>
+                    </div>
+                  )}
                 </div>
-              </div>
-            )}
+              );
+            })()}
 
             {/* Hiring decision */}
             <HiringDecisionPanel
@@ -526,10 +585,22 @@ const RecruiterCopilotPage: React.FC = () => {
             </div>
           )}
         </div>
-        <ExportConversationButton
-          messages={messages}
-          candidateName={candidate?.profile?.anonymizedName ?? selectedCandidateId ?? undefined}
-        />
+        <div className="flex items-center gap-2">
+          {conv && messages.length > 1 && (
+            <button
+              onClick={() => clearConversationKeepFirst(conv.id)}
+              title="Clear chat"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-rose-400 hover:bg-rose-500/10 border border-rose-500/20 hover:border-rose-500/40 transition-all"
+            >
+              <Trash2 size={12} />
+              Clear Chat
+            </button>
+          )}
+          <ExportConversationButton
+            messages={messages}
+            candidateName={candidate?.profile?.anonymizedName ?? selectedCandidateId ?? undefined}
+          />
+        </div>
       </div>
 
       {/* No candidate selected state */}
