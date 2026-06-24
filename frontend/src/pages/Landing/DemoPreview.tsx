@@ -27,13 +27,13 @@ export const DemoPreview: React.FC = () => {
           {/* Core Calibration checklist */}
           <div className="space-y-3 pt-2 w-full max-w-sm">
             {[
-              "Calibrated ranking tailed to strategy profiles",
+              "Calibrated ranking tailored to strategy profiles",
               "Verifies tenure alignment and detects anomalies",
               "Outputs detailed explainability reports",
               "Generates structured questions for phone screens"
             ].map((text, idx) => (
-              <div key={idx} className="flex items-center gap-3 text-xs text-slate-650 dark:text-slate-350 font-medium">
-                <CheckCircle2 size={15} className="text-blue-500 shrink-0" />
+              <div key={idx} className="flex items-center gap-3 text-sm text-slate-700 dark:text-slate-300 font-medium">
+                <CheckCircle2 size={16} className="text-blue-500 shrink-0" />
                 <span>{text}</span>
               </div>
             ))}
@@ -47,16 +47,16 @@ export const DemoPreview: React.FC = () => {
             whileInView={{ opacity: 1, scale: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
             transition={{ type: "spring", stiffness: 150, damping: 20 }}
-            className="w-full max-w-2xl bg-slate-150/70 dark:bg-slate-950/75 glass-panel rounded-2xl border border-slate-250 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col select-none relative"
+            className="w-full max-w-2xl bg-white/90 dark:bg-slate-950/75 glass-panel rounded-3xl border border-slate-300/60 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col select-none relative"
           >
             {/* Top Arc-style Mock Browser Header */}
-            <div className="h-10 border-b border-slate-200/10 dark:border-slate-800/50 bg-slate-200/40 dark:bg-slate-900/30 px-4 flex items-center gap-2">
-              <div className="flex gap-1.5 shrink-0">
-                <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-800" />
-                <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-800" />
-                <span className="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-800" />
+            <div className="h-12 border-b border-slate-200/60 dark:border-slate-800/50 bg-slate-100/60 dark:bg-slate-900/30 px-4 flex items-center gap-3">
+              <div className="flex gap-2 shrink-0">
+                <span className="w-3 h-3 rounded-full bg-red-400/80 dark:bg-red-500/60" />
+                <span className="w-3 h-3 rounded-full bg-yellow-400/80 dark:bg-yellow-500/60" />
+                <span className="w-3 h-3 rounded-full bg-green-400/80 dark:bg-green-500/60" />
               </div>
-              <div className="mx-auto w-40 sm:w-60 h-5.5 rounded-lg bg-slate-200 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 flex items-center justify-center text-[10px] text-slate-400 font-mono tracking-wide">
+              <div className="mx-auto w-48 sm:w-72 h-7 rounded-lg bg-white/80 dark:bg-slate-950 border border-slate-300/60 dark:border-slate-800 flex items-center justify-center text-xs text-slate-500 dark:text-slate-400 font-mono tracking-wide">
                 antigravity.ai/candidates/cand_01
               </div>
             </div>
@@ -71,45 +71,45 @@ export const DemoPreview: React.FC = () => {
 
               {/* Main Candidate Card Column */}
               <div className="md:col-span-7 space-y-4">
-                <div className="glass-panel p-4.5 rounded-2xl border border-blue-500/20 dark:border-blue-400/20 bg-slate-100/90 dark:bg-slate-900/80 shadow relative">
+                <div className="glass-panel p-5 rounded-2xl border border-blue-200/60 dark:border-blue-400/20 bg-white/95 dark:bg-slate-900/80 shadow-lg relative">
                   
                   {/* Strong fit badge */}
-                  <div className="absolute right-4 top-4 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 font-bold text-[9px] tracking-wide uppercase flex items-center gap-1.5 shadow-sm">
-                    <UserCheck size={10} />
+                  <div className="absolute right-4 top-4 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-500 font-bold text-[10px] tracking-wide uppercase flex items-center gap-1.5 shadow-sm">
+                    <UserCheck size={12} />
                     <span>Strong Fit</span>
                   </div>
 
                   {/* Profile Header info */}
-                  <div className="space-y-1">
-                    <span className="text-[9px] font-bold text-slate-400 dark:text-slate-500 tracking-wide uppercase">Calibration Candidate</span>
-                    <h3 className="text-base font-black text-slate-900 dark:text-slate-100">
+                  <div className="space-y-1.5">
+                    <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 tracking-wide uppercase">Calibration Candidate</span>
+                    <h3 className="text-lg font-black text-slate-900 dark:text-slate-100">
                       Alexander K. Rivera
                     </h3>
-                    <p className="text-[10px] text-slate-500 dark:text-slate-450 font-medium">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 font-medium">
                       Senior Machine Learning Engineer • FAISS specialist
                     </p>
                   </div>
 
                   {/* Key Scores display */}
-                  <div className="grid grid-cols-2 gap-4 mt-4 pt-3.5 border-t border-slate-250/20 dark:border-slate-850">
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] text-slate-450 dark:text-slate-550 font-bold uppercase tracking-wider block">Calibrated Fit</span>
-                      <span className="text-lg font-black text-blue-500 dark:text-blue-400">96.8%</span>
+                  <div className="grid grid-cols-2 gap-4 mt-5 pt-4 border-t border-slate-200/60 dark:border-slate-850">
+                    <div className="space-y-1">
+                      <span className="text-[10px] text-slate-500 dark:text-slate-500 font-bold uppercase tracking-wider block">Calibrated Fit</span>
+                      <span className="text-xl font-black text-blue-600 dark:text-blue-400">96.8%</span>
                     </div>
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] text-slate-450 dark:text-slate-550 font-bold uppercase tracking-wider block">Reliability score</span>
-                      <span className="text-lg font-black text-purple-500 dark:text-purple-400">98.2%</span>
+                    <div className="space-y-1">
+                      <span className="text-[10px] text-slate-500 dark:text-slate-500 font-bold uppercase tracking-wider block">Reliability score</span>
+                      <span className="text-xl font-black text-purple-600 dark:text-purple-400">98.2%</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Recruiter Summary Card */}
-                <div className="glass-panel p-4.5 rounded-2xl border border-slate-200/10 dark:border-slate-800/40 bg-slate-100/60 dark:bg-slate-900/60 shadow space-y-2.5">
+                <div className="glass-panel p-5 rounded-2xl border border-slate-200/60 dark:border-slate-800/40 bg-white/90 dark:bg-slate-900/60 shadow-md space-y-3">
                   <div className="flex items-center gap-2">
-                    <Bot size={14} className="text-blue-500 shrink-0" />
-                    <span className="text-[9px] font-bold text-slate-450 dark:text-slate-500 tracking-wider uppercase">Executive Summary</span>
+                    <Bot size={16} className="text-blue-500 shrink-0" />
+                    <span className="text-[10px] font-bold text-slate-500 dark:text-slate-500 tracking-wider uppercase">Executive Summary</span>
                   </div>
-                  <p className="text-[10px] text-slate-650 dark:text-slate-400 leading-relaxed font-medium">
+                  <p className="text-xs text-slate-700 dark:text-slate-400 leading-relaxed font-medium">
                     Alexander demonstrates exceptional competence in vector distance search models. He possesses 6 years of tenure in search engineering, verifying clean transitions. No timeline gaps detected.
                   </p>
                 </div>
@@ -119,9 +119,9 @@ export const DemoPreview: React.FC = () => {
               <div className="md:col-span-5 flex flex-col gap-4">
                 
                 {/* Custom SVG Radar Chart */}
-                <div className="glass-panel p-4 rounded-2xl border border-slate-200/10 dark:border-slate-800/40 bg-slate-100/60 dark:bg-slate-900/60 flex flex-col items-center justify-center shadow">
-                  <span className="text-[9px] font-bold text-slate-450 dark:text-slate-550 tracking-wider uppercase mb-2">Alignment Radar</span>
-                  <div className="relative w-36 h-36 flex items-center justify-center">
+                <div className="glass-panel p-5 rounded-2xl border border-slate-200/60 dark:border-slate-800/40 bg-white/90 dark:bg-slate-900/60 flex flex-col items-center justify-center shadow-md">
+                  <span className="text-[10px] font-bold text-slate-500 dark:text-slate-500 tracking-wider uppercase mb-3">Alignment Radar</span>
+                  <div className="relative w-40 h-40 flex items-center justify-center">
                     
                     {/* SVG graphic */}
                     <svg className="w-full h-full overflow-visible" viewBox="0 0 200 170">
@@ -154,17 +154,17 @@ export const DemoPreview: React.FC = () => {
                 </div>
 
                 {/* Verification checklist indicators */}
-                <div className="glass-panel p-4 rounded-2xl border border-slate-200/10 dark:border-slate-800/40 bg-slate-100/60 dark:bg-slate-900/60 flex flex-col gap-2.5 shadow">
-                  <span className="text-[9px] font-bold text-slate-450 dark:text-slate-550 tracking-wider uppercase">Vetting Checks</span>
-                  <div className="space-y-2">
+                <div className="glass-panel p-5 rounded-2xl border border-slate-200/60 dark:border-slate-800/40 bg-white/90 dark:bg-slate-900/60 flex flex-col gap-3 shadow-md">
+                  <span className="text-[10px] font-bold text-slate-500 dark:text-slate-500 tracking-wider uppercase">Vetting Checks</span>
+                  <div className="space-y-2.5">
                     {[
                       { label: "Tenure Authenticated", status: "pass" },
                       { label: "Keyword Stuffing", status: "clear" },
                       { label: "Tenure Stability", status: "pass" }
                     ].map((check, idx) => (
-                      <div key={idx} className="flex justify-between items-center text-[10px]">
-                        <span className="text-slate-500 font-bold">{check.label}</span>
-                        <span className="px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-500 font-extrabold uppercase text-[8px] tracking-wide">
+                      <div key={idx} className="flex justify-between items-center text-xs">
+                        <span className="text-slate-600 dark:text-slate-400 font-semibold">{check.label}</span>
+                        <span className="px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-600 dark:text-emerald-500 font-extrabold uppercase text-[9px] tracking-wide">
                           {check.status}
                         </span>
                       </div>

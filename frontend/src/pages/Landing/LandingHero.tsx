@@ -2,7 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { FileText, Play, Sparkles, Database, ShieldCheck, UserCheck } from "lucide-react";
-import { FloatingIllustration } from "./FloatingIllustration";
+import { SplineScene } from "@/components/ui/SplineScene";
+import { Spotlight } from "@/components/ui/Spotlight";
 
 export const LandingHero: React.FC = () => {
   const shouldReduceMotion = useReducedMotion();
@@ -51,6 +52,33 @@ export const LandingHero: React.FC = () => {
     },
   };
 
+  // Floating animation for background blobs (respects reduced motion)
+  const floatingVariants = {
+    initial: { x: 0, y: 0 },
+    animate: shouldReduceMotion ? {} : {
+      x: [0, 10, 0],
+      y: [0, -15, 0],
+      transition: {
+        duration: 15,
+        repeat: Infinity,
+        ease: "easeInOut",
+      },
+    },
+  };
+
+  const floatingVariantsAlt = {
+    initial: { x: 0, y: 0 },
+    animate: shouldReduceMotion ? {} : {
+      x: [0, -12, 0],
+      y: [0, 10, 0],
+      transition: {
+        duration: 18,
+        repeat: Infinity,
+        ease: "easeInOut",
+      },
+    },
+  };
+
   // Trust badges configurations
   const trustBadges = [
     { label: "Explainable AI", icon: Sparkles, color: "text-purple-500 bg-purple-500/10 border-purple-500/20" },
@@ -60,8 +88,70 @@ export const LandingHero: React.FC = () => {
   ];
 
   return (
-    <section className="relative w-full min-h-[calc(100vh-140px)] flex items-center py-10 lg:py-16 overflow-visible">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="relative w-full min-h-[calc(100vh-140px)] flex items-center py-10 lg:py-16 overflow-hidden bg-white dark:bg-slate-950">
+      
+      {/* Premium Soft Gradient Background Layer */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Subtle cool blue gradient from top-left */}
+        <div 
+          className="absolute inset-0 bg-gradient-to-br from-sky-100/60 via-white to-white dark:from-slate-900 dark:via-slate-950 dark:to-slate-950"
+          style={{ mixBlendMode: 'normal' }}
+        />
+        
+        {/* Top-Left Blue Glow */}
+        <motion.div
+          variants={floatingVariants}
+          initial="initial"
+          animate="animate"
+          className="absolute -top-[15%] -left-[10%] w-[700px] h-[700px] rounded-full"
+          style={{
+            background: 'radial-gradient(circle, rgba(56, 189, 248, 0.4) 0%, rgba(56, 189, 248, 0.2) 35%, transparent 65%)',
+            filter: 'blur(100px)',
+            opacity: 0.6,
+          }}
+        />
+
+        {/* Bottom-Right Large Warm Peach/Beige Glow - ENHANCED */}
+        <motion.div
+          variants={floatingVariantsAlt}
+          initial="initial"
+          animate="animate"
+          className="absolute -bottom-[20%] -right-[15%] w-[900px] h-[900px] rounded-full"
+          style={{
+            background: 'radial-gradient(circle, rgba(255, 228, 196, 0.7) 0%, rgba(255, 218, 185, 0.5) 25%, rgba(250, 235, 215, 0.3) 45%, transparent 70%)',
+            filter: 'blur(120px)',
+            opacity: 0.8,
+          }}
+        />
+
+        {/* Additional peachy-pink overlay for richness */}
+        <motion.div
+          variants={floatingVariantsAlt}
+          initial="initial"
+          animate="animate"
+          className="absolute bottom-[5%] right-[10%] w-[600px] h-[600px] rounded-full"
+          style={{
+            background: 'radial-gradient(circle, rgba(255, 235, 205, 0.6) 0%, rgba(255, 222, 173, 0.4) 30%, transparent 60%)',
+            filter: 'blur(90px)',
+            opacity: 0.7,
+          }}
+        />
+
+        {/* Additional subtle accent glow - center right (purple hint) */}
+        <motion.div
+          variants={floatingVariants}
+          initial="initial"
+          animate="animate"
+          className="absolute top-[25%] -right-[12%] w-[500px] h-[500px] rounded-full"
+          style={{
+            background: 'radial-gradient(circle, rgba(196, 181, 253, 0.3) 0%, rgba(196, 181, 253, 0.15) 40%, transparent 65%)',
+            filter: 'blur(90px)',
+            opacity: 0.3,
+          }}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Left Side Content Column */}
         <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left gap-6.5">
@@ -82,7 +172,7 @@ export const LandingHero: React.FC = () => {
             variants={shouldReduceMotion ? undefined : containerVariants}
             initial="initial"
             animate="animate"
-            className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight max-w-2xl bg-gradient-to-r from-slate-900 via-blue-600 to-purple-600 dark:from-white dark:via-blue-400 dark:to-purple-400 bg-clip-text text-transparent"
+            className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.15] max-w-2xl text-slate-900 dark:text-white"
           >
             {shouldReduceMotion
               ? headline
@@ -90,7 +180,7 @@ export const LandingHero: React.FC = () => {
                   <motion.span
                     key={idx}
                     variants={wordVariants}
-                    className="inline-block mr-1.5 sm:mr-2.5 pb-1"
+                    className="inline-block mr-2 sm:mr-3"
                   >
                     {word}
                   </motion.span>
@@ -144,9 +234,25 @@ export const LandingHero: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Right Side Illustration Column */}
-        <div className="lg:col-span-5 flex justify-center w-full">
-          <FloatingIllustration />
+        {/* Right Side 3D Spline Scene Column */}
+        <div className="lg:col-span-5 flex justify-center w-full relative h-[500px] lg:h-[600px]">
+          {/* Subtle decorative grid background */}
+          <div 
+            className="absolute inset-0 opacity-[0.03] dark:opacity-10 rounded-3xl overflow-hidden"
+            style={{
+              backgroundImage: `linear-gradient(to right, #94a3b8 1px, transparent 1px), linear-gradient(to bottom, #94a3b8 1px, transparent 1px)`,
+              backgroundSize: '40px 40px'
+            }}
+          />
+
+          {/* Spline 3D Scene with interactive spotlight */}
+          <div className="relative z-10 w-full h-full">
+            <Spotlight size={500} springOptions={{ stiffness: 50, damping: 20, mass: 0.5 }} />
+            <SplineScene
+              scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode"
+              className="w-full h-full"
+            />
+          </div>
         </div>
       </div>
     </section>

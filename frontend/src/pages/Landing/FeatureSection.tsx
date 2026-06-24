@@ -35,7 +35,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
       viewport={{ once: true, margin: "-80px" }}
       transition={{ type: "spring", stiffness: 220, damping: 22, delay }}
       whileHover={hoverAnim}
-      className="glass-panel p-6.5 rounded-2xl border border-slate-200/10 dark:border-slate-800/40 bg-slate-100/60 dark:bg-slate-900/60 backdrop-blur-md relative overflow-hidden group shadow-lg"
+      className="glass-panel p-7 rounded-3xl border border-slate-200/60 dark:border-slate-800/40 bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl relative overflow-hidden group shadow-xl hover:shadow-2xl transition-shadow duration-300"
     >
       {/* Background Hover Accent Glow */}
       <div
@@ -43,28 +43,30 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
       />
 
       {/* Floating Animated Icon Wrapper */}
-      <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/25 flex items-center justify-center text-blue-500 dark:text-blue-400 mb-5 relative shrink-0">
+      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-500/10 dark:to-blue-600/10 border border-blue-200/50 dark:border-blue-500/25 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-6 relative shrink-0 shadow-sm">
         <motion.div
           whileHover={shouldReduceMotion ? {} : { rotate: 15 }}
           transition={{ type: "spring", stiffness: 300, damping: 15 }}
         >
-          <Icon size={22} />
+          <Icon size={24} />
         </motion.div>
       </div>
 
       {/* Card Info */}
-      <div className="flex flex-col gap-2 pb-2">
-        <h3 className="text-base font-extrabold text-slate-900 dark:text-slate-100 flex items-center gap-2 group-hover:text-blue-500 transition-colors">
+      <div className="flex flex-col gap-3 pb-2">
+        <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100 flex items-center gap-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors leading-tight">
           <span>{title}</span>
         </h3>
-        <p className="text-xs text-slate-500 dark:text-slate-450 leading-relaxed">
+        <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
           {description}
         </p>
       </div>
 
       {/* Slide Arrow Reveal */}
-      <div className="absolute right-4.5 bottom-4.5 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-        <ArrowUpRight size={14} className="text-blue-500 dark:text-blue-400" />
+      <div className="absolute right-5 bottom-5 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+        <div className="w-8 h-8 rounded-full bg-blue-500/10 dark:bg-blue-400/10 flex items-center justify-center">
+          <ArrowUpRight size={16} className="text-blue-600 dark:text-blue-400" />
+        </div>
       </div>
     </motion.div>
   );
@@ -90,7 +92,7 @@ export const FeatureSection: React.FC = () => {
       icon: ShieldAlert,
       title: "Rank with Confidence",
       description:
-        "Analyzes profile tenure, job hops, verification gaps, and anomalies to score candidate reliability.tailored to custom prioritization strategies.",
+        "Analyzes profile tenure, job hops, verification gaps, and anomalies to score candidate reliability tailored to custom prioritization strategies.",
       glowColor: "bg-amber-500/20",
     },
     {
