@@ -5,7 +5,7 @@ Exposes endpoints for recruiter copilot report generation, candidate comparison,
 
 from flask import Blueprint, request, jsonify, current_app
 from pydantic import BaseModel, Field, ValidationError
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 
 from services.jd_analyzer import JdAnalyzer
 from services.copilot_service import CopilotService
@@ -28,8 +28,9 @@ class CopilotReportRequest(BaseModel):
 
 
 class CopilotCompareRequest(BaseModel):
-    candidate_id_a: str = Field(..., pattern=r"^CAND_[0-9]{7}$")
-    candidate_id_b: str = Field(..., pattern=r"^CAND_[0-9]{7}$")
+    candidate_id_a: Optional[str] = Field(None, pattern=r"^CAND_[0-9]{7}$")
+    candidate_id_b: Optional[str] = Field(None, pattern=r"^CAND_[0-9]{7}$")
+    candidate_ids: Optional[List[str]] = Field(None)
     job_description: str = Field(..., min_length=20)
 
 
@@ -66,7 +67,7 @@ def get_candidate_report():
 def compare_candidates():
     """POST /api/v1/copilot/compare
 
-    Compares two finalists side-by-side.
+    Compares multiple finalists side-by-side (2 to 5 candidates).
     """
     logger.info("Received request to compare candidates.")
     try:
@@ -76,10 +77,20 @@ def compare_candidates():
         # Parse job description
         parsed_jd = _jd_analyzer.analyze_jd(req.job_description)
 
+        # Resolve candidate list
+        candidate_ids = []
+        if req.candidate_ids:
+            candidate_ids = req.candidate_ids
+        elif req.candidate_id_a and req.candidate_id_b:
+            candidate_ids = [req.candidate_id_a, req.candidate_id_b]
+
+        if len(candidate_ids) < 2 or len(candidate_ids) > 5:
+            return jsonify({"error": "Must compare between 2 and 5 candidates."}), 400
+
         # Generate comparison
-        result = _copilot_service.compare_candidates(req.candidate_id_a, req.candidate_id_b, parsed_jd)
+        result = _copilot_service.compare_candidates_multi(candidate_ids, parsed_jd)
         if not result:
-            return jsonify({"error": "One or both candidates could not be loaded."}), 400
+            return jsonify({"error": "One or more candidates could not be loaded."}), 400
 
         return jsonify(result.model_dump()), 200
 
@@ -89,6 +100,7 @@ def compare_candidates():
     except Exception as e:
         logger.error(f"Error comparing candidates: {e}", exc_info=True)
         return jsonify({"error": "Internal Server Error"}), 500
+
 
 
 @copilot_bp.route("/decision", methods=["POST"])

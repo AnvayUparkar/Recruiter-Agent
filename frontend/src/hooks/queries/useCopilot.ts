@@ -30,11 +30,28 @@ export function useFinalistComparison(
 ): UseQueryResult<CandidateComparisonResult, ApiError> {
   return useQuery<CandidateComparisonResult, ApiError>({
     queryKey: ["finalistComparison", { candidateIdA, candidateIdB, jobDescription }],
-    queryFn: () => copilotService.compareCandidates(candidateIdA, candidateIdB, jobDescription),
+    queryFn: () => copilotService.compareCandidates([candidateIdA, candidateIdB], jobDescription),
     enabled: enabled && !!candidateIdA && !!candidateIdB && jobDescription.length >= 20,
     staleTime: 10 * 60 * 1000,
   });
 }
+
+/**
+ * Query hook to perform side-by-side comparison calculations for 2 to 5 candidates.
+ */
+export function useMultiCandidateComparison(
+  candidateIds: string[],
+  jobDescription: string,
+  enabled = true
+): UseQueryResult<CandidateComparisonResult, ApiError> {
+  return useQuery<CandidateComparisonResult, ApiError>({
+    queryKey: ["multiCandidateComparison", { candidateIds, jobDescription }],
+    queryFn: () => copilotService.compareCandidates(candidateIds, jobDescription),
+    enabled: enabled && candidateIds.length >= 2 && jobDescription.length >= 20,
+    staleTime: 10 * 60 * 1000,
+  });
+}
+
 
 /**
  * Query hook to retrieve structured hiring manager proposals.

@@ -41,13 +41,13 @@ export const ComparisonReliability: React.FC<ComparisonReliabilityProps> = ({
   const riskBadge = getRiskLabel(fraudRisk);
 
   return (
-    <div className="p-5 rounded-2xl glass-panel border-white/10 shadow-md flex flex-col gap-4 bg-white/2 h-full">
-      <div className="border-b border-white/5 pb-2.5 flex items-center justify-between">
+    <div className="p-5 rounded-2xl glass-panel border-border shadow-md flex flex-col gap-4 bg-surface h-full">
+      <div className="border-b border-border pb-2.5 flex items-center justify-between">
         <div>
-          <h3 className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+          <h3 className="text-xs text-muted font-bold uppercase tracking-wider">
             Reliability & Verification
           </h3>
-          <p className="text-sm font-semibold text-white mt-0.5">
+          <p className="text-sm font-semibold text-primary mt-0.5">
             {candidate.name}
           </p>
         </div>
@@ -60,10 +60,10 @@ export const ComparisonReliability: React.FC<ComparisonReliabilityProps> = ({
         {/* Reliability Score */}
         <div className="flex flex-col gap-1.5">
           <div className="flex justify-between text-xs">
-            <span className="text-slate-350">Reliability Index</span>
-            <span className="font-mono text-white font-bold">{reliabilityScore}%</span>
+            <span className="text-text-muted">Reliability Index</span>
+            <span className="font-mono text-primary font-bold">{reliabilityScore}%</span>
           </div>
-          <div className="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
+          <div className="w-full h-1.5 rounded-full bg-surface overflow-hidden">
             <div
               className="h-full rounded-full bg-gradient-to-r from-blue-500 to-indigo-500"
               style={{ width: `${reliabilityScore}%` }}
@@ -74,10 +74,10 @@ export const ComparisonReliability: React.FC<ComparisonReliabilityProps> = ({
         {/* Profile Quality */}
         <div className="flex flex-col gap-1.5">
           <div className="flex justify-between text-xs">
-            <span className="text-slate-350">Documentation Quality</span>
-            <span className="font-mono text-white font-bold">{qualityScore}%</span>
+            <span className="text-text-muted">Documentation Quality</span>
+            <span className="font-mono text-primary font-bold">{qualityScore}%</span>
           </div>
-          <div className="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
+          <div className="w-full h-1.5 rounded-full bg-surface overflow-hidden">
             <div
               className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"
               style={{ width: `${qualityScore}%` }}
@@ -88,10 +88,10 @@ export const ComparisonReliability: React.FC<ComparisonReliabilityProps> = ({
         {/* Career Consistency */}
         <div className="flex flex-col gap-1.5">
           <div className="flex justify-between text-xs">
-            <span className="text-slate-350">Timeline Consistency</span>
-            <span className="font-mono text-white font-bold">{consistencyScore}%</span>
+            <span className="text-text-muted">Timeline Consistency</span>
+            <span className="font-mono text-primary font-bold">{consistencyScore}%</span>
           </div>
-          <div className="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
+          <div className="w-full h-1.5 rounded-full bg-surface overflow-hidden">
             <div
               className="h-full rounded-full bg-gradient-to-r from-purple-500 to-violet-500"
               style={{ width: `${consistencyScore}%` }}
@@ -100,17 +100,17 @@ export const ComparisonReliability: React.FC<ComparisonReliabilityProps> = ({
         </div>
 
         {/* Risk & Anomalies */}
-        <div className="flex flex-col gap-2 pt-2 border-t border-white/5 text-xs">
+        <div className="flex flex-col gap-2 pt-2 border-t border-border text-xs">
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">Risk Assessment:</span>
+            <span className="text-muted">Risk Assessment:</span>
             <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${riskBadge.color}`}>
               {riskBadge.text}
             </span>
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">Verification Indicators:</span>
-            <span className="text-slate-200 font-medium">
+            <span className="text-muted">Verification Indicators:</span>
+            <span className="text-primary font-medium">
               {anomalyCount === 0 ? "Fully Consistent" : `${anomalyCount} minor variances`}
             </span>
           </div>

@@ -20,24 +20,34 @@ export const copilotService = {
   },
 
   /**
-   * Compares two finalists head-to-head.
+   * Compares finalists side-by-side. Supports 2 to 5 candidates.
    * 
-   * @param candidateIdA First candidate.
-   * @param candidateIdB Second candidate.
-   * @param jobDescription Context JD.
+   * @param candidateIds List of candidate IDs, or first candidate ID.
+   * @param candidateIdBOrJD Second candidate ID, or active JD description.
+   * @param jobDescription Context JD description if using pairwise parameters.
    */
   async compareCandidates(
-    candidateIdA: string,
-    candidateIdB: string,
-    jobDescription: string
+    candidateIds: string[] | string,
+    candidateIdBOrJD: string,
+    jobDescription?: string
   ): Promise<CandidateComparisonResult> {
-    const response = await apiClient.post<CandidateComparisonResult>("/api/v1/copilot/compare", {
-      candidate_id_a: candidateIdA,
-      candidate_id_b: candidateIdB,
-      job_description: jobDescription,
-    });
+    let payload: any = {};
+    if (Array.isArray(candidateIds)) {
+      payload = {
+        candidate_ids: candidateIds,
+        job_description: candidateIdBOrJD,
+      };
+    } else {
+      payload = {
+        candidate_id_a: candidateIds,
+        candidate_id_b: candidateIdBOrJD,
+        job_description: jobDescription,
+      };
+    }
+    const response = await apiClient.post<CandidateComparisonResult>("/api/v1/copilot/compare", payload);
     return response.data;
   },
+
 
   /**
    * Evaluates candidate parameters and packs a hiring decision proposal.

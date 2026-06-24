@@ -239,6 +239,55 @@ class CopilotService:
             rp_b=rp_b
         )
 
+    def compare_candidates_multi(
+        self,
+        candidate_ids: List[str],
+        parsed_jd: ParsedJD,
+    ) -> Optional[CandidateComparisonResult]:
+        """Loads multiple candidates (2 to 5) and returns a side-by-side comparison.
+
+        Args:
+            candidate_ids: List of candidate IDs.
+            parsed_jd: Job Description specification.
+
+        Returns:
+            Optional[CandidateComparisonResult]: Structured comparison result, or None.
+        """
+        logger.info(f"Triggering comparison for {len(candidate_ids)} candidates.")
+        repo = JSONLCandidateRepository(self._get_dataset_path())
+
+        candidates = []
+        feature_vectors = []
+        scores = []
+        reliability_profiles = []
+
+        for cid in candidate_ids:
+            cand = repo.find_by_id(cid)
+            if not cand:
+                logger.warning(f"Candidate {cid} could not be loaded for comparison.")
+                return None
+
+            profile = self.candidate_intel_service.build_candidate_intelligence(cand)
+            bi = self.behavioral_service.build_behavioral_profile(cand)
+            rp = self.reliability_service.build_reliability_profile(cand, bi)
+            fv = self.feature_service.build_candidate_features(cand, profile, parsed_jd)
+
+            base_weights = self.ranking_service.weight_manager.get_weights_for_jd(parsed_jd)
+            score = self.ranking_service.score_aggregator.aggregate(cand, fv, bi, rp, base_weights)
+
+            candidates.append(cand)
+            feature_vectors.append(fv)
+            scores.append(score)
+            reliability_profiles.append(rp)
+
+        return CandidateComparison.compare_multiple_candidates(
+            candidates=candidates,
+            feature_vectors=feature_vectors,
+            scores=scores,
+            reliability_profiles=reliability_profiles
+        )
+
+
     def generate_hiring_decision(self, candidate_id: str, parsed_jd: ParsedJD) -> Optional[HiringDecision]:
         """Runs the audit and determines a final submission decision proposal.
 

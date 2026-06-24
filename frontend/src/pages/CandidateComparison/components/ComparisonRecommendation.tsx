@@ -61,23 +61,23 @@ export const ComparisonRecommendation: React.FC<ComparisonRecommendationProps> =
   const style = getVerdictStyle(recommendation);
 
   return (
-    <div className="p-5 rounded-2xl glass-panel border-white/10 shadow-md flex flex-col gap-4 bg-white/2 h-full">
-      <div className="border-b border-white/5 pb-2.5 flex items-center justify-between">
+    <div className="p-5 rounded-2xl glass-panel border-border shadow-md flex flex-col gap-4 bg-surface h-full">
+      <div className="border-b border-border pb-2.5 flex items-center justify-between">
         <div>
-          <h3 className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+          <h3 className="text-xs text-muted font-bold uppercase tracking-wider">
             Hiring Verdict
           </h3>
-          <p className="text-sm font-semibold text-white mt-0.5">
+          <p className="text-sm font-semibold text-primary mt-0.5">
             {candidate.name}
           </p>
         </div>
-        <span className="text-xs text-slate-500">Advisory</span>
+        <span className="text-xs text-muted">Advisory</span>
       </div>
 
       <div className="flex flex-col gap-3">
         {/* Recommendation Badge */}
         <div className="flex items-center justify-between text-xs">
-          <span className="text-slate-350">Verdict Category:</span>
+          <span className="text-text-muted">Verdict Category:</span>
           <span className={`px-2.5 py-1 rounded-lg border font-bold text-xs flex items-center gap-1.5 ${style.bg}`}>
             {style.icon}
             {recommendation}
@@ -86,16 +86,16 @@ export const ComparisonRecommendation: React.FC<ComparisonRecommendationProps> =
 
         {/* Confidence Percentage */}
         <div className="flex items-center justify-between text-xs">
-          <span className="text-slate-350">Recommendation Confidence:</span>
-          <span className="font-mono text-white font-bold">{Math.round(confidence * 100)}%</span>
+          <span className="text-text-muted">Recommendation Confidence:</span>
+          <span className="font-mono text-primary font-bold">{Math.round(confidence * 100)}%</span>
         </div>
 
         {/* AI Rationale */}
         <div className="mt-2 flex flex-col gap-1.5">
-          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+          <span className="text-[10px] text-muted font-bold uppercase tracking-wider">
             Evaluation Summary
           </span>
-          <p className="text-xs text-slate-300 leading-relaxed font-sans bg-white/2 p-3 rounded-xl border border-white/5 whitespace-pre-line">
+          <p className="text-xs text-text-muted leading-relaxed font-sans bg-surface border border-border p-3 rounded-xl whitespace-pre-line">
             {rationale}
           </p>
         </div>

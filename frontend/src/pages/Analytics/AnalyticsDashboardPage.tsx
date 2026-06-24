@@ -297,18 +297,6 @@ export const AnalyticsDashboardPage: React.FC = () => {
     );
   }
 
-  // Use backend data if available, otherwise fall back to calculated stats
-  const totalCandidates = dashboardAnalytics?.total_candidates ?? rawCandidates.length;
-  const avgReliabilityScore = dashboardAnalytics?.avg_reliability_score ?? stats.avgReliability;
-  const avgMatchScore = dashboardAnalytics?.avg_match_score ?? stats.avgMatch;
-  const processingTimeMs = dashboardAnalytics?.processing_time_ms ?? latency;
-  const reportsExported = dashboardAnalytics?.reports_exported ?? totalQueries;
-
-  // Render variables
-  const jobList = parsedJD ? [{ id: "active", title: parsedJD.jobTitle || parsedJD.job_title || "Active JD" }] : [];
-  const uniqueLocations = Array.from(new Set(rawCandidates.map((c) => c.location || "Remote")));
-  const reportCandidates = rawCandidates.slice(0, 5).map((c) => ({ id: c.candidateId, name: c.name }));
-
   // Use dashboard analytics data if available, otherwise fall back to metrics or defaults
   const ndcg = dashboardAnalytics?.quality_metrics.ndcg_at_5 
     ?? metrics?.ndcgAt5 
@@ -321,8 +309,20 @@ export const AnalyticsDashboardPage: React.FC = () => {
   const mrr = dashboardAnalytics?.quality_metrics.mrr 
     ?? metrics?.mrr 
     ?? 0.92;
+
+  // Use backend data if available, otherwise fall back to calculated stats
+  const totalCandidates = dashboardAnalytics?.total_candidates ?? rawCandidates.length;
+  const avgReliabilityScore = dashboardAnalytics?.avg_reliability_score ?? stats.avgReliability;
+  const avgMatchScore = dashboardAnalytics?.avg_match_score ?? stats.avgMatch;
+  const processingTimeMs = dashboardAnalytics?.processing_time_ms ?? metrics?.systemLatencyAvgMs ?? 1500;
+  const reportsExported = dashboardAnalytics?.reports_exported ?? metrics?.totalQueriesLogged ?? 120;
+
+  // Render variables
+  const jobList = parsedJD ? [{ id: "active", title: parsedJD.jobTitle || parsedJD.job_title || "Active JD" }] : [];
+  const uniqueLocations = Array.from(new Set(rawCandidates.map((c) => c.location || "Remote")));
+  const reportCandidates = rawCandidates.slice(0, 5).map((c) => ({ id: c.candidateId, name: c.name }));
+
   const latency = processingTimeMs;
-  const totalQueries = reportsExported;
 
   return (
     <div className="max-w-6xl mx-auto py-6 px-4">

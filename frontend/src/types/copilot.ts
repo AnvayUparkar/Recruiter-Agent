@@ -37,15 +37,23 @@ export interface HiringDecision {
 }
 
 export interface CandidateComparisonResult {
-  candidateA: string;
-  candidateB: string;
+  candidateA?: string;
+  candidate_id_a?: string;
+  candidateB?: string;
+  candidate_id_b?: string;
   winner: string;
-  winnerReason: string;
-  strengthComparison: Record<string, string>;
-  weaknessComparison: Record<string, string>;
-  featureDifferences: Record<string, number>;
+  winnerReason?: string;
+  winner_reason?: string;
+  strengthComparison?: Record<string, string>;
+  strength_comparison?: Record<string, string>;
+  weaknessComparison?: Record<string, string>;
+  weakness_comparison?: Record<string, string>;
+  featureDifferences?: Record<string, number>;
+  feature_differences?: Record<string, number>;
   riskDifferences?: Record<string, string>;
-  decisionConfidence: number;
+  risk_differences?: Record<string, string>;
+  decisionConfidence?: number;
+  decision_confidence?: number;
 }
 
 export interface RecruiterReport {

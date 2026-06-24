@@ -208,7 +208,7 @@ export const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ child
                 className="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-blue-600/10 border border-blue-500/30 text-blue-500 text-xs font-medium hover:bg-blue-600/20 transition-all duration-300"
               >
                 <GitCompare size={14} />
-                <span>Compare final ({comparisonCandidateIds.length}/2)</span>
+                <span>Compare final ({comparisonCandidateIds.length}/5)</span>
               </Link>
             )}
 

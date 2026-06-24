@@ -2,19 +2,27 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Crown, Sparkles } from "lucide-react";
 import { Candidate } from "../../../types/candidate";
+import { CandidateComparisonResult } from "../../../types/copilot";
 
 interface ComparisonWinnerBannerProps {
   candidates: Candidate[];
   reports: Record<string, any>;
+  comparisonResult?: CandidateComparisonResult;
 }
 
 export const ComparisonWinnerBanner: React.FC<ComparisonWinnerBannerProps> = ({
   candidates,
   reports,
+  comparisonResult,
 }) => {
-  // Find winner based on highest composite score
+  // Find winner based on highest composite score (or backend result)
   const winner = React.useMemo(() => {
     if (candidates.length === 0) return null;
+    if (comparisonResult && comparisonResult.winner) {
+      const match = candidates.find((c) => c.candidateId === comparisonResult.winner);
+      if (match) return match;
+    }
+
     let bestCand = candidates[0];
     let bestScore = bestCand.rankingScore?.finalScore || 0;
 
@@ -26,16 +34,21 @@ export const ComparisonWinnerBanner: React.FC<ComparisonWinnerBannerProps> = ({
       }
     });
     return bestCand;
-  }, [candidates]);
+  }, [candidates, comparisonResult]);
 
   if (!winner) return null;
 
   // Synthesize reason summary
   const reasonSummary = React.useMemo(() => {
+    if (comparisonResult && comparisonResult.winner_reason) {
+      return comparisonResult.winner_reason;
+    }
+
     const report = reports[winner.candidateId];
     if (report?.overallAssessment) {
       return report.overallAssessment;
     }
+
 
     const techScore = winner.rankingScore?.technicalScore || 0;
     const trustScore = winner.reliabilityProfile?.reliabilityScore || winner.rankingScore?.trustScore || 0;
@@ -90,31 +103,31 @@ export const ComparisonWinnerBanner: React.FC<ComparisonWinnerBannerProps> = ({
               <Sparkles size={10} />
               <span>Recommended Choice</span>
             </span>
-            <span className="text-xs text-slate-400">Match Rank #1</span>
+            <span className="text-xs text-muted">Match Rank #1</span>
           </div>
 
-          <h2 className="text-2xl font-black tracking-tight text-white mt-1">
+          <h2 className="text-2xl font-black tracking-tight text-primary mt-1">
             {winner.name}
           </h2>
 
-          <p className="text-xs text-slate-350 leading-relaxed font-sans mt-1 max-w-3xl">
+          <p className="text-xs text-text-muted leading-relaxed font-sans mt-1 max-w-3xl">
             {reasonSummary}
           </p>
         </div>
 
         {/* Stats */}
-        <div className="flex items-center gap-6 md:border-l border-white/10 md:pl-6 shrink-0 pt-4 md:pt-0 w-full md:w-auto">
+        <div className="flex items-center gap-6 md:border-l border-border md:pl-6 shrink-0 pt-4 md:pt-0 w-full md:w-auto">
           <div className="flex flex-col">
-            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+            <span className="text-[10px] text-muted font-bold uppercase tracking-wider">
               Composite Score
             </span>
-            <span className="text-3xl font-black text-white font-mono mt-0.5">
+            <span className="text-3xl font-black text-primary font-mono mt-0.5">
               {winnerScore}%
             </span>
           </div>
 
           <div className="flex flex-col">
-            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">
+            <span className="text-[10px] text-muted font-bold uppercase tracking-wider">
               Confidence
             </span>
             <span className="text-3xl font-black text-amber-400 font-mono mt-0.5">

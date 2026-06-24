@@ -334,6 +334,25 @@ def test_api_copilot_compare(test_client: FlaskClient):
     assert "winner_reason" in data
 
 
+def test_api_copilot_compare_multi(test_client: FlaskClient):
+    """Verifies POST /api/v1/copilot/compare compares multiple candidates side-by-side using list payload."""
+    payload = {
+        "candidate_ids": ["CAND_0000001", "CAND_0000002"],
+        "job_description": "We are seeking a Senior Developer with expert Python and AWS expertise."
+    }
+    response = test_client.post("/api/v1/copilot/compare", json=payload)
+    assert response.status_code == 200
+
+    data = response.get_json()
+    assert data is not None
+    assert "winner" in data
+    assert "winner_reason" in data
+    assert "strength_comparison" in data
+    assert "CAND_0000001" in data["strength_comparison"]
+    assert "CAND_0000002" in data["strength_comparison"]
+
+
+
 def test_api_copilot_decision(test_client: FlaskClient):
     """Verifies POST /api/v1/copilot/decision outputs a submit proposal and risk summary."""
     payload = {

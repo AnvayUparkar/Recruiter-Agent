@@ -54,7 +54,7 @@ export const SelectedCandidatesBar: React.FC<SelectedCandidatesBarProps> = ({
                   stiffness: 140,
                   damping: 20,
                 }}
-                className="relative p-4 rounded-2xl glass-panel border-white/10 hover-sweep overflow-hidden flex items-center gap-3 group"
+                className="relative p-4 rounded-2xl glass-panel border-border hover-sweep overflow-hidden flex items-center gap-3 group"
               >
                 {/* Avatar */}
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-600/20 border border-blue-500/30 flex items-center justify-center font-bold text-blue-400 text-sm shrink-0 shadow-sm">
@@ -63,10 +63,10 @@ export const SelectedCandidatesBar: React.FC<SelectedCandidatesBarProps> = ({
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-semibold text-white truncate group-hover:text-blue-400 transition-colors">
+                  <h3 className="text-sm font-semibold text-primary truncate group-hover:text-blue-400 transition-colors">
                     {candidate.name}
                   </h3>
-                  <p className="text-[11px] text-slate-400 truncate">
+                  <p className="text-[11px] text-muted truncate">
                     {currentRole} {currentCompany}
                   </p>
                   <div className="flex items-center gap-1.5 mt-1.5">
@@ -103,7 +103,7 @@ export const SelectedCandidatesBar: React.FC<SelectedCandidatesBarProps> = ({
                 {/* Close Button */}
                 <button
                   onClick={() => onRemove(candidate.candidateId)}
-                  className="absolute top-2 right-2 p-1 rounded-lg bg-black/20 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
+                  className="absolute top-2 right-2 p-1 rounded-lg bg-surface/80 hover:bg-rose-500/20 text-text-muted hover:text-rose-400 transition-all opacity-0 group-hover:opacity-100 focus:opacity-100"
                   aria-label={`Remove ${candidate.name} from comparison`}
                 >
                   <X size={12} />

@@ -352,7 +352,7 @@ export const CandidateRankingPage: React.FC = () => {
     );
   }
 
-  const isComparedDisabled = comparisonCandidateIds.length >= 2;
+  const isComparedDisabled = comparisonCandidateIds.length >= 5;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 md:py-10 space-y-8 select-none">

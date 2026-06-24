@@ -29,13 +29,13 @@ export const ComparisonBehavior: React.FC<ComparisonBehaviorProps> = ({
     : 75;
 
   return (
-    <div className="p-5 rounded-2xl glass-panel border-white/10 shadow-md flex flex-col gap-4 bg-white/2 h-full">
-      <div className="border-b border-white/5 pb-2.5 flex items-center justify-between">
+    <div className="p-5 rounded-2xl glass-panel border-border shadow-md flex flex-col gap-4 bg-surface h-full">
+      <div className="border-b border-border pb-2.5 flex items-center justify-between">
         <div>
-          <h3 className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+          <h3 className="text-xs text-muted font-bold uppercase tracking-wider">
             Behavior & Communication
           </h3>
-          <p className="text-sm font-semibold text-white mt-0.5">
+          <p className="text-sm font-semibold text-primary mt-0.5">
             {candidate.name}
           </p>
         </div>
@@ -48,10 +48,10 @@ export const ComparisonBehavior: React.FC<ComparisonBehaviorProps> = ({
         {/* Behavioral Index */}
         <div className="flex flex-col gap-1.5">
           <div className="flex justify-between text-xs">
-            <span className="text-slate-350">Collaboration Index</span>
-            <span className="font-mono text-white font-bold">{behavioralIndex}%</span>
+            <span className="text-text-muted">Collaboration Index</span>
+            <span className="font-mono text-primary font-bold">{behavioralIndex}%</span>
           </div>
-          <div className="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
+          <div className="w-full h-1.5 rounded-full bg-surface overflow-hidden">
             <div
               className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-pink-500"
               style={{ width: `${behavioralIndex}%` }}
@@ -62,10 +62,10 @@ export const ComparisonBehavior: React.FC<ComparisonBehaviorProps> = ({
         {/* Responsiveness */}
         <div className="flex flex-col gap-1.5">
           <div className="flex justify-between text-xs">
-            <span className="text-slate-350">Recruiter Responsiveness</span>
-            <span className="font-mono text-white font-bold">{responsiveness}%</span>
+            <span className="text-text-muted">Recruiter Responsiveness</span>
+            <span className="font-mono text-primary font-bold">{responsiveness}%</span>
           </div>
-          <div className="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
+          <div className="w-full h-1.5 rounded-full bg-surface overflow-hidden">
             <div
               className="h-full rounded-full bg-gradient-to-r from-fuchsia-500 to-pink-500"
               style={{ width: `${responsiveness}%` }}
@@ -76,10 +76,10 @@ export const ComparisonBehavior: React.FC<ComparisonBehaviorProps> = ({
         {/* Engagement */}
         <div className="flex flex-col gap-1.5">
           <div className="flex justify-between text-xs">
-            <span className="text-slate-350">Interview Engagement</span>
-            <span className="font-mono text-white font-bold">{engagement}%</span>
+            <span className="text-text-muted">Interview Engagement</span>
+            <span className="font-mono text-primary font-bold">{engagement}%</span>
           </div>
-          <div className="w-full h-1.5 rounded-full bg-white/5 overflow-hidden">
+          <div className="w-full h-1.5 rounded-full bg-surface overflow-hidden">
             <div
               className="h-full rounded-full bg-gradient-to-r from-pink-500 to-rose-500"
               style={{ width: `${engagement}%` }}
@@ -88,9 +88,9 @@ export const ComparisonBehavior: React.FC<ComparisonBehaviorProps> = ({
         </div>
 
         {/* Join Probability */}
-        <div className="flex flex-col gap-2 pt-2 border-t border-white/5 text-xs">
+        <div className="flex flex-col gap-2 pt-2 border-t border-border text-xs">
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">Join Probability:</span>
+            <span className="text-muted">Join Probability:</span>
             <span
               className={`px-2 py-0.5 rounded font-mono text-[10px] font-bold border
                 ${
@@ -106,8 +106,8 @@ export const ComparisonBehavior: React.FC<ComparisonBehaviorProps> = ({
           </div>
 
           <div className="flex items-center justify-between">
-            <span className="text-slate-400">Communication Signal:</span>
-            <span className="text-slate-200 font-medium">Professional & Active</span>
+            <span className="text-muted">Communication Signal:</span>
+            <span className="text-primary font-medium">Professional & Active</span>
           </div>
         </div>
       </div>

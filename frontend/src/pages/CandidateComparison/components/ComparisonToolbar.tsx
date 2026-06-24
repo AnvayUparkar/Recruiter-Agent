@@ -25,20 +25,20 @@ export const ComparisonToolbar: React.FC<ComparisonToolbarProps> = ({
   };
 
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 glass-panel rounded-2xl border-white/10 shadow-lg mb-6">
+    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 glass-panel rounded-2xl border-border shadow-lg mb-6">
       <div className="flex items-center gap-4">
         <button
           onClick={() => navigate("/dashboard")}
-          className="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-slate-300 transition-all focus:ring-2 focus:ring-blue-500"
+          className="p-2.5 rounded-xl bg-surface border border-border hover:bg-surface-hover text-text-muted transition-all focus:ring-2 focus:ring-blue-500"
           aria-label="Back to Leaderboard"
         >
           <ArrowLeft size={18} />
         </button>
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-white font-heading">
+          <h1 className="text-xl font-bold tracking-tight text-primary font-heading">
             Candidate Comparison Workspace
           </h1>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-muted">
             Compare fit calculations, scores, and signals of selected finalists.
           </p>
         </div>
@@ -62,7 +62,7 @@ export const ComparisonToolbar: React.FC<ComparisonToolbarProps> = ({
         <button
           onClick={handleExport}
           disabled={candidateCount === 0}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-slate-350 disabled:opacity-40 disabled:pointer-events-none text-xs transition-all"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border hover:bg-surface-hover text-text-muted disabled:opacity-40 disabled:pointer-events-none text-xs transition-all"
         >
           <Download size={14} />
           <span>Export Report</span>
@@ -71,7 +71,7 @@ export const ComparisonToolbar: React.FC<ComparisonToolbarProps> = ({
         <button
           onClick={handleShare}
           disabled={candidateCount === 0}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-slate-350 disabled:opacity-40 disabled:pointer-events-none text-xs transition-all"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border hover:bg-surface-hover text-text-muted disabled:opacity-40 disabled:pointer-events-none text-xs transition-all"
         >
           <Share2 size={14} />
           <span>Share Matchup</span>

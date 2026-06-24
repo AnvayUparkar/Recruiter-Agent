@@ -53,18 +53,18 @@ export const ComparisonWeaknesses: React.FC<ComparisonWeaknessesProps> = ({
   }, [candidate, explanation]);
 
   return (
-    <div className="p-5 rounded-2xl glass-panel border-white/10 shadow-md flex flex-col gap-4 bg-white/2 h-full">
+    <div className="p-5 rounded-2xl glass-panel border-border shadow-md flex flex-col gap-4 bg-surface h-full">
       <div>
-        <h3 className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+        <h3 className="text-xs text-muted font-bold uppercase tracking-wider">
           Gaps & Growth Areas
         </h3>
-        <p className="text-sm font-semibold text-white mt-0.5">
+        <p className="text-sm font-semibold text-primary mt-0.5">
           {candidate.name}
         </p>
       </div>
 
       {gaps.length === 0 ? (
-        <p className="text-xs text-slate-500 italic">No critical anomalies or gaps detected.</p>
+        <p className="text-xs text-muted italic">No critical anomalies or gaps detected.</p>
       ) : (
         <ul className="flex flex-col gap-2.5">
           {gaps.map((gap, idx) => (
@@ -78,7 +78,7 @@ export const ComparisonWeaknesses: React.FC<ComparisonWeaknessesProps> = ({
                 damping: 20,
                 delay: idx * 0.08,
               }}
-              className="flex items-start gap-2.5 text-xs text-slate-300 font-sans leading-relaxed"
+              className="flex items-start gap-2.5 text-xs text-text-muted font-sans leading-relaxed"
             >
               <AlertTriangle size={14} className="text-amber-500 shrink-0 mt-0.5" />
               <span>{gap}</span>

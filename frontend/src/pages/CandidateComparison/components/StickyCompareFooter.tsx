@@ -51,12 +51,12 @@ export const StickyCompareFooter: React.FC<StickyCompareFooterProps> = ({
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 80, opacity: 0 }}
           transition={{ type: "spring", stiffness: 140, damping: 20 }}
-          className="fixed bottom-0 left-0 right-0 z-50 p-4 border-t border-white/10 bg-black/80 backdrop-blur-md shadow-2xl flex items-center justify-center"
+          className="fixed bottom-0 left-0 right-0 z-50 p-4 border-t border-border bg-surface/95 backdrop-blur-md shadow-2xl flex items-center justify-center"
         >
           <div className="max-w-5xl w-full flex flex-col sm:flex-row items-center justify-between gap-4">
             {/* Selected Candidates list */}
             <div className="flex items-center gap-2 overflow-x-auto max-w-full">
-              <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider shrink-0">
+              <span className="text-[10px] text-muted font-bold uppercase tracking-wider shrink-0">
                 Matchup:
               </span>
               <div className="flex items-center gap-1.5">
@@ -68,11 +68,11 @@ export const StickyCompareFooter: React.FC<StickyCompareFooterProps> = ({
                   return (
                     <span
                       key={c.candidateId}
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white text-[11px] font-medium shrink-0 font-sans"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface border border-border text-primary text-[11px] font-medium shrink-0 font-sans"
                     >
                       <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                       <span>{c.name.split(" ")[0]}</span>
-                      <span className="text-slate-400 font-mono">({score}%)</span>
+                      <span className="text-muted font-mono">({score}%)</span>
                     </span>
                   );
                 })}
@@ -83,7 +83,7 @@ export const StickyCompareFooter: React.FC<StickyCompareFooterProps> = ({
             <div className="flex items-center gap-3 shrink-0">
               <button
                 onClick={handleGenerateReport}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-slate-350 text-[11px] font-semibold transition-all"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface border border-border hover:bg-surface-hover text-text-muted text-[11px] font-semibold transition-all"
               >
                 <FileText size={12} />
                 <span>Executive Summary</span>
@@ -91,7 +91,7 @@ export const StickyCompareFooter: React.FC<StickyCompareFooterProps> = ({
 
               <button
                 onClick={handleOpenCopilot}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-slate-350 text-[11px] font-semibold transition-all"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface border border-border hover:bg-surface-hover text-text-muted text-[11px] font-semibold transition-all"
               >
                 <MessageSquare size={12} />
                 <span>Copilot Chat</span>

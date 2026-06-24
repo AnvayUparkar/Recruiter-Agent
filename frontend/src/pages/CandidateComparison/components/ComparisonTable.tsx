@@ -100,9 +100,9 @@ export const ComparisonTable: React.FC<ComparisonTableProps> = ({ candidates }) 
   ];
 
   return (
-    <div className="w-full glass-panel rounded-2xl border-white/10 shadow-xl overflow-hidden mb-6">
-      <div className="px-6 py-4 border-b border-white/10 bg-white/5 flex items-center justify-between">
-        <h2 className="text-sm font-bold text-white uppercase tracking-wider font-heading">
+    <div className="w-full glass-panel rounded-2xl border-border shadow-xl overflow-hidden mb-6">
+      <div className="px-6 py-4 border-b border-border bg-surface flex items-center justify-between">
+        <h2 className="text-sm font-bold text-primary uppercase tracking-wider font-heading">
           Attribute & Score Matrix
         </h2>
         <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-bold uppercase tracking-wider flex items-center gap-1">
@@ -113,24 +113,24 @@ export const ComparisonTable: React.FC<ComparisonTableProps> = ({ candidates }) 
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
-            <tr className="border-b border-white/10 bg-white/2">
-              <th className="py-4 px-6 text-xs font-bold text-slate-400 uppercase tracking-wider w-64">
+            <tr className="border-b border-border bg-surface">
+              <th className="py-4 px-6 text-xs font-bold text-muted uppercase tracking-wider w-64">
                 Evaluation Parameter
               </th>
               {candidates.map((c) => (
                 <th
                   key={c.candidateId}
-                  className="py-4 px-6 text-sm font-bold text-white text-center font-mono border-l border-white/5 min-w-[150px]"
+                  className="py-4 px-6 text-sm font-bold text-primary text-center font-mono border-l border-border min-w-[150px]"
                 >
                   {c.name.split(" ")[0]}
-                  <span className="block text-[10px] text-slate-500 font-normal mt-0.5">
+                  <span className="block text-[10px] text-muted font-normal mt-0.5">
                     {c.candidateId}
                   </span>
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-white/5">
+          <tbody className="divide-y divide-border">
             {rows.map((row) => {
               // Find max value in row to highlight if numeric
               let maxVal = -1;
@@ -144,9 +144,9 @@ export const ComparisonTable: React.FC<ComparisonTableProps> = ({ candidates }) 
               return (
                 <tr
                   key={row.key}
-                  className="hover:bg-white/2 transition-colors duration-150"
+                  className="hover:bg-surface-hover transition-colors duration-150"
                 >
-                  <td className="py-4 px-6 text-sm font-semibold text-slate-300">
+                  <td className="py-4 px-6 text-sm font-semibold text-text-muted">
                     {row.label}
                   </td>
                   {candidates.map((c) => {
@@ -157,11 +157,11 @@ export const ComparisonTable: React.FC<ComparisonTableProps> = ({ candidates }) 
                     return (
                       <td
                         key={c.candidateId}
-                        className={`py-4 px-6 text-center text-sm font-mono border-l border-white/5 transition-all
+                        className={`py-4 px-6 text-center text-sm font-mono border-l border-border transition-all
                           ${
                             isMax
                               ? "bg-emerald-500/5 text-emerald-400 font-bold shadow-glow"
-                              : "text-slate-300"
+                              : "text-text-muted"
                           }`}
                       >
                         <div className="flex items-center justify-center gap-1.5">

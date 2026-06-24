@@ -40,11 +40,21 @@ def setup_logging(
 
     # 1. Console Handler — force UTF-8 so ₹/emoji symbols don't crash on Windows (cp1252)
     import io
-    utf8_stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace", line_buffering=True)
-    console_handler = logging.StreamHandler(utf8_stdout)
+    try:
+        is_testing = "pytest" in sys.modules or "unittest" in sys.modules
+        if sys.stdout and not getattr(sys.stdout, "closed", False) and hasattr(sys.stdout, "buffer") and sys.stdout.buffer and not is_testing:
+            sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace", line_buffering=True)
+            console_handler = logging.StreamHandler(sys.stdout)
+        else:
+            console_handler = logging.StreamHandler(sys.stdout)
+    except Exception:
+        console_handler = logging.StreamHandler(sys.stdout)
+
     console_handler.setFormatter(formatter)
     console_handler.setLevel(numeric_level)
     root_logger.addHandler(console_handler)
+
+
 
     # 2. File Handler (if log_dir is provided)
     if log_dir:

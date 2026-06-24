@@ -140,7 +140,7 @@ const TableRow = React.memo<{
           disabled={isCompareDisabled && !isCompared}
           onChange={(e) => onToggleComparison(e.target.checked)}
           className="w-4 h-4 rounded border-slate-300 dark:border-slate-800 text-blue-600 bg-slate-950 focus:ring-blue-500 focus:ring-offset-slate-900 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-          title={isCompareDisabled ? "Max 2 finalists can be compared" : "Select for final side-by-side comparison"}
+          title={isCompareDisabled ? "Max 5 finalists can be compared" : "Select for final side-by-side comparison"}
         />
       </td>
 

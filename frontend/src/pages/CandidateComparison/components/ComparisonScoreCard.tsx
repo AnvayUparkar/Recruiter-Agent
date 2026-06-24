@@ -44,7 +44,7 @@ export const ComparisonScoreCard: React.FC<ComparisonScoreCardProps> = ({
   ] as const;
 
   return (
-    <div className="p-5 rounded-2xl glass-panel border-white/10 shadow-md flex flex-col gap-4 bg-white/2 relative overflow-hidden group">
+    <div className="p-5 rounded-2xl glass-panel border-border shadow-md flex flex-col gap-4 bg-surface relative overflow-hidden group">
       {isLeader("final") && (
         <div className="absolute top-0 right-0 bg-gradient-to-l from-emerald-500/20 to-transparent text-emerald-400 text-[10px] font-bold py-1 px-3 rounded-bl-xl border-l border-b border-emerald-500/20 flex items-center gap-1">
           <Trophy size={10} className="fill-current" />
@@ -53,10 +53,10 @@ export const ComparisonScoreCard: React.FC<ComparisonScoreCardProps> = ({
       )}
 
       <div>
-        <h3 className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+        <h3 className="text-xs text-muted font-bold uppercase tracking-wider">
           AI Score Breakdown
         </h3>
-        <p className="text-sm font-semibold text-white mt-0.5">
+        <p className="text-sm font-semibold text-primary mt-0.5">
           {candidate.name}
         </p>
       </div>
@@ -69,19 +69,19 @@ export const ComparisonScoreCard: React.FC<ComparisonScoreCardProps> = ({
           return (
             <div key={m.key} className="flex flex-col gap-1.5">
               <div className="flex items-center justify-between text-xs">
-                <span className="text-slate-300 font-medium">{m.label}</span>
+                <span className="text-text-muted font-medium">{m.label}</span>
                 <div className="flex items-center gap-1 font-mono">
                   {isCurrentLeader && (
                     <Sparkles size={11} className="text-emerald-400 animate-pulse" />
                   )}
-                  <span className={isCurrentLeader ? "text-emerald-400 font-bold" : "text-white"}>
+                  <span className={isCurrentLeader ? "text-emerald-400 font-bold" : "text-primary"}>
                     {value}%
                   </span>
                 </div>
               </div>
 
               {/* Progress bar container */}
-              <div className="w-full h-2 rounded-full bg-white/5 border border-white/5 overflow-hidden">
+              <div className="w-full h-2 rounded-full bg-surface border border-border overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${value}%` }}
@@ -98,9 +98,9 @@ export const ComparisonScoreCard: React.FC<ComparisonScoreCardProps> = ({
         })}
 
         {/* Confidence metric */}
-        <div className="mt-2 pt-3 border-t border-white/5 flex items-center justify-between text-xs text-slate-400">
+        <div className="mt-2 pt-3 border-t border-border flex items-center justify-between text-xs text-muted">
           <span>Match Confidence</span>
-          <span className="font-mono text-slate-200">
+          <span className="font-mono text-primary">
             {Math.round(currentScores.confidence * 100)}%
           </span>
         </div>

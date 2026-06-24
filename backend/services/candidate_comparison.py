@@ -146,3 +146,109 @@ class CandidateComparison:
     ) -> CandidateComparisonResult:
         """Alias to match planner design."""
         return CandidateComparison.compare_candidates(candidate_a, fv_a, score_a, rp_a, candidate_b, fv_b, score_b, rp_b)
+
+    @staticmethod
+    def compare_multiple_candidates(
+        candidates: List[Candidate],
+        feature_vectors: List[FeatureVector],
+        scores: List[RankingScore],
+        reliability_profiles: List[ReliabilityProfile],
+    ) -> CandidateComparisonResult:
+        """Determines the superior candidate among 2 to 5 finalists and generates comparison structures.
+
+        Args:
+            candidates: List of Candidate models.
+            feature_vectors: List of corresponding FeatureVector models.
+            scores: List of corresponding RankingScore models.
+            reliability_profiles: List of corresponding ReliabilityProfile models.
+
+        Returns:
+            CandidateComparisonResult: Detailed multi-candidate comparison result.
+        """
+        if not candidates or len(candidates) < 2:
+            raise ValueError("Must compare at least 2 candidates.")
+
+        # Determine winner based on highest composite score
+        sorted_indices = sorted(range(len(scores)), key=lambda i: scores[i].final_score, reverse=True)
+        winner_idx = sorted_indices[0]
+        winner_cand = candidates[winner_idx]
+        winner_score = scores[winner_idx].final_score
+        winner_id = winner_cand.candidate_id
+        winner_name = winner_cand.profile.anonymized_name or winner_id
+
+        # Calculate score difference of the top two for decision confidence
+        if len(scores) >= 2:
+            second_idx = sorted_indices[1]
+            score_diff = abs(winner_score - scores[second_idx].final_score)
+        else:
+            score_diff = 0.0
+
+        # Decision confidence based on score margin of top 2
+        if score_diff >= 0.15:
+            confidence = 0.95
+        elif score_diff >= 0.08:
+            confidence = 0.85
+        elif score_diff >= 0.03:
+            confidence = 0.70
+        else:
+            confidence = 0.55
+
+        # winner reason text
+        winner_reason = f"{winner_name} represents the most aligned candidate match based on aggregate evaluation "
+        if len(scores) >= 2:
+            second_cand = candidates[sorted_indices[1]]
+            second_name = second_cand.profile.anonymized_name or second_cand.candidate_id
+            winner_reason += f"with a final composite score of {winner_score*100:.1f}% vs {second_name} at {scores[second_idx].final_score*100:.1f}%. "
+        else:
+            winner_reason += f"with a composite score of {winner_score*100:.1f}%. "
+
+        # Enrich winner description
+        tech_winner = scores[winner_idx].technical_score if hasattr(scores[winner_idx], "technical_score") else 0.5
+        rp_winner = reliability_profiles[winner_idx].reliability_score if hasattr(reliability_profiles[winner_idx], "reliability_score") else 0.5
+        winner_reason += f"{winner_name} exhibits strong competencies across core parameters"
+        if tech_winner >= 0.8:
+            winner_reason += " with outstanding technical scores"
+        if rp_winner >= 0.8:
+            winner_reason += " and profile authenticity confirmation."
+        else:
+            winner_reason += "."
+
+        strength_comparison = {}
+        weakness_comparison = {}
+        risk_differences = {}
+
+        for idx, cand in enumerate(candidates):
+            cid = cand.candidate_id
+            rp = reliability_profiles[idx]
+            strength_comparison[cid] = f"Years of exp: {cand.total_years_experience:.1f}. Skills: {len(cand.skills)}."
+            weakness_comparison[cid] = f"Notice period: {cand.redrob_signals.notice_period_days} days. Reliability tier: {rp.reliability_tier()}."
+            risk_differences[cid] = f"Overall fraud risk: {rp.fraud_profile.overall_fraud_risk if rp.fraud_profile else 0.0:.2f}"
+
+        # Populate pairwise fields for schema compliance (using first two candidates)
+        cand_a_id = candidates[0].candidate_id
+        cand_b_id = candidates[1].candidate_id
+
+        tech_a = feature_vectors[0].technical_features.technical_score if hasattr(feature_vectors[0], "technical_features") else 0.5
+        tech_b = feature_vectors[1].technical_features.technical_score if hasattr(feature_vectors[1], "technical_features") else 0.5
+        match_a = feature_vectors[0].matching_features.matching_score if hasattr(feature_vectors[0], "matching_features") else 0.5
+        match_b = feature_vectors[1].matching_features.matching_score if hasattr(feature_vectors[1], "matching_features") else 0.5
+
+        feature_differences = {
+            "technical_score_diff": round(tech_a - tech_b, 4),
+            "matching_score_diff": round(match_a - match_b, 4),
+            "experience_years_diff": round(candidates[0].total_years_experience - candidates[1].total_years_experience, 2),
+            "reliability_score_diff": round(reliability_profiles[0].reliability_score - reliability_profiles[1].reliability_score, 4),
+        }
+
+        return CandidateComparisonResult(
+            candidate_a=cand_a_id,
+            candidate_b=cand_b_id,
+            winner=winner_id,
+            winner_reason=winner_reason.strip(),
+            strength_comparison=strength_comparison,
+            weakness_comparison=weakness_comparison,
+            feature_differences=feature_differences,
+            risk_differences=risk_differences,
+            decision_confidence=confidence
+        )
+

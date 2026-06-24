@@ -91,10 +91,10 @@ export const ComparisonInsights: React.FC<ComparisonInsightsProps> = ({
   return (
     <div className="w-full mb-6">
       <div className="mb-4">
-        <h2 className="text-sm font-bold text-white uppercase tracking-wider font-heading">
+        <h2 className="text-sm font-bold text-primary uppercase tracking-wider font-heading">
           AI Comparative Insights
         </h2>
-        <p className="text-[11px] text-slate-400">
+        <p className="text-[11px] text-muted">
           Synthesized summary comparison of candidate properties and metrics.
         </p>
       </div>
@@ -103,7 +103,7 @@ export const ComparisonInsights: React.FC<ComparisonInsightsProps> = ({
         {insights.map((ins, idx) => (
           <div
             key={idx}
-            className="p-4 rounded-xl glass-panel border-white/5 flex gap-3.5 bg-white/1 shadow-sm hover:border-white/10 transition-all duration-200"
+            className="p-4 rounded-xl glass-panel border-border flex gap-3.5 bg-surface shadow-sm hover:border-border transition-all duration-200"
           >
             <div
               className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 border ${ins.color}`}
@@ -111,10 +111,10 @@ export const ComparisonInsights: React.FC<ComparisonInsightsProps> = ({
               {ins.icon}
             </div>
             <div className="flex flex-col gap-1">
-              <h4 className="text-xs font-bold text-white font-heading">
+              <h4 className="text-xs font-bold text-primary font-heading">
                 {ins.title}
               </h4>
-              <p className="text-[11px] text-slate-350 leading-relaxed font-sans">
+              <p className="text-[11px] text-text-muted leading-relaxed font-sans">
                 {ins.description}
               </p>
             </div>

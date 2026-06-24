@@ -102,13 +102,13 @@ export const ComparisonSkills: React.FC<ComparisonSkillsProps> = ({
   const matchRatio = totalRequired > 0 ? `${matchedCount}/${totalRequired}` : `${candidateSkills.length} total`;
 
   return (
-    <div className="p-5 rounded-2xl glass-panel border-white/10 shadow-md flex flex-col gap-4 bg-white/2 h-full">
-      <div className="border-b border-white/5 pb-2.5 flex items-center justify-between">
+    <div className="p-5 rounded-2xl glass-panel border-border shadow-md flex flex-col gap-4 bg-surface h-full">
+      <div className="border-b border-border pb-2.5 flex items-center justify-between">
         <div>
-          <h3 className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+          <h3 className="text-xs text-muted font-bold uppercase tracking-wider">
             Skill Coverage
           </h3>
-          <p className="text-sm font-semibold text-white mt-0.5">
+          <p className="text-sm font-semibold text-primary mt-0.5">
             {candidate.name}
           </p>
         </div>
@@ -117,7 +117,7 @@ export const ComparisonSkills: React.FC<ComparisonSkillsProps> = ({
         </span>
       </div>
 
-      <p className="text-xs text-slate-350 italic">
+      <p className="text-xs text-text-muted italic">
         Matches {matchedCount} of {totalRequired || "several"} required job description parameters.
       </p>
 
@@ -126,7 +126,7 @@ export const ComparisonSkills: React.FC<ComparisonSkillsProps> = ({
         {/* Matched required skills */}
         {matchedSkills.length > 0 && (
           <div className="flex flex-col gap-1.5">
-            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider flex items-center gap-1">
+            <span className="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1">
               <Check size={11} className="text-emerald-400" /> Matched Skills
             </span>
             <div className="flex flex-wrap gap-1.5">
@@ -146,7 +146,7 @@ export const ComparisonSkills: React.FC<ComparisonSkillsProps> = ({
         {/* Nice-to-haves / Preferred matched */}
         {preferredSkills.length > 0 && (
           <div className="flex flex-col gap-1.5">
-            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider flex items-center gap-1">
+            <span className="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1">
               <Award size={11} className="text-blue-400" /> Preferred Matched
             </span>
             <div className="flex flex-wrap gap-1.5">
@@ -165,7 +165,7 @@ export const ComparisonSkills: React.FC<ComparisonSkillsProps> = ({
         {/* Missing skills */}
         {missingSkills.length > 0 && (
           <div className="flex flex-col gap-1.5">
-            <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider flex items-center gap-1">
+            <span className="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1">
               <X size={11} className="text-rose-400" /> Missing Requirements
             </span>
             <div className="flex flex-wrap gap-1.5">
@@ -183,15 +183,15 @@ export const ComparisonSkills: React.FC<ComparisonSkillsProps> = ({
 
         {/* Shared skills */}
         {sharedSkills.length > 0 && (
-          <div className="flex flex-col gap-1.5 border-t border-white/5 pt-2.5">
-            <span className="text-[10px] text-slate-550 font-bold uppercase tracking-wider flex items-center gap-1">
+          <div className="flex flex-col gap-1.5 border-t border-border pt-2.5">
+            <span className="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1">
               <Users size={11} className="text-blue-400" /> Shared Skills (Cohort Overlap)
             </span>
             <div className="flex flex-wrap gap-1.5">
               {sharedSkills.map((s) => (
                 <span
                   key={s.name}
-                  className="text-[10px] font-medium bg-blue-500/5 border border-blue-500/15 text-slate-300 px-2.5 py-1 rounded-lg"
+                  className="text-[10px] font-medium bg-blue-500/5 border border-blue-500/15 text-text-muted px-2.5 py-1 rounded-lg"
                 >
                   {s.name}
                 </span>
@@ -202,8 +202,8 @@ export const ComparisonSkills: React.FC<ComparisonSkillsProps> = ({
 
         {/* Unique capabilities */}
         {uniqueSkills.length > 0 && (
-          <div className="flex flex-col gap-1.5 border-t border-white/5 pt-2.5">
-            <span className="text-[10px] text-slate-550 font-bold uppercase tracking-wider flex items-center gap-1">
+          <div className="flex flex-col gap-1.5 border-t border-border pt-2.5">
+            <span className="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1">
               <ShieldAlert size={11} className="text-amber-400" /> Unique Skills (Cohort Edge)
             </span>
             <div className="flex flex-wrap gap-1.5">

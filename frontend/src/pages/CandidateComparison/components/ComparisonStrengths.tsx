@@ -44,18 +44,18 @@ export const ComparisonStrengths: React.FC<ComparisonStrengthsProps> = ({
   }, [candidate, explanation]);
 
   return (
-    <div className="p-5 rounded-2xl glass-panel border-white/10 shadow-md flex flex-col gap-4 bg-white/2 h-full">
+    <div className="p-5 rounded-2xl glass-panel border-border shadow-md flex flex-col gap-4 bg-surface h-full">
       <div>
-        <h3 className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+        <h3 className="text-xs text-muted font-bold uppercase tracking-wider">
           Key Strengths
         </h3>
-        <p className="text-sm font-semibold text-white mt-0.5">
+        <p className="text-sm font-semibold text-primary mt-0.5">
           {candidate.name}
         </p>
       </div>
 
       {strengths.length === 0 ? (
-        <p className="text-xs text-slate-500 italic">No primary strengths parsed.</p>
+        <p className="text-xs text-muted italic">No primary strengths parsed.</p>
       ) : (
         <ul className="flex flex-col gap-2.5">
           {strengths.map((str, idx) => (
@@ -69,7 +69,7 @@ export const ComparisonStrengths: React.FC<ComparisonStrengthsProps> = ({
                 damping: 20,
                 delay: idx * 0.08,
               }}
-              className="flex items-start gap-2.5 text-xs text-slate-300 font-sans leading-relaxed"
+              className="flex items-start gap-2.5 text-xs text-text-muted font-sans leading-relaxed"
             >
               <CheckCircle size={14} className="text-emerald-400 shrink-0 mt-0.5" />
               <span>{str}</span>
