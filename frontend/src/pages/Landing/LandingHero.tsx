@@ -236,9 +236,9 @@ export const LandingHero: React.FC = () => {
 
         {/* Right Side 3D Spline Scene Column */}
         <div className="lg:col-span-5 flex justify-center w-full relative h-[500px] lg:h-[600px]">
-          {/* Subtle decorative grid background */}
+          {/* Subtle decorative grid background - visible in both modes */}
           <div 
-            className="absolute inset-0 opacity-[0.03] dark:opacity-10 rounded-3xl overflow-hidden"
+            className="absolute inset-0 opacity-[0.15] dark:opacity-10 rounded-3xl overflow-hidden"
             style={{
               backgroundImage: `linear-gradient(to right, #94a3b8 1px, transparent 1px), linear-gradient(to bottom, #94a3b8 1px, transparent 1px)`,
               backgroundSize: '40px 40px'
