@@ -24,6 +24,9 @@ class Requirement(BaseModel):
     confidence: float = Field(
         1.0, ge=0.0, le=1.0, description="Inference confidence score (0.0 to 1.0)."
     )
+    category: str | None = Field(
+        None, description="Category of the requirement (e.g., Vector Database, NLP)."
+    )
 
     model_config = {
         "use_enum_values": True,

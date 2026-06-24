@@ -83,51 +83,40 @@ class JdFeatureExtractor:
         """
         must_haves = []
         good_to_haves = []
+        seen = set()
 
-        # Technical skill extraction lists
-        must_have_keywords = {
-            "embeddings-based retrieval": "Embeddings Retrieval",
-            "vector database": "Vector Databases",
-            "python": "Python Programming",
-            "evaluation framework": "Ranking Evaluation",
-            "hybrid search": "Hybrid Search",
-            "ndcg": "NDCG Evaluation Metrics",
-            "mrr": "MRR Evaluation Metrics",
-            "map": "MAP Evaluation Metrics",
-        }
+        all_terms = list(self.taxonomy._synonym_lookup.keys()) + list(self.taxonomy._category_lookup.keys())
+        # Sort by length descending so multi-word terms like "Hugging Face Transformers" match before "Transformers"
+        all_terms = sorted(list(set(all_terms)), key=len, reverse=True)
 
-        good_to_have_keywords = {
-            "fine-tuning": "LLM Fine-Tuning",
-            "fine tuning": "LLM Fine-Tuning",
-            "lora": "LoRA PEFT Tuning",
-            "learning-to-rank": "Learning to Rank (LTR)",
-            "open source": "Open Source Contributions",
-            "hr-tech": "HR Tech Domain Experience",
-            "recruiting tech": "Recruiting Marketplace Tech",
-            "distributed systems": "Distributed Systems",
-            "inference optimization": "Inference Optimization",
-        }
+        matches = []
 
-        # Check for occurrence in text
-        text_lower = text.lower()
+        for term in all_terms:
+            # Custom boundary checks that work with symbols like C++ and C#
+            pattern = r'(?<![a-zA-Z0-9])' + re.escape(term) + r'(?![a-zA-Z0-9])'
+            
+            # Match using original text with IGNORECASE so taxonomy casing doesn't cause silent misses
+            for match in re.finditer(pattern, text, re.IGNORECASE):
+                start_pos = match.start()
+                canonical_name = self.taxonomy.get_canonical_name(term)
+                category_key = self.taxonomy.map_skill_to_category(term)
+                category = category_key if category_key != "UNKNOWN" else None
+                
+                matches.append((start_pos, canonical_name, term, category))
 
-        for key, name in must_have_keywords.items():
-            if key in text_lower:
+        # Sort matches by the starting character position in the JD text
+        matches.sort(key=lambda x: x[0])
+
+        for _, canonical_name, term, category in matches:
+            if canonical_name not in seen:
+                seen.add(canonical_name)
+                
                 must_haves.append(
                     Requirement(
-                        name=name,
+                        name=canonical_name,
                         importance=RequirementImportance.CRITICAL,
-                        confidence=0.95,
-                    )
-                )
-
-        for key, name in good_to_have_keywords.items():
-            if key in text_lower:
-                good_to_haves.append(
-                    Requirement(
-                        name=name,
-                        importance=RequirementImportance.OPTIONAL,
-                        confidence=0.85,
+                        confidence=0.99 if term == canonical_name.lower() else 0.95,
+                        category=category
                     )
                 )
 
@@ -135,9 +124,10 @@ class JdFeatureExtractor:
         if not must_haves:
             must_haves.append(
                 Requirement(
-                    name="Python Programming",
+                    name="Python",
                     importance=RequirementImportance.CRITICAL,
                     confidence=0.90,
+                    category="PROGRAMMING_LANGUAGE"
                 )
             )
 

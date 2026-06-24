@@ -33,12 +33,12 @@ export const Breadcrumbs: React.FC = () => {
   }
 
   return (
-    <nav aria-label="Breadcrumb" className="flex items-center text-xs font-medium text-slate-500 dark:text-slate-400">
+    <nav aria-label="Breadcrumb" className="flex items-center text-xs font-medium text-muted">
       <ol className="flex items-center space-x-1.5 md:space-x-2">
         <li className="flex items-center">
           <Link
             to="/"
-            className="flex items-center hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
+            className="flex items-center hover:text-primary transition-colors"
           >
             <Home size={14} className="mr-1" />
             <span className="sr-only">Home</span>
@@ -58,18 +58,18 @@ export const Breadcrumbs: React.FC = () => {
               transition={{ duration: 0.2 }}
               className="flex items-center"
             >
-              <ChevronRight size={12} className="mx-1 text-slate-400 dark:text-slate-600 shrink-0" />
+              <ChevronRight size={12} className="mx-1 text-text-disabled shrink-0" />
               {isLast ? (
                 <span
                   aria-current="page"
-                  className="font-semibold text-slate-900 dark:text-slate-100 truncate max-w-[120px] sm:max-w-[200px]"
+                  className="font-semibold text-primary truncate max-w-[120px] sm:max-w-[200px]"
                 >
                   {name}
                 </span>
               ) : (
                 <Link
                   to={to}
-                  className="hover:text-slate-900 dark:hover:text-slate-100 transition-colors truncate max-w-[120px] sm:max-w-[200px]"
+                  className="hover:text-primary transition-colors truncate max-w-[120px] sm:max-w-[200px]"
                 >
                   {name}
                 </Link>

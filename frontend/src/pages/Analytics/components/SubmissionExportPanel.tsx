@@ -52,24 +52,24 @@ export const SubmissionExportPanel: React.FC = () => {
   ];
 
   return (
-    <div className="w-full glass-panel rounded-2xl border-white/10 shadow-xl p-5 md:p-6 mb-6">
-      <div className="mb-4 border-b border-white/5 pb-3">
-        <h2 className="text-sm font-bold text-white uppercase tracking-wider font-heading">
+    <div className="w-full glass-panel rounded-2xl border-border shadow-xl p-5 md:p-6 mb-6">
+      <div className="mb-4 border-b border-border pb-3">
+        <h2 className="text-sm font-bold text-primary uppercase tracking-wider font-heading">
           Hackathon Exporter Center
         </h2>
-        <p className="text-[11px] text-slate-400 mt-0.5">
+        <p className="text-[11px] text-muted mt-0.5">
           Generate matching rank logs mapped to submission-ready formats.
         </p>
       </div>
 
       <div className="flex flex-col gap-4">
         {/* Compliance Checklist */}
-        <div className="flex flex-col gap-2 p-3 rounded-xl bg-white/2 border border-white/5">
-          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider mb-1">
+        <div className="flex flex-col gap-2 p-3 rounded-xl bg-surface border border-border">
+          <span className="text-[10px] text-muted font-bold uppercase tracking-wider mb-1">
             Ready for Submission Checklist
           </span>
           {checklist.map((item, idx) => (
-            <div key={idx} className="flex items-center gap-2 text-xs text-slate-350">
+            <div key={idx} className="flex items-center gap-2 text-xs text-text-muted">
               <CheckCircle2 size={13} className="text-emerald-400 shrink-0" />
               <span>{item.label}</span>
             </div>
@@ -101,7 +101,7 @@ export const SubmissionExportPanel: React.FC = () => {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="w-full max-w-lg glass-panel p-6 md:p-8 rounded-3xl border-white/10 shadow-2xl relative flex flex-col items-center text-center bg-slate-950"
+              className="w-full max-w-lg glass-panel p-6 md:p-8 rounded-3xl border-border shadow-2xl relative flex flex-col items-center text-center bg-surface"
             >
               {/* Animated check circle */}
               <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4 shadow-glow">
@@ -113,41 +113,41 @@ export const SubmissionExportPanel: React.FC = () => {
                 <span>Verification Successful</span>
               </span>
 
-              <h3 className="text-xl font-black text-white font-heading mt-2">
+              <h3 className="text-xl font-black text-primary font-heading mt-2">
                 Ready for Hackathon Submission
               </h3>
-              <p className="text-xs text-slate-400 mt-1 max-w-sm">
+              <p className="text-xs text-muted mt-1 max-w-sm">
                 The ranking database has been exported to a standard submissions directory.
               </p>
 
               {/* Details table */}
-              <div className="w-full mt-5 bg-white/2 rounded-2xl border border-white/5 p-4 text-left flex flex-col gap-3 font-mono text-[11px] text-slate-350">
-                <div className="flex justify-between border-b border-white/5 pb-1.5">
-                  <span className="text-slate-500 font-bold">EXPORTPATH:</span>
-                  <span className="text-white text-right truncate pl-4 select-all">
+              <div className="w-full mt-5 bg-surface rounded-2xl border border-border p-4 text-left flex flex-col gap-3 font-mono text-[11px] text-text-muted">
+                <div className="flex justify-between border-b border-border pb-1.5">
+                  <span className="text-muted font-bold">EXPORTPATH:</span>
+                  <span className="text-primary text-right truncate pl-4 select-all">
                     {modalDetails.exportPath.split(/[\\/]/).pop()}
                   </span>
                 </div>
 
-                <div className="flex justify-between border-b border-white/5 pb-1.5">
-                  <span className="text-slate-500 font-bold">ROW COUNT:</span>
-                  <span className="text-white font-bold">{modalDetails.rowCount} candidate logs</span>
+                <div className="flex justify-between border-b border-border pb-1.5">
+                  <span className="text-muted font-bold">ROW COUNT:</span>
+                  <span className="text-primary font-bold">{modalDetails.rowCount} candidate logs</span>
                 </div>
 
-                <div className="flex justify-between border-b border-white/5 pb-1.5">
-                  <span className="text-slate-500 font-bold">GENERATED:</span>
-                  <span className="text-white">{new Date(modalDetails.timestamp).toLocaleTimeString()}</span>
+                <div className="flex justify-between border-b border-border pb-1.5">
+                  <span className="text-muted font-bold">GENERATED:</span>
+                  <span className="text-primary">{new Date(modalDetails.timestamp).toLocaleTimeString()}</span>
                 </div>
 
                 <div className="flex flex-col gap-1">
-                  <span className="text-slate-500 font-bold">SHA256 CHECKSUM HASH:</span>
-                  <div className="flex items-center gap-2 bg-black/40 p-2 rounded border border-white/10 mt-1">
-                    <span className="text-white font-mono text-[10px] select-all flex-1 truncate">
+                  <span className="text-muted font-bold">SHA256 CHECKSUM HASH:</span>
+                  <div className="flex items-center gap-2 bg-surface p-2 rounded border border-border mt-1">
+                    <span className="text-primary font-mono text-[10px] select-all flex-1 truncate">
                       {modalDetails.sha256Hash}
                     </span>
                     <button
                       onClick={handleCopyHash}
-                      className="p-1 rounded bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white"
+                      className="p-1 rounded bg-surface-hover hover:bg-surface-hover text-text-muted hover:text-primary"
                       title="Copy checksum hash"
                     >
                       {copied ? <Check size={12} className="text-emerald-400" /> : <Clipboard size={12} />}

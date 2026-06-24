@@ -9,235 +9,222 @@ from typing import Dict, List, Optional, Set
 # Standardized skill taxonomy mapping categories to lists of specific keywords/synonyms
 TAXONOMY: Dict[str, List[str]] = {
     "VECTOR_DATABASE": [
-        "pinecone",
-        "qdrant",
-        "weaviate",
-        "milvus",
-        "faiss",
-        "chroma",
-        "chromadb",
-        "pgvector",
-        "vector database",
-        "vector index",
+        "FAISS",
+        "Pinecone",
+        "Weaviate",
+        "Milvus",
+        "ChromaDB",
+        "Qdrant",
+        "pgvector"
     ],
     "RETRIEVAL": [
-        "bm25",
-        "opensearch",
-        "elasticsearch",
-        "hybrid search",
-        "dense retrieval",
-        "sparse retrieval",
-        "information retrieval",
-        "search infrastructure",
-        "keyword search",
+        "Information Retrieval",
+        "Semantic Search",
+        "Hybrid Search",
+        "Vector Search",
+        "Dense Retrieval",
+        "Sparse Retrieval",
+        "BM25",
+        "RAG",
+        "Retrieval-Augmented Generation",
+        "Semantic Retrieval",
+        "Retriever",
+        "OpenSearch",
+        "Elasticsearch"
     ],
     "LLM": [
-        "openai",
-        "claude",
-        "gemini",
-        "llama",
-        "mistral",
-        "gpt",
-        "falcon",
-        "cohere",
-        "large language model",
-        "llms",
-        "rag",
+        "OpenAI",
+        "Anthropic",
+        "Gemini",
+        "Claude",
+        "Llama",
+        "Mistral",
+        "GPT",
+        "Cohere",
+        "LLM",
+        "Large Language Model"
     ],
     "RANKING": [
-        "ndcg",
-        "mrr",
-        "map",
-        "ltr",
-        "learning-to-rank",
-        "ranking models",
-        "re-ranking",
-        "cross-encoders",
-        "recommendation systems",
-        "recommendation engines",
-        "collaborative filtering",
+        "NDCG",
+        "MRR",
+        "MAP",
+        "Learning-to-Rank",
+        "Re-ranking",
+        "Cross-encoders",
+        "Recommendation Systems"
     ],
     "EVALUATION": [
-        "a/b testing",
-        "offline evaluation",
-        "experimentation",
-        "benchmarks",
-        "eval frameworks",
-        "offline-to-online",
-        "ragas",
-        "trulens",
-        "deep评价",
+        "A/B Testing",
+        "Offline Evaluation",
+        "Ragas",
+        "TruLens"
     ],
     "FINE_TUNING": [
-        "lora",
-        "qlora",
-        "peft",
-        "sft",
-        "dpo",
-        "rlhf",
-        "fine tuning",
-        "fine-tuning",
-        "instruction tuning",
+        "LoRA",
+        "QLoRA",
+        "PEFT",
+        "SFT",
+        "RLHF",
+        "Fine-tuning"
     ],
     "MLOPS": [
-        "mlflow",
-        "weights & biases",
-        "wandb",
-        "kubeflow",
-        "bentoml",
-        "triton",
-        "sagemaker",
-        "mlops",
-        "hugging face",
-        "huggingface",
-        "model deployment",
-        "model serving",
+        "MLOps",
+        "MLflow",
+        "Weights & Biases",
+        "Kubeflow",
+        "BentoML",
+        "Triton",
+        "SageMaker",
+        "Model Deployment",
+        "Model Serving"
     ],
     "DISTRIBUTED_SYSTEMS": [
-        "spark",
-        "pyspark",
-        "ray",
-        "kafka",
-        "apache beam",
-        "flink",
-        "hadoop",
-        "dask",
-        "distributed training",
-        "deepspeed",
-        "megatron",
+        "Spark",
+        "Ray",
+        "Kafka",
+        "Apache Beam",
+        "Flink",
+        "Hadoop",
+        "Distributed Training",
+        "DeepSpeed"
     ],
     "PROGRAMMING_LANGUAGE": [
-        "python",
-        "go",
-        "golang",
-        "java",
-        "c++",
-        "rust",
-        "javascript",
-        "typescript",
-        "sql",
+        "Python",
+        "Go",
+        "Java",
+        "C++",
+        "Rust",
+        "JavaScript",
+        "TypeScript",
+        "SQL"
     ],
     "DEVOPS": [
-        "docker",
-        "kubernetes",
-        "k8s",
-        "terraform",
-        "ansible",
-        "ci/cd",
-        "github actions",
-        "jenkins",
-        "helm",
+        "Docker",
+        "Kubernetes",
+        "Terraform",
+        "CI/CD",
+        "GitHub Actions"
     ],
     "CLOUD_INFRASTRUCTURE": [
-        "aws",
-        "gcp",
-        "azure",
-        "amazon web services",
-        "google cloud",
-        "cloud computing",
+        "AWS",
+        "GCP",
+        "Azure",
+        "Cloud Computing"
     ],
     "MACHINE_LEARNING": [
-        "pytorch",
-        "tensorflow",
+        "Machine Learning",
+        "Deep Learning",
         "scikit-learn",
-        "sklearn",
-        "xgboost",
-        "lightgbm",
-        "keras",
-        "numpy",
-        "pandas",
-        "scipy",
-        "deep learning",
-        "neural networks",
+        "PyTorch",
+        "TensorFlow",
+        "Keras",
+        "XGBoost",
+        "LightGBM",
+        "CatBoost",
+        "Feature Engineering",
+        "NumPy",
+        "Pandas",
+        "SciPy",
+        "Neural Networks"
     ],
     "NLP": [
-        "natural language processing",
-        "nlp",
-        "bert",
-        "transformers",
-        "tokenization",
-        "ner",
-        "named entity recognition",
-        "spacy",
-        "nltk",
-        "sentence-transformers",
+        "NLP",
+        "Natural Language Processing",
+        "Embeddings",
+        "Vector Embeddings",
+        "Dense Embeddings",
+        "Sparse Embeddings",
+        "Sentence Embeddings",
+        "Sentence Transformers",
+        "Transformers",
+        "Hugging Face",
+        "Hugging Face Transformers",
+        "OpenAI Embeddings",
+        "BGE",
+        "E5",
+        "BERT",
+        "RoBERTa",
+        "T5",
+        "spaCy",
+        "NLTK",
+        "Tokenizers",
+        "Named Entity Recognition"
     ],
     "DATABASE_SYSTEMS": [
-        "postgresql",
-        "mysql",
-        "redis",
-        "mongodb",
-        "cassandra",
-        "dynamodb",
-        "snowflake",
-        "databricks",
-        "bigquery",
-        "data warehouse",
+        "PostgreSQL",
+        "MySQL",
+        "Redis",
+        "MongoDB",
+        "Cassandra",
+        "Snowflake",
+        "Databricks",
+        "BigQuery",
+        "DynamoDB",
+        "Oracle",
+        "Datawarehouse"
     ],
     "WEB_FRAMEWORK": [
-        "fastapi",
-        "flask",
-        "django",
-        "spring boot",
-        "node.js",
-        "express",
-        "react",
-        "angular",
-        "vue",
-    ],
-    "BEHAVIORAL_TRAIT": [
-        "ownership",
-        "ship fast",
-        "execution bias",
-        "startup mindset",
-        "recruiter empathy",
-        "async communication",
-        "strong writing",
-        "initiative",
-        "growth mindset",
-    ],
-    "MARKETPLACE_PRODUCT": [
-        "hr tech",
-        "recruiting tech",
-        "marketplace",
-        "b2b saas",
-        "fintech",
-        "e-commerce",
-        "applied ai",
+        "Angular",
+        "React",
+        "Vue",
+        "FastAPI",
+        "Flask",
+        "Django",
+        "Spring Boot",
+        "Node.js",
+        "Express"
     ],
     "COMPUTER_VISION": [
-        "opencv",
-        "cnn",
-        "image classification",
-        "object detection",
-        "yolo",
-        "segmentation",
-        "computer vision",
-    ],
-    "SPEECH_AUDIO": [
-        "speech recognition",
-        "asr",
-        "tts",
-        "whisper",
-        "audio processing",
-        "wavenet",
+        "Computer Vision",
+        "OpenCV",
+        "CNN",
+        "Image Classification",
+        "Object Detection",
+        "YOLO",
+        "Segmentation"
     ],
     "AI_AGENT": [
-        "langchain",
-        "llamaindex",
-        "agentic",
-        "function calling",
-        "tool use",
-    ],
-    "SOFTWARE_ENGINEERING": [
-        "system design",
-        "clean architecture",
-        "design patterns",
-        "unit testing",
-        "dry",
-        "solid principles",
-        "code quality",
+        "LangChain",
+        "LlamaIndex",
+        "Agentic",
+        "Function Calling",
+        "Tool Use"
     ]
+}
+
+SYNONYMS: Dict[str, str] = {
+    "sklearn": "scikit-learn",
+    "scikit learn": "scikit-learn",
+    "scikitlearn": "scikit-learn",
+    "hf transformers": "Hugging Face Transformers",
+    "huggingface": "Hugging Face",
+    "hugging face": "Hugging Face",
+    "huggingface transformers": "Hugging Face Transformers",
+    "sentencetransformer": "Sentence Transformers",
+    "sentence transformer": "Sentence Transformers",
+    "sentence-transformers": "Sentence Transformers",
+    "openai embeddings": "OpenAI Embeddings",
+    "hybrid retrieval": "Hybrid Search",
+    "dense retrieval": "Dense Retrieval",
+    "sparse retrieval": "Sparse Retrieval",
+    "learning to rank": "Learning-to-Rank",
+    "ml ops": "MLOps",
+    "vector embedding": "Embeddings",
+    "semantic retrieval": "Information Retrieval",
+    "angular 17": "Angular",
+    "angularjs": "Angular",
+    "k8s": "Kubernetes",
+    "amazon web services": "AWS",
+    "google cloud": "GCP",
+    "golang": "Go",
+    "reactjs": "React",
+    "vuejs": "Vue",
+    "node": "Node.js",
+    "nodejs": "Node.js",
+    "llms": "LLM",
+    "large language models": "LLM",
+    "chroma": "ChromaDB",
+    "wandb": "Weights & Biases"
 }
 
 
@@ -245,42 +232,47 @@ class JdTaxonomy:
     """Manages skill expansion and maps raw terms to standardised categories."""
 
     def __init__(self):
-        # Create inverse index for fast lookup
-        self._lookup: Dict[str, str] = {}
+        # Inverse index mapping lowered base terms to their Category
+        self._category_lookup: Dict[str, str] = {}
         for category, terms in TAXONOMY.items():
             for term in terms:
-                self._lookup[term.lower()] = category
+                self._category_lookup[term.lower()] = category
+        
+        # Lowercased synonyms mapping to their Canonical names
+        self._synonym_lookup: Dict[str, str] = {
+            k.lower(): v for k, v in SYNONYMS.items()
+        }
+
+    def get_canonical_name(self, term: str) -> str:
+        """Resolves a raw term to its canonical name (e.g., 'sklearn' -> 'scikit-learn')."""
+        term_lower = term.strip().lower()
+        if term_lower in self._synonym_lookup:
+            return self._synonym_lookup[term_lower]
+        
+        # Also ensure base terms return their proper casing (e.g., 'faiss' -> 'FAISS')
+        for category, base_terms in TAXONOMY.items():
+            for base_term in base_terms:
+                if term_lower == base_term.lower():
+                    return base_term
+        return term.strip()
 
     def map_skill_to_category(self, skill_name: str) -> str:
-        """Determines category mapping for a skill.
-
-        Checks exact match and checks if category term is a substring.
-
-        Args:
-            skill_name: The name of the skill.
-
-        Returns:
-            str: Category name if matched, or 'UNKNOWN'.
-        """
+        """Determines category mapping for a skill."""
         skill_lower = skill_name.strip().lower()
-
-        # 1. Exact match
-        if skill_lower in self._lookup:
-            return self._lookup[skill_lower]
-
-        # 2. Substring matching
-        for term, category in self._lookup.items():
-            if term in skill_lower or skill_lower in term:
-                return category
+        
+        # Try finding base term directly
+        if skill_lower in self._category_lookup:
+            return self._category_lookup[skill_lower]
+            
+        # Try resolving synonym first
+        if skill_lower in self._synonym_lookup:
+            canonical = self._synonym_lookup[skill_lower]
+            return self._category_lookup.get(canonical.lower(), "UNKNOWN")
 
         return "UNKNOWN"
 
     def get_category_skills(self, category: str) -> List[str]:
-        """Returns standard terms mapped to a category.
-
-        Args:
-            category: Category name.
-        """
+        """Returns standard terms mapped to a category."""
         return TAXONOMY.get(category.upper(), [])
 
     def get_all_categories(self) -> List[str]:
@@ -288,12 +280,9 @@ class JdTaxonomy:
         return list(TAXONOMY.keys())
 
     def get_related_skills(self, skill_name: str) -> Set[str]:
-        """Finds related skills mapped to the same category.
-
-        Args:
-            skill_name: Skill name to search for.
-        """
+        """Finds related skills mapped to the same category."""
         category = self.map_skill_to_category(skill_name)
         if category == "UNKNOWN":
             return set()
         return set(TAXONOMY[category])
+
