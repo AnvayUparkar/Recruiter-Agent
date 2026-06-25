@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Filter, 
   Sliders, 
   ChevronDown, 
   RefreshCw, 
@@ -60,7 +59,7 @@ const PremiumSlider = ({ label, value, min, max, unit, onChange }: any) => {
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0}
-          onDrag={(e, info) => {
+          onDrag={() => {
              // simplified slider logic, the underlying range input handles exact drag better, 
              // but we'll use a native range underneath invisibly for accessibility
           }}
@@ -84,7 +83,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
   onReset,
   parsedJD,
 }) => {
-  const shouldReduceMotion = useReducedMotion();
+
 
   // Accordion toggle states
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
@@ -111,10 +110,10 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
     exit: { height: 0, opacity: 0 },
   };
 
-  const allJDSkills = [
+  const allJDSkills = Array.from(new Set([
     ...(parsedJD?.mustHave || parsedJD?.must_have || []).map((s: any) => s.name),
     ...(parsedJD?.niceToHave || parsedJD?.good_to_have || []).map((s: any) => s.name),
-  ];
+  ])).filter(Boolean);
 
   return (
     <div className="relative w-full xl:w-80 shrink-0 sticky top-24 z-20">
@@ -355,7 +354,7 @@ export const FilterSidebar: React.FC<FilterSidebarProps> = ({
                           >
                             {isSelected && (
                               <motion.div 
-                                layoutId="capsule-bg"
+                                layoutId={`capsule-bg-${skill}`}
                                 className="absolute inset-0 bg-gradient-to-r from-blue-500/80 to-cyan-500/80"
                                 initial={false}
                                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
