@@ -31,10 +31,10 @@ export const SearchToolbar: React.FC<SearchToolbarProps> = ({
   }, []);
 
   return (
-    <div className="flex flex-col sm:flex-row gap-4 items-center w-full select-none">
+    <div className="flex items-center gap-3 w-full select-none">
       
       {/* Search Bar Input */}
-      <div className="relative flex-1 w-full">
+      <div className="relative flex-1">
         <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
         <input
           ref={inputRef}
@@ -53,7 +53,7 @@ export const SearchToolbar: React.FC<SearchToolbarProps> = ({
       </div>
 
       {/* Grid vs Table Layout Toggle */}
-      <div className="flex items-center bg-slate-200/60 dark:bg-slate-950 p-1 rounded-xl border border-slate-300 dark:border-slate-800 shrink-0 self-end sm:self-center">
+      <div className="flex items-center bg-slate-200/60 dark:bg-slate-950 p-1 rounded-xl border border-slate-300 dark:border-slate-800 shrink-0">
         <button
           onClick={() => onViewModeChange("grid")}
           className={`p-2 rounded-lg transition-all outline-none focus-ring

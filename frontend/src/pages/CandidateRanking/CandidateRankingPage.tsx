@@ -456,7 +456,7 @@ export const CandidateRankingPage: React.FC = () => {
         <div className="xl:col-span-9 flex flex-col gap-6 w-full">
           
           {/* Search, Sort and limit selector */}
-          <div className="flex flex-col lg:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3">
             <SearchToolbar
               query={searchQuery}
               onQueryChange={setSearchQuery}
@@ -464,7 +464,7 @@ export const CandidateRankingPage: React.FC = () => {
               onViewModeChange={handleViewModeChange}
             />
 
-            <div className="flex items-center gap-3 w-full lg:w-auto justify-end">
+            <div className="flex items-center gap-3 shrink-0">
               {/* Mobile Filter Toggle Drawer button */}
               <button
                 onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
@@ -552,7 +552,7 @@ export const CandidateRankingPage: React.FC = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
                   >
                     {paginatedCandidates.map((cand) => {
                       const isCompared = comparisonCandidateIds.includes(cand.candidateId);
