@@ -3,9 +3,10 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAppStore } from "../../store/appStore";
 import { useRankingStore } from "../../store/rankingStore";
 import { useCandidateStore } from "../../store/candidateStore";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueries } from "@tanstack/react-query";
 import { rankingService } from "../../services/rankingService";
-import { TrendingUp, Sparkles, RefreshCw, Filter, Settings2, AlertCircle } from "lucide-react";
+import { candidateService } from "../../services/candidateService";
+import { TrendingUp, Sparkles, RefreshCw, Filter, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import FilterSidebar, { FilterState } from "./components/FilterSidebar";
@@ -26,6 +27,29 @@ const DEFAULT_FILTERS: FilterState = {
   skills: [],
 };
 
+// Helper to extract a normalized integer representing availability in days
+const getAvailabilityInDays = (item: any): number | null => {
+  const days = item?.details?.redrob_signals?.noticePeriodDays;
+  if (typeof days === 'number') return days;
+  
+  const availStr = String(item?.details?.availability || "").toLowerCase().trim();
+  if (!availStr || availStr === "null" || availStr === "undefined") return null;
+  
+  if (availStr.includes("immediate") || availStr.includes("now") || availStr.includes("0")) return 0;
+  
+  // Try to parse numbers from the string e.g. "15 Days", "2 months"
+  const matchNum = availStr.match(/(\d+)/);
+  if (matchNum) {
+     const val = parseInt(matchNum[1], 10);
+     if (availStr.includes("month")) return val * 30;
+     if (availStr.includes("week")) return val * 7;
+     return val; // Assume days
+  }
+  
+  return null;
+};
+
+// Simulated hash for stable deterministic sorting fallbacks
 const hashString = (str: string): number => {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -154,14 +178,27 @@ export const CandidateRankingPage: React.FC = () => {
     setCurrentPage(1);
   }, [searchQuery, filters, sortField, sortDirection, strategy]);
 
-  // Combine ranked scores with detailed profiles (pre-populated details are inlined)
+  // Fetch full details for all ranked candidates to enable local filtering and sorting
+  const candidateQueries = useQueries({
+    queries: (rankingResults || []).map((cand: any) => ({
+      queryKey: ["candidateDetails", cand.candidateId],
+      queryFn: () => candidateService.getCandidate(cand.candidateId),
+      staleTime: 10 * 60 * 1000,
+    }))
+  });
+
+  // Combine ranked scores with detailed profiles
   const candidatesWithDetails = useMemo(() => {
     if (!Array.isArray(rankingResults) || rankingResults.length === 0) return [];
-    return rankingResults.map((cand: any) => ({
-      ...cand,
-      isDetailsLoading: false,
-    }));
-  }, [rankingResults]);
+    return rankingResults.map((cand: any, index: number) => {
+      const query = candidateQueries[index];
+      return {
+        ...cand,
+        details: cand.details || query.data,
+        isDetailsLoading: query.isLoading,
+      };
+    });
+  }, [rankingResults, candidateQueries]);
 
   const handleResetFilters = () => {
     setFilters(DEFAULT_FILTERS);
@@ -222,19 +259,23 @@ export const CandidateRankingPage: React.FC = () => {
         }
       }
 
-      // 4. Availability checkboxes filter
+      // 4. Availability checkboxes filter (Mathematical boundary check)
       if (filters.availability.length > 0) {
-        const avail = item.details?.availability || (item.details?.redrob_signals?.noticePeriodDays !== undefined ? `${item.details.redrob_signals.noticePeriodDays} Days` : "");
-        if (avail) {
-          const matched = filters.availability.some((a) => {
-            const lowerA = a.toLowerCase();
-            const lowerAvail = avail.toLowerCase();
-            if (lowerA.includes("immediate")) return lowerAvail.includes("immediate") || lowerAvail.includes("now") || lowerAvail.includes("0 days") || lowerAvail.includes("0");
-            if (lowerA.includes("30")) return lowerAvail.includes("30") || lowerAvail.includes("1 month") || lowerAvail.includes("30 days");
-            if (lowerA.includes("60")) return lowerAvail.includes("60") || lowerAvail.includes("2 month") || lowerAvail.includes("60 days");
-            return lowerAvail.includes(lowerA);
-          });
-          if (!matched) return false;
+        const candidateDays = getAvailabilityInDays(item);
+        if (candidateDays === null) return false; // Exclude if we don't know their availability
+
+        // Determine the maximum allowed days based on the user's selected filters
+        let maxAllowedDays = -1;
+        for (const a of filters.availability) {
+          const lowerA = a.toLowerCase();
+          if (lowerA.includes("60")) maxAllowedDays = Math.max(maxAllowedDays, 60);
+          else if (lowerA.includes("30")) maxAllowedDays = Math.max(maxAllowedDays, 30);
+          else if (lowerA.includes("immediate")) maxAllowedDays = Math.max(maxAllowedDays, 0);
+        }
+
+        // The candidate passes if their availability is less than or equal to the maximum allowed limit
+        if (maxAllowedDays !== -1 && candidateDays > maxAllowedDays) {
+          return false;
         }
       }
 
@@ -286,8 +327,12 @@ export const CandidateRankingPage: React.FC = () => {
         valB = b.rank;
         return sortDirection === "asc" ? valA - valB : valB - valA;
       } else if (f === "technical") {
-        valA = Math.min(100, Math.max(55, a.finalScore * 100 + (seedA % 10) - 5));
-        valB = Math.min(100, Math.max(55, b.finalScore * 100 + (seedB % 10) - 5));
+        valA = a.scoreDetails?.technicalScore 
+          ? a.scoreDetails.technicalScore * 100
+          : Math.min(100, Math.max(55, a.finalScore * 100 + (seedA % 10) - 5));
+        valB = b.scoreDetails?.technicalScore 
+          ? b.scoreDetails.technicalScore * 100
+          : Math.min(100, Math.max(55, b.finalScore * 100 + (seedB % 10) - 5));
       } else if (f === "reliability") {
         valA = a.details?.reliabilityProfile?.reliabilityScore
           ? a.details.reliabilityProfile.reliabilityScore * 100
@@ -299,17 +344,13 @@ export const CandidateRankingPage: React.FC = () => {
         valA = a.details?.profile?.yearsOfExperience || a.details?.experienceYears || Math.min(15, Math.max(2, 3 + (seedA % 10)));
         valB = b.details?.profile?.yearsOfExperience || b.details?.experienceYears || Math.min(15, Math.max(2, 3 + (seedB % 10)));
       } else if (f === "availability") {
-        const getAvailDays = (item: typeof a) => {
-          const days = item.details?.redrob_signals?.noticePeriodDays;
-          if (days !== undefined) return days;
-          const availStr = (item.details?.availability || "").toLowerCase();
-          if (availStr.includes("immediate") || availStr.includes("now") || availStr.includes("0")) return 0;
-          if (availStr.includes("30") || availStr.includes("month")) return 30;
-          if (availStr.includes("60") || availStr.includes("2 month")) return 60;
-          return 90;
-        };
-        valA = getAvailDays(a);
-        valB = getAvailDays(b);
+        const daysA = getAvailabilityInDays(a);
+        const daysB = getAvailabilityInDays(b);
+        
+        // If unknown, penalize them by pushing to the bottom (treat as 999 days)
+        valA = daysA !== null ? daysA : 999;
+        valB = daysB !== null ? daysB : 999;
+        
         return sortDirection === "asc" ? valA - valB : valB - valA;
       }
 
@@ -324,6 +365,25 @@ export const CandidateRankingPage: React.FC = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     return sortedCandidates.slice(startIndex, startIndex + itemsPerPage);
   }, [sortedCandidates, currentPage, itemsPerPage]);
+
+  const aiInsights = useMemo(() => {
+    if (sortedCandidates.length === 0) return null;
+    const topCandidates = sortedCandidates.slice(0, 5);
+    const avgScore = Math.round(topCandidates.reduce((acc, c) => acc + c.finalScore, 0) / topCandidates.length * 100);
+    const allSkills = topCandidates.flatMap(c => {
+      const skills = c.details?.skills || c.profile?.skills || [];
+      return skills.map((s: any) => typeof s === 'string' ? s : s.name);
+    }).filter(Boolean);
+    const skillCounts = allSkills.reduce((acc: any, skill: string) => {
+      acc[skill] = (acc[skill] || 0) + 1;
+      return acc;
+    }, {});
+    const topSkills = Object.entries(skillCounts)
+      .sort((a: any, b: any) => b[1] - a[1])
+      .slice(0, 4)
+      .map(e => e[0]);
+    return { avgScore, topSkills };
+  }, [sortedCandidates]);
 
   // Onboarding placeholder if no JD analyzed yet
   if (!activePositionJD) {
@@ -356,7 +416,7 @@ export const CandidateRankingPage: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 md:py-10 space-y-8 select-none">
-      
+
       {/* Dashboard Page Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-slate-250/20 dark:border-slate-850 pb-5">
         <div>
@@ -371,32 +431,41 @@ export const CandidateRankingPage: React.FC = () => {
 
         {/* Action Controls & Refetch indicators */}
         <div className="flex flex-wrap items-center gap-3">
-          {/* Strategy Selection Controls */}
-          <div className="flex items-center bg-slate-200/50 dark:bg-slate-950 p-1.5 rounded-xl border border-slate-300 dark:border-slate-800">
-            <span className="text-[10px] font-bold text-slate-450 px-2 flex items-center gap-1">
-              <Settings2 size={12} />
-              <span>Strategy:</span>
+          {/* Premium Strategy Selection Controls */}
+          <div className="flex flex-col items-end gap-1.5">
+            <div className="flex items-center bg-white/60 dark:bg-[#0A0F1C]/60 backdrop-blur-xl p-1 rounded-2xl border border-slate-200/50 dark:border-slate-800 shadow-sm relative">
+              {(["balanced", "technical_first", "engagement_first"] as const).map((strat) => {
+                const isActive = strategy === strat;
+                return (
+                  <button
+                    key={strat}
+                    onClick={() => {
+                      setStrategy(strat);
+                      const jdText = activePositionJD?.raw_text || activePositionJD?.rawText || "";
+                      if (jdText) {
+                        rankMutation.mutate({ jdText, strat, lim: limit });
+                      }
+                    }}
+                    className={`relative px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider transition-colors outline-none focus-ring z-10
+                      ${isActive ? "text-blue-700 dark:text-blue-400" : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"}`}
+                  >
+                    {isActive && (
+                      <motion.div
+                        layoutId="strategy-pill"
+                        className="absolute inset-0 bg-blue-50 dark:bg-blue-500/10 border border-blue-200/50 dark:border-blue-500/20 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.1)] -z-10"
+                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                      />
+                    )}
+                    <span className="relative z-10 flex items-center gap-1.5">
+                      {strat.replace("_", " ")}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <span className="text-[9px] text-slate-400 font-bold px-1 uppercase tracking-widest hidden sm:block">
+              AI Ranking Strategy
             </span>
-            {(["balanced", "technical_first", "engagement_first"] as const).map((strat) => (
-              <button
-                key={strat}
-                onClick={() => {
-                  setStrategy(strat);
-                  const jdText = activePositionJD?.raw_text || activePositionJD?.rawText || "";
-                  if (jdText) {
-                    rankMutation.mutate({ jdText, strat, lim: limit });
-                  }
-                }}
-                className={`px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all outline-none focus-ring
-                  ${
-                    strategy === strat
-                      ? "bg-slate-900 dark:bg-blue-600 text-white shadow"
-                      : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-250"
-                  }`}
-              >
-                {strat.replace("_", " ")}
-              </button>
-            ))}
           </div>
 
           {/* Refresh Button */}
@@ -439,11 +508,11 @@ export const CandidateRankingPage: React.FC = () => {
         </div>
       )}
 
-      {/* Main Board Grid layout */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
-        
+      {/* Main Board Layout */}
+      <div className="flex flex-col xl:flex-row gap-8 xl:gap-12 items-start w-full">
+
         {/* Left Column Filters (collapsible drawer on mobile) */}
-        <div className="xl:col-span-3 hidden xl:block">
+        <div className="hidden xl:block w-80 shrink-0">
           <FilterSidebar
             filters={filters}
             onChange={setFilters}
@@ -453,8 +522,8 @@ export const CandidateRankingPage: React.FC = () => {
         </div>
 
         {/* Right Column Content Controls + Results */}
-        <div className="xl:col-span-9 flex flex-col gap-6 w-full">
-          
+        <div className="flex-1 min-w-0 flex flex-col gap-6 w-full">
+
           {/* Search, Sort and limit selector */}
           <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3">
             <SearchToolbar
@@ -481,25 +550,30 @@ export const CandidateRankingPage: React.FC = () => {
               />
 
               {/* Display Limit dropdown */}
-              <div className="flex items-center gap-2 bg-slate-200/50 dark:bg-slate-950 px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-800 shrink-0">
-                <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wide">Limit:</span>
-                <select
-                  value={limit}
-                  onChange={(e) => {
-                    const newLimit = Number(e.target.value);
-                    setLimit(newLimit);
-                    const jdText = activePositionJD?.raw_text || activePositionJD?.rawText || "";
-                    if (jdText) {
-                      rankMutation.mutate({ jdText, strat: strategy, lim: newLimit });
-                    }
-                  }}
-                  className="bg-transparent border-none text-[10px] font-black text-slate-850 dark:text-slate-200 focus:outline-none cursor-pointer uppercase tracking-wider"
-                >
-                  <option value="10">Top 10</option>
-                  <option value="25">Top 25</option>
-                  <option value="50">Top 50</option>
-                  <option value="100">Top 100</option>
-                </select>
+              <div className="flex flex-col items-start gap-1">
+                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest px-1 hidden md:block">
+                  Results Returned
+                </span>
+                <div className="flex items-center bg-white/80 dark:bg-[#0A0F1C]/80 backdrop-blur-xl px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all shrink-0">
+                  <span className="text-xs font-medium text-slate-400 mr-2">Top</span>
+                  <select
+                    value={limit}
+                    onChange={(e) => {
+                      const newLimit = Number(e.target.value);
+                      setLimit(newLimit);
+                      const jdText = activePositionJD?.raw_text || activePositionJD?.rawText || "";
+                      if (jdText) {
+                        rankMutation.mutate({ jdText, strat: strategy, lim: newLimit });
+                      }
+                    }}
+                    className="bg-transparent border-none text-xs font-black text-blue-600 dark:text-blue-400 focus:outline-none cursor-pointer tracking-wider"
+                  >
+                    <option value="10">10 Candidates</option>
+                    <option value="25">25 Candidates</option>
+                    <option value="50">50 Candidates</option>
+                    <option value="100">100 Candidates</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>
@@ -539,6 +613,36 @@ export const CandidateRankingPage: React.FC = () => {
               </div>
             )}
           </AnimatePresence>
+
+          {/* AI Insights Strip */}
+          {aiInsights && !rankMutation.isPending && sortedCandidates.length > 0 && (
+            <div className="relative overflow-hidden p-4 rounded-2xl bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-cyan-500/10 border border-blue-500/20 shadow-lg mb-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-blue-500/20 rounded-xl shrink-0">
+                  <Sparkles size={20} className="text-blue-500 animate-pulse" />
+                </div>
+                <div>
+                  <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-widest flex items-center gap-2">
+                    AI Insights
+                  </h3>
+                  <p className="text-xs text-slate-600 dark:text-slate-300 font-medium mt-0.5">
+                    Top candidates show strong alignment in:{" "}
+                    {aiInsights.topSkills.length > 0 ? (
+                      <span className="font-bold text-blue-600 dark:text-blue-400">
+                        {aiInsights.topSkills.join(", ")}
+                      </span>
+                    ) : (
+                      "Core Competencies"
+                    )}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 bg-white/50 dark:bg-black/20 px-4 py-2 rounded-xl border border-white/20 dark:border-white/5 shrink-0">
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Average Match Score</span>
+                <span className="text-lg font-black text-slate-900 dark:text-white leading-none">{aiInsights.avgScore}%</span>
+              </div>
+            </div>
+          )}
 
           {/* Loading or Results displays */}
           {rankMutation.isPending ? (

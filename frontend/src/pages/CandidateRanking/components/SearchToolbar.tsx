@@ -1,12 +1,11 @@
-import React, { useEffect, useRef } from "react";
-import { Search, LayoutGrid, List } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { Search, LayoutGrid, List, Sparkles, Command } from "lucide-react";
 
 interface SearchToolbarProps {
   query: string;
   onQueryChange: (q: string) => void;
   viewMode: "grid" | "table";
   onViewModeChange: (mode: "grid" | "table") => void;
-  placeholder?: string;
 }
 
 export const SearchToolbar: React.FC<SearchToolbarProps> = ({
@@ -14,14 +13,14 @@ export const SearchToolbar: React.FC<SearchToolbarProps> = ({
   onQueryChange,
   viewMode,
   onViewModeChange,
-  placeholder = "Filter by candidate ID, keywords, title...",
 }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
 
-  // Bind Ctrl + / or Cmd + / to focus input
+  // Bind Ctrl/Cmd + K to focus input
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === "/") {
+      if ((e.ctrlKey || e.metaKey) && e.key === "k") {
         e.preventDefault();
         inputRef.current?.focus();
       }
@@ -31,54 +30,72 @@ export const SearchToolbar: React.FC<SearchToolbarProps> = ({
   }, []);
 
   return (
-    <div className="flex items-center gap-3 w-full select-none">
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full select-none">
       
-      {/* Search Bar Input */}
-      <div className="relative flex-1">
-        <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
-        <input
-          ref={inputRef}
-          type="text"
-          value={query}
-          onChange={(e) => onQueryChange(e.target.value)}
-          placeholder={placeholder}
-          className="w-full pl-11 pr-20 py-3 rounded-xl text-xs bg-slate-200/50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-100 placeholder-slate-450 focus:outline-none focus:border-blue-500/50 transition-all font-semibold"
-          aria-label="Search candidates listing"
-        />
+      {/* Premium Search Bar */}
+      <div className={`relative flex-1 group transition-all duration-300 ${isFocused ? "scale-[1.01]" : ""}`}>
+        {/* Glow backdrop */}
+        <div className={`absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500/30 via-purple-500/30 to-cyan-500/30 blur-xl transition-opacity duration-500 ${isFocused ? "opacity-100" : "opacity-0"}`} />
         
-        {/* Hotkey Indicator Badge */}
-        <span className="absolute right-4 top-1/2 -translate-y-1/2 hidden sm:inline-flex px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-[9px] font-mono text-slate-500 font-bold uppercase tracking-wider">
-          Ctrl + /
-        </span>
+        <div className={`relative flex items-center w-full bg-white/80 dark:bg-[#0A0F1C]/80 backdrop-blur-2xl rounded-2xl border transition-colors overflow-hidden ${isFocused ? "border-blue-500/50 shadow-[0_0_20px_rgba(59,130,246,0.15)]" : "border-slate-200 dark:border-slate-800"}`}>
+          
+          <div className="pl-5 pr-2 py-4 flex items-center justify-center shrink-0">
+            {isFocused ? (
+              <Sparkles size={20} className="text-blue-500 animate-pulse" />
+            ) : (
+              <Search size={20} className="text-slate-400 group-hover:text-blue-400 transition-colors" />
+            )}
+          </div>
+          
+          <input
+            ref={inputRef}
+            type="text"
+            value={query}
+            onChange={(e) => onQueryChange(e.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            placeholder="Search candidates, skills, companies, technologies, certifications..."
+            className="w-full py-4 px-2 text-sm bg-transparent text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none font-semibold tracking-wide"
+            aria-label="Semantic candidate search"
+          />
+          
+          <div className="pr-4 flex items-center gap-2 shrink-0">
+            {/* AI Semantic Badge */}
+            <span className="hidden md:inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[9px] font-black uppercase tracking-widest text-blue-500">
+              Semantic Enabled
+            </span>
+            {/* Command Shortcut */}
+            <div className="hidden sm:flex items-center gap-0.5 px-2 py-1 rounded-md bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-400">
+              <Command size={12} />
+              <span className="text-[10px] font-black font-mono tracking-tighter">K</span>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Grid vs Table Layout Toggle */}
-      <div className="flex items-center bg-slate-200/60 dark:bg-slate-950 p-1 rounded-xl border border-slate-300 dark:border-slate-800 shrink-0">
+      {/* View Toggles */}
+      <div className="flex items-center bg-white/80 dark:bg-[#0A0F1C]/80 backdrop-blur-xl p-1.5 rounded-2xl border border-slate-200 dark:border-slate-800 shrink-0 self-end sm:self-auto shadow-sm hover:shadow-md transition-shadow">
         <button
           onClick={() => onViewModeChange("grid")}
-          className={`p-2 rounded-lg transition-all outline-none focus-ring
-            ${
-              viewMode === "grid"
-                ? "bg-slate-100 dark:bg-slate-900 text-blue-500 shadow-sm border border-slate-250/20 dark:border-slate-850"
-                : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-350"
-            }`}
-          title="Grid view card items"
-          aria-label="Switch to grid view"
+          className={`p-2.5 rounded-xl transition-all outline-none focus-ring relative overflow-hidden group
+            ${viewMode === "grid" ? "text-blue-600 dark:text-blue-400 shadow-sm" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"}`}
+          title="Grid Layout"
         >
-          <LayoutGrid size={14} />
+          {viewMode === "grid" && (
+            <div className="absolute inset-0 bg-blue-500/10 dark:bg-blue-500/20" />
+          )}
+          <LayoutGrid size={18} className="relative z-10 group-active:scale-95 transition-transform" />
         </button>
         <button
           onClick={() => onViewModeChange("table")}
-          className={`p-2 rounded-lg transition-all outline-none focus-ring
-            ${
-              viewMode === "table"
-                ? "bg-slate-100 dark:bg-slate-900 text-blue-500 shadow-sm border border-slate-250/20 dark:border-slate-850"
-                : "text-slate-500 hover:text-slate-700 dark:hover:text-slate-350"
-            }`}
-          title="Table view list items"
-          aria-label="Switch to table view"
+          className={`p-2.5 rounded-xl transition-all outline-none focus-ring relative overflow-hidden group
+            ${viewMode === "table" ? "text-blue-600 dark:text-blue-400 shadow-sm" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"}`}
+          title="Table Layout"
         >
-          <List size={14} />
+          {viewMode === "table" && (
+            <div className="absolute inset-0 bg-blue-500/10 dark:bg-blue-500/20" />
+          )}
+          <List size={18} className="relative z-10 group-active:scale-95 transition-transform" />
         </button>
       </div>
 

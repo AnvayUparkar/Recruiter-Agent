@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Sparkles, CheckCircle2, UserCheck, AlertCircle } from "lucide-react";
 
 interface RecommendationBadgeProps {
@@ -47,21 +48,45 @@ export const RecommendationBadge: React.FC<RecommendationBadgeProps> = ({ verdic
   const config = getBadgeStyle(verdict);
   const Icon = config.icon;
 
+  const [isHovered, setIsHovered] = useState(false);
+  const badgeRef = useRef<HTMLSpanElement>(null);
+  const [coords, setCoords] = useState({ top: 0, right: 0 });
+
+  const handleMouseEnter = () => {
+    if (badgeRef.current) {
+      const rect = badgeRef.current.getBoundingClientRect();
+      setCoords({
+        top: rect.top - 8,
+        right: window.innerWidth - rect.right
+      });
+      setIsHovered(true);
+    }
+  };
+
   return (
-    <div className="relative group inline-block select-none">
+    <>
       <span
-        className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider border flex items-center gap-1.5 transition-all cursor-pointer outline-none focus-ring shadow-lg ${config.color}`}
+        ref={badgeRef}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={() => setIsHovered(false)}
+        className={`px-3 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider border flex items-center gap-1.5 transition-all cursor-pointer outline-none focus-ring shadow-lg inline-flex select-none ${config.color}`}
         tabIndex={0}
       >
         <Icon size={12} className="shrink-0 animate-pulse" />
         <span>{config.label}</span>
       </span>
 
-      {/* Tooltip */}
-      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 rounded-xl bg-slate-950 text-white text-[10px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-normal z-50 shadow-xl border border-slate-800 w-44 leading-relaxed text-center">
-        {config.tooltip}
-      </div>
-    </div>
+      {/* Tooltip Portal */}
+      {isHovered && createPortal(
+        <div 
+          style={{ position: 'fixed', top: coords.top, right: coords.right, transform: 'translateY(-100%)' }}
+          className="px-3 py-2.5 rounded-xl bg-slate-950 text-white text-[10px] font-semibold pointer-events-none whitespace-normal z-[9999] shadow-2xl border border-slate-800 w-56 leading-relaxed text-left animate-in fade-in zoom-in duration-200"
+        >
+          {config.tooltip}
+        </div>,
+        document.body
+      )}
+    </>
   );
 };
 

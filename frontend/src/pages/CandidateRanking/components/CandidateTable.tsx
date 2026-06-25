@@ -41,7 +41,9 @@ const TableRow = React.memo<{
   const finalScorePct = rankedInfo.finalScore * 100;
   const confidencePct = rankedInfo.confidence * 100;
 
-  const technicalScore = Math.min(100, Math.max(55, finalScorePct + (seed % 10) - 5));
+  const technicalScore = rankedInfo.scoreDetails?.technicalScore 
+    ? Math.round(rankedInfo.scoreDetails.technicalScore * 100)
+    : Math.min(100, Math.max(55, finalScorePct + (seed % 10) - 5));
   const reliabilityScore = Math.round(candidateData?.reliabilityProfile?.reliabilityScore ? candidateData.reliabilityProfile.reliabilityScore * 100 : Math.min(98, Math.max(70, confidencePct)));
 
   const name = candidateData?.profile?.anonymizedName || candidateData?.name || rankedInfo.candidateId;
@@ -178,9 +180,9 @@ export const CandidateTable = React.memo<CandidateTableProps>(({
   onSelectCandidate,
 }) => {
   return (
-    <div className="glass-panel rounded-2xl overflow-hidden shadow-2xl border border-slate-200/10 dark:border-slate-805 bg-slate-100/60 dark:bg-slate-900/60 select-none">
-      <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-[900px]">
+    <div className="glass-panel rounded-2xl shadow-2xl border border-slate-200/10 dark:border-slate-805 bg-slate-100/60 dark:bg-slate-900/60 select-none overflow-hidden">
+      <div className="w-full overflow-x-auto">
+        <table className="w-full text-left border-collapse min-w-[1000px]">
           <thead>
             <tr className="border-b border-slate-250/20 dark:border-slate-850 bg-slate-200/40 dark:bg-slate-950/40 text-slate-500 dark:text-slate-450 text-[10px] font-black uppercase tracking-wider">
               <th className="py-4 px-6 text-center w-16">Rank</th>
