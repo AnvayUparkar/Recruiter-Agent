@@ -9,6 +9,7 @@ export const ENDPOINTS = {
   METRICS: `${API_BASE_PREFIX}/metrics`,
   HEALTH: `${API_BASE_PREFIX}/health`,
   VERSION: `${API_BASE_PREFIX}/version`,
+  USER_RESUME_UPLOAD: `${API_BASE_PREFIX}/user/upload-resume`,
 } as const;
 
 export type EndpointKey = keyof typeof ENDPOINTS;

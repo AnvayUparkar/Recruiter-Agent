@@ -129,9 +129,11 @@ def create_app(config_name: str = None) -> Flask:
     from api.routes.health_routes import health_bp as api_health_bp
     from api.routes.copilot_routes import copilot_bp
     from api.routes.submission_routes import submission_bp
+    from api.routes.user_routes import user_bp
     from api.auth import auth_bp
 
     api_v1.register_blueprint(auth_bp, url_prefix="/auth")
+    api_v1.register_blueprint(user_bp, url_prefix="/user")
     api_v1.register_blueprint(jd_bp)
     api_v1.register_blueprint(retrieval_bp)
     api_v1.register_blueprint(ranking_bp)
