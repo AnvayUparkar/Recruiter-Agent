@@ -130,6 +130,7 @@ def create_app(config_name: str = None) -> Flask:
     from api.routes.copilot_routes import copilot_bp
     from api.routes.submission_routes import submission_bp
     from api.routes.user_routes import user_bp
+    from api.routes.job_routes import job_bp
     from api.auth import auth_bp
 
     api_v1.register_blueprint(auth_bp, url_prefix="/auth")
@@ -141,6 +142,7 @@ def create_app(config_name: str = None) -> Flask:
     api_v1.register_blueprint(api_health_bp)
     api_v1.register_blueprint(copilot_bp, url_prefix="/copilot")
     api_v1.register_blueprint(submission_bp)
+    api_v1.register_blueprint(job_bp, url_prefix="/jobs")
 
     app.register_blueprint(api_v1)
 

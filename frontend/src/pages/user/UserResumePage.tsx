@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
-import { UploadCloud, AlertCircle, RefreshCw, CheckCircle, FileText } from "lucide-react";
+import { Link } from "react-router-dom";
+import { UploadCloud, AlertCircle, RefreshCw, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { apiClient } from "../../api/client";
 import { ENDPOINTS } from "../../api/endpoints";
@@ -288,6 +289,15 @@ export default function UserResumePage() {
                 )}
               </div>
             </div>
+          </div>
+
+          <div className="p-6 border-t border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex justify-end">
+            <Link
+              to="/user-dashboard"
+              className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors shadow-sm"
+            >
+              View Job Matches
+            </Link>
           </div>
         </motion.div>
       )}
