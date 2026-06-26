@@ -21,7 +21,7 @@ interface AppLayoutContentProps {
 
 const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
   const { setSidebarOpen } = useLayoutStore();
-  const { isMobile, isTablet } = useResponsive();
+  const { isMobile, isTablet, isDesktop } = useResponsive();
   const { comparisonCandidateIds } = useCandidateStore();
   const { user } = useAuthStore();
   const isRecruiter = user?.role !== "user";
@@ -29,21 +29,19 @@ const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
 
   // Handle auto-collapsing sidebar on smaller desktop viewports
   useEffect(() => {
-    if (isMobile) {
-      setSidebarOpen(false);
-    } else if (isTablet) {
-      setSidebarOpen(false); // Collapsed by default on tablets
+    if (!isDesktop) {
+      setSidebarOpen(false); // Always close the sidebar on mobile/tablet
     } else {
       setSidebarOpen(true); // Expanded by default on large desktops
     }
-  }, [isMobile, isTablet, setSidebarOpen]);
+  }, [isDesktop, setSidebarOpen]);
 
   // Close mobile drawer when route changes
   useEffect(() => {
-    if (isMobile) {
+    if (!isDesktop) {
       setSidebarOpen(false);
     }
-  }, [location.pathname, isMobile, setSidebarOpen]);
+  }, [location.pathname, isDesktop, setSidebarOpen]);
 
   // Navigation configurations
   const navItems = isRecruiter ? [
@@ -75,11 +73,11 @@ const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
         Skip to main content
       </a>
 
-      {/* Desktop Sidebar (hidden on mobile) */}
-      {!isMobile && <Sidebar />}
+      {/* Desktop Sidebar — only on lg+ screens */}
+      {isDesktop && <Sidebar />}
 
-      {/* Mobile drawer slider (hidden on desktop) */}
-      {isMobile && (
+      {/* Mobile/Tablet drawer — shown on screens smaller than 1024px */}
+      {!isDesktop && (
         <MobileMenu navItems={navItems} healthStatus="healthy" />
       )}
 

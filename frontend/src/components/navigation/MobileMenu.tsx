@@ -17,15 +17,15 @@ interface MobileMenuProps {
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({ navItems, healthStatus }) => {
   const { isSidebarOpen: isOpen, setSidebarOpen: setIsOpen } = useLayoutStore();
-  const { isMobile } = useResponsive();
+  const { isDesktop } = useResponsive();
   const shouldReduceMotion = useReducedMotion();
 
-  // Close when screen resizes out of mobile
+  // Close when screen resizes to desktop width
   useEffect(() => {
-    if (!isMobile && isOpen) {
+    if (isDesktop && isOpen) {
       setIsOpen(false);
     }
-  }, [isMobile, isOpen, setIsOpen]);
+  }, [isDesktop, isOpen, setIsOpen]);
 
   // Handle escape press
   useEffect(() => {
@@ -40,8 +40,8 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ navItems, healthStatus }
 
   return (
     <AnimatePresence>
-      {isMobile && isOpen && (
-        <div className="fixed inset-0 z-100 flex">
+      {!isDesktop && isOpen && (
+        <div className="fixed inset-0 z-[9999] flex">
           {/* Backdrop Blur Overlay */}
           <motion.div
             initial={{ opacity: 0 }}

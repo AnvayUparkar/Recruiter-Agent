@@ -26,7 +26,7 @@ export const TopNavbar: React.FC = () => {
 
   return (
     <header
-      className={`h-20 sticky top-0 z-30 flex items-center justify-between px-6 lg:px-8 bg-background/70 backdrop-blur-md transition-all duration-300 border-b border-transparent
+      className={`h-20 sticky top-0 z-[10000] flex items-center justify-between px-6 lg:px-8 bg-background/70 backdrop-blur-md transition-all duration-300 border-b border-transparent
         ${isScrolled ? "shadow-lg shadow-black/5 dark:shadow-black/20 border-border bg-background/90" : ""}`}
     >
       {/* Left side actions */}

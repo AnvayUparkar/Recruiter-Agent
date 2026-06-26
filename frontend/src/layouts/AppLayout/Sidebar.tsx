@@ -24,6 +24,7 @@ import { useLayoutStore } from "../../store/layoutStore";
 import { useCandidateStore } from "../../store/candidateStore";
 import { useAuthStore } from "../../store/authStore";
 import { healthService } from "../../services/healthService";
+import { useResponsive } from "../ResponsiveLayout";
 
 interface SidebarProps {
   isMobile?: boolean;
@@ -61,8 +62,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobile = false }) => {
   }, []);
 
 
-  if (isMobile) {
-    return null; // Mobile rendering is fully delegated to the MobileMenu drawer.
+  const { isDesktop } = useResponsive();
+
+  // Only render on lg+ screens — MobileMenu handles mobile/tablet navigation
+  if (!isDesktop) {
+    return null;
   }
 
   // Width changes
@@ -82,7 +86,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobile = false }) => {
       animate={isSidebarOpen ? "expanded" : "collapsed"}
       variants={sidebarVariants}
       transition={shouldReduceMotion ? { duration: 0.15 } : springConfig}
-      className="fixed lg:sticky top-0 left-0 h-screen z-40 flex flex-col bg-slate-150/40 dark:bg-slate-950/40 glass-panel border-r border-slate-200/10 dark:border-slate-800/50 shadow-xl overflow-visible"
+      className="hidden lg:flex sticky top-0 h-screen z-40 flex-col bg-slate-150/40 dark:bg-slate-950/40 glass-panel border-r border-slate-200/10 dark:border-slate-800/50 shadow-xl overflow-visible shrink-0"
     >
       {/* Header Container */}
       <div className="h-20 border-b border-slate-200/10 dark:border-slate-800/50 flex items-center justify-between px-6 shrink-0 overflow-hidden">
