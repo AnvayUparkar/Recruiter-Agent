@@ -188,12 +188,12 @@ const CandidateProfilePage: React.FC = () => {
   if (detailsError || !candidate) {
     return (
       <div className="max-w-lg mx-auto py-20 px-4 text-center">
-        <div className="rounded-2xl border border-white/10 bg-slate-900/60 backdrop-blur-xl p-10 flex flex-col items-center gap-4">
+        <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900/60 backdrop-blur-xl p-10 flex flex-col items-center gap-4 shadow-lg dark:shadow-none">
           <AlertTriangle size={40} className="text-rose-500" />
-          <h2 className="text-lg font-bold text-slate-100">Candidate Not Found</h2>
-          <p className="text-sm text-slate-400 max-w-sm">
+          <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">Candidate Not Found</h2>
+          <p className="text-sm text-slate-600 dark:text-slate-400 max-w-sm">
             We couldn't retrieve profile data for candidate{" "}
-            <span className="font-mono text-slate-300">{targetId}</span>. The ID may be
+            <span className="font-mono text-slate-800 dark:text-slate-300">{targetId}</span>. The ID may be
             invalid or the profile has not been synced yet.
           </p>
           <Link
@@ -219,7 +219,7 @@ const CandidateProfilePage: React.FC = () => {
       />
 
       {/* Navigation tabs */}
-      <div className="flex items-center gap-1 border-b border-white/8 overflow-x-auto">
+      <div className="flex items-center gap-1 border-b border-slate-200 dark:border-white/8 overflow-x-auto">
         {TABS.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -232,8 +232,8 @@ const CandidateProfilePage: React.FC = () => {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 whitespace-nowrap transition-all ${
                 isActive
-                  ? "border-blue-500 text-blue-400"
-                  : "border-transparent text-slate-500 hover:text-slate-300"
+                  ? "border-blue-500 text-blue-600 dark:text-blue-400"
+                  : "border-transparent text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
               }`}
             >
               <Icon size={14} />

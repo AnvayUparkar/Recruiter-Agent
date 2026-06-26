@@ -12,13 +12,16 @@ import {
   ChevronRight,
   Server,
   Shield,
-  Terminal
+  Terminal,
+  User as UserIcon,
+  FileText
 } from "lucide-react";
 import { NavItem } from "../../components/navigation/NavItem";
 import { NavSection } from "../../components/navigation/NavSection";
 import { SidebarGroup } from "../../components/navigation/SidebarGroup";
 import { useLayoutStore } from "../../store/layoutStore";
 import { useCandidateStore } from "../../store/candidateStore";
+import { useAuthStore } from "../../store/authStore";
 import { healthService } from "../../services/healthService";
 
 interface SidebarProps {
@@ -28,6 +31,8 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ isMobile = false }) => {
   const { isSidebarOpen, setSidebarOpen } = useLayoutStore();
   const { comparisonCandidateIds } = useCandidateStore();
+  const { user } = useAuthStore();
+  const isRecruiter = user?.role !== "user";
   const [healthStatus, setHealthStatus] = useState<"healthy" | "unhealthy" | "checking">("checking");
   const shouldReduceMotion = useReducedMotion();
 
@@ -104,75 +109,115 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobile = false }) => {
 
       {/* Navigation Sections */}
       <div className="flex-1 py-6 px-4 space-y-6 overflow-y-auto custom-scrollbar select-none">
-        {/* Main Section */}
-        <SidebarGroup>
-          <NavSection label="Candidate Sourcing" isCollapsed={!isSidebarOpen} />
-          <NavItem
-            label="JD Parser"
-            path="/jd-analysis"
-            icon={FileSearch}
-            isCollapsed={!isSidebarOpen}
-          />
-          <NavItem
-            label="Leaderboard"
-            path="/dashboard"
-            icon={LayoutDashboard}
-            isCollapsed={!isSidebarOpen}
-          />
-        </SidebarGroup>
+        {isRecruiter ? (
+          <>
+            {/* Main Section */}
+            <SidebarGroup>
+              <NavSection label="Candidate Sourcing" isCollapsed={!isSidebarOpen} />
+              <NavItem
+                label="JD Parser"
+                path="/jd-analysis"
+                icon={FileSearch}
+                isCollapsed={!isSidebarOpen}
+              />
+              <NavItem
+                label="Leaderboard"
+                path="/dashboard"
+                icon={LayoutDashboard}
+                isCollapsed={!isSidebarOpen}
+              />
+            </SidebarGroup>
 
-        {/* Calibrations & Reports */}
-        <SidebarGroup>
-          <NavSection label="Evaluation Suite" isCollapsed={!isSidebarOpen} />
-          <NavItem
-            label="Copilot Report"
-            path="/copilot"
-            icon={Bot}
-            isCollapsed={!isSidebarOpen}
-          />
-          <NavItem
-            label="Finalist Comparison"
-            path="/comparison"
-            icon={GitCompare}
-            badge={comparisonCandidateIds.length > 0 ? comparisonCandidateIds.length : undefined}
-            isCollapsed={!isSidebarOpen}
-          />
-          <NavItem
-            label="Analytics Hub"
-            path="/analytics"
-            icon={BarChart3}
-            isCollapsed={!isSidebarOpen}
-          />
-          <NavItem
-            label="Export & Reports"
-            path="/reports"
-            icon={FileDown}
-            isCollapsed={!isSidebarOpen}
-          />
-        </SidebarGroup>
+            {/* Calibrations & Reports */}
+            <SidebarGroup>
+              <NavSection label="Evaluation Suite" isCollapsed={!isSidebarOpen} />
+              <NavItem
+                label="Copilot Report"
+                path="/copilot"
+                icon={Bot}
+                isCollapsed={!isSidebarOpen}
+              />
+              <NavItem
+                label="Finalist Comparison"
+                path="/comparison"
+                icon={GitCompare}
+                badge={comparisonCandidateIds.length > 0 ? comparisonCandidateIds.length : undefined}
+                isCollapsed={!isSidebarOpen}
+              />
+              <NavItem
+                label="Analytics Hub"
+                path="/analytics"
+                icon={BarChart3}
+                isCollapsed={!isSidebarOpen}
+              />
+              <NavItem
+                label="Export & Reports"
+                path="/reports"
+                icon={FileDown}
+                isCollapsed={!isSidebarOpen}
+              />
+            </SidebarGroup>
 
-        {/* System Settings & Administration */}
-        <SidebarGroup>
-          <NavSection label="Preferences" isCollapsed={!isSidebarOpen} />
-          <NavItem
-            label="Settings"
-            path="/settings"
-            icon={Settings}
-            isCollapsed={!isSidebarOpen}
-          />
-          <NavItem
-            label="Admin Console"
-            path="/admin"
-            icon={Shield}
-            isCollapsed={!isSidebarOpen}
-          />
-          <NavItem
-            label="Launch Center"
-            path="/launch"
-            icon={Terminal}
-            isCollapsed={!isSidebarOpen}
-          />
-        </SidebarGroup>
+            {/* System Settings & Administration */}
+            <SidebarGroup>
+              <NavSection label="Preferences" isCollapsed={!isSidebarOpen} />
+              <NavItem
+                label="Settings"
+                path="/settings"
+                icon={Settings}
+                isCollapsed={!isSidebarOpen}
+              />
+              <NavItem
+                label="Admin Console"
+                path="/admin"
+                icon={Shield}
+                isCollapsed={!isSidebarOpen}
+              />
+              <NavItem
+                label="Launch Center"
+                path="/launch"
+                icon={Terminal}
+                isCollapsed={!isSidebarOpen}
+              />
+            </SidebarGroup>
+          </>
+        ) : (
+          <>
+            {/* Candidate Tools Section */}
+            <SidebarGroup>
+              <NavSection label="Candidate Portal" isCollapsed={!isSidebarOpen} />
+              <NavItem
+                label="Dashboard"
+                path="/user-dashboard"
+                icon={LayoutDashboard}
+                isCollapsed={!isSidebarOpen}
+              />
+              <NavItem
+                label="Profile"
+                path="/profile"
+                icon={UserIcon}
+                isCollapsed={!isSidebarOpen}
+              />
+              <NavItem
+                label="Resume"
+                path="/resume"
+                icon={FileText}
+                isCollapsed={!isSidebarOpen}
+              />
+            </SidebarGroup>
+
+            {/* System Settings */}
+            <SidebarGroup>
+              <NavSection label="Preferences" isCollapsed={!isSidebarOpen} />
+              <NavItem
+                label="Settings"
+                path="/settings"
+                icon={Settings}
+                isCollapsed={!isSidebarOpen}
+              />
+            </SidebarGroup>
+          </>
+        )}
       </div>
 
       {/* Sidebar Health check status footer */}

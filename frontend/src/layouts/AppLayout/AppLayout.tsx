@@ -7,8 +7,9 @@ import { Footer } from "./Footer";
 import { MobileMenu } from "../../components/navigation/MobileMenu";
 import { CommandPalette } from "../../components/navigation/CommandPalette";
 import { useLayoutStore } from "../../store/layoutStore";
-import { LayoutDashboard, FileSearch, Bot, GitCompare, BarChart3, FileDown, Settings, Shield, Terminal } from "lucide-react";
+import { LayoutDashboard, FileSearch, Bot, GitCompare, BarChart3, FileDown, Settings, Shield, Terminal, User as UserIcon, FileText } from "lucide-react";
 import { useCandidateStore } from "../../store/candidateStore";
+import { useAuthStore } from "../../store/authStore";
 import GuidedTour from "../../pages/Demo/components/GuidedTour.tsx";
 import { ToastContainer } from "../../components/common/ToastContainer";
 import { OfflineStatusBanner } from "../../components/common/OfflineStatusBanner";
@@ -22,6 +23,8 @@ const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
   const { setSidebarOpen } = useLayoutStore();
   const { isMobile, isTablet } = useResponsive();
   const { comparisonCandidateIds } = useCandidateStore();
+  const { user } = useAuthStore();
+  const isRecruiter = user?.role !== "user";
   const location = useLocation();
 
   // Handle auto-collapsing sidebar on smaller desktop viewports
@@ -43,7 +46,7 @@ const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
   }, [location.pathname, isMobile, setSidebarOpen]);
 
   // Navigation configurations
-  const navItems = [
+  const navItems = isRecruiter ? [
     { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
     { label: "JD Parser", path: "/jd-analysis", icon: FileSearch },
     { label: "Copilot Report", path: "/copilot", icon: Bot },
@@ -58,6 +61,11 @@ const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
     { label: "Settings", path: "/settings", icon: Settings },
     { label: "Admin Console", path: "/admin", icon: Shield },
     { label: "Launch Center", path: "/launch", icon: Terminal },
+  ] : [
+    { label: "Dashboard", path: "/user-dashboard", icon: LayoutDashboard },
+    { label: "Profile", path: "/profile", icon: UserIcon },
+    { label: "Resume", path: "/resume", icon: FileText },
+    { label: "Settings", path: "/settings", icon: Settings },
   ];
 
   return (
