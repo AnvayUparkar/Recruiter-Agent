@@ -127,22 +127,37 @@ export const CandidateComparisonPage: React.FC = () => {
           (r: any) => r.candidateId === cand.candidateId || r.candidate_id === cand.candidateId
         );
         if (ranking) {
+          const sd = ranking.scoreDetails || ranking.score_details;
           return {
             ...cand,
-            rankingScore: ranking.scoreDetails || {
+            rankingScore: sd ? {
               candidateId: cand.candidateId,
-              technicalScore: ranking.finalScore * 0.9,
+              technicalScore: sd.technicalScore ?? sd.technical_score ?? 0,
+              careerScore: sd.careerScore ?? sd.career_score ?? 0,
+              behavioralScore: sd.behavioralScore ?? sd.behavioral_score ?? 0,
+              trustScore: sd.trustScore ?? sd.trust_score ?? 0,
+              matchingScore: sd.matchingScore ?? sd.matching_score ?? 0,
+              retrievalScore: sd.retrievalScore ?? sd.retrieval_score ?? 0,
+              leadershipScore: sd.leadershipScore ?? sd.leadership_score ?? 0,
+              marketScore: sd.marketScore ?? sd.market_score ?? 0,
+              totalBonus: sd.totalBonus ?? sd.total_bonus ?? 0,
+              totalPenalty: sd.totalPenalty ?? sd.total_penalty ?? 0,
+              finalScore: sd.finalScore ?? sd.final_score ?? ranking.finalScore ?? ranking.final_score ?? 0,
+              confidence: sd.confidence ?? ranking.confidence ?? 0,
+            } : {
+              candidateId: cand.candidateId,
+              technicalScore: (ranking.finalScore || ranking.final_score || 0) * 0.9,
               careerScore: 0.85,
               behavioralScore: 0.85,
-              trustScore: ranking.confidence,
-              matchingScore: ranking.finalScore,
+              trustScore: ranking.confidence || 0,
+              matchingScore: (ranking.finalScore || ranking.final_score || 0),
               retrievalScore: 0.85,
               leadershipScore: 0.75,
               marketScore: 0.8,
               totalBonus: 0,
               totalPenalty: 0,
-              finalScore: ranking.finalScore,
-              confidence: ranking.confidence,
+              finalScore: (ranking.finalScore || ranking.final_score || 0),
+              confidence: ranking.confidence || 0,
             },
           };
         }

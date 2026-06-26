@@ -41,6 +41,8 @@ export interface RankedCandidate {
   summary: string;
   reasoning?: string;
   scoreDetails?: RankingScore;
+  score_details?: any;
+  final_score?: number;
   explanation?: RankingExplanation;
   reasoningTrace?: RecruiterReasoningTrace;
   details?: any;
