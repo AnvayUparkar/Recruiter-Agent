@@ -144,8 +144,11 @@ class JSONLCandidateRepository(CandidateRepository):
                     for record in data:
                         cid = record.get("candidate_id")
                         if cid in target_ids:
-                            candidate_obj = Candidate.model_validate(record)
-                            matched_candidates.append(candidate_obj)
+                            try:
+                                candidate_obj = Candidate.model_validate(record)
+                                matched_candidates.append(candidate_obj)
+                            except Exception as parse_err:
+                                logger.warning(f"Failed to parse candidate {cid}: {parse_err}")
                             if len(matched_candidates) == len(target_ids):
                                 break
             except Exception as e:

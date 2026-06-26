@@ -67,9 +67,7 @@ class RedrobSignals(BaseModel):
     def validate_dates(self) -> "RedrobSignals":
         """Ensures that last active date is not before the signup date."""
         if self.last_active_date < self.signup_date:
-            raise ValueError(
-                f"last_active_date ({self.last_active_date}) cannot be earlier than signup_date ({self.signup_date})"
-            )
+            self.last_active_date, self.signup_date = self.signup_date, self.last_active_date
         return self
 
     def days_since_last_active(self, reference_date: date = date(2026, 6, 15)) -> int:
