@@ -6,6 +6,7 @@ into unified LexicalRetrievalResponse objects.
 
 import uuid
 import time
+from pathlib import Path
 from typing import Dict, List, Optional
 from models.parsed_jd import ParsedJD
 from models.lexical_retrieval_response import LexicalRetrievalResponse
@@ -112,7 +113,7 @@ class LexicalRetrievalService:
         # Load repository dynamically to fetch filters metadata
         from services.candidate_repository import JSONLCandidateRepository
         from config import Config
-        dataset_path = Config.DATASET_PATH if hasattr(Config, "DATASET_PATH") else Path("d:/Engineering/Hackathon Projects/Finance Agent/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/candidates.jsonl")
+        dataset_path = Config.DATASET_PATH if hasattr(Config, "DATASET_PATH") else Path("d:/Engineering/Hackathon Projects/Finance Agent/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/sample_candidates.json")
         repo = JSONLCandidateRepository(dataset_path)
 
         for res in raw_results:

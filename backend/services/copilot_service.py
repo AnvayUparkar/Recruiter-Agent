@@ -61,7 +61,7 @@ class CopilotService:
             return Config.DATASET_PATH
         
         base_dir = Path(__file__).resolve().parent.parent
-        return base_dir.parent / "[PUB] India_runs_data_and_ai_challenge" / "India_runs_data_and_ai_challenge" / "candidates.jsonl"
+        return base_dir.parent / "[PUB] India_runs_data_and_ai_challenge" / "India_runs_data_and_ai_challenge" / "sample_candidates.json"
 
     def generate_candidate_report(self, candidate_id: str, parsed_jd: ParsedJD) -> Optional[RecruiterReport]:
         """Loads candidate details and generates the recruiter copilot report.

@@ -37,7 +37,7 @@ class FileManager:
         self.data_dir = data_dir or PROJECT_ROOT / "data"
         self.schema_path = schema_path or DEFAULT_CHALLENGE_DIR / "candidate_schema.json"
 
-    def get_candidate_file(self, filename: str = "candidates.jsonl") -> Path:
+    def get_candidate_file(self, filename: str = "sample_candidates.json") -> Path:
         """Resolves the candidate dataset file path.
 
         Looks in config data folders and search fallback locations.

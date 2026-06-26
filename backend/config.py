@@ -49,7 +49,7 @@ class BaseConfig:
     # Main candidate dataset path
     DATASET_PATH: Path = Path(os.environ.get(
         "DATASET_PATH",
-        BASE_DIR.parent / "[PUB] India_runs_data_and_ai_challenge" / "India_runs_data_and_ai_challenge" / "candidates.jsonl"
+        BASE_DIR.parent / "[PUB] India_runs_data_and_ai_challenge" / "India_runs_data_and_ai_challenge" / "sample_candidates.json"
     ))
 
 
