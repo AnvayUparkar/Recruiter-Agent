@@ -82,7 +82,7 @@ export const SkillCoverageChart: React.FC<SkillCoverageChartProps> = ({
   }, [candidates, parsedJD]);
 
   return (
-    <div className="w-full glass-panel rounded-2xl border-white/10 shadow-xl p-5 md:p-6 mb-6">
+    <div className="w-full min-w-0 glass-panel rounded-2xl border-white/10 shadow-xl p-5 md:p-6 mb-6">
       <div className="mb-4">
         <h2 className="text-sm font-bold text-white uppercase tracking-wider font-heading">
           Cohort Skill Match Telemetry
@@ -92,11 +92,11 @@ export const SkillCoverageChart: React.FC<SkillCoverageChartProps> = ({
         </p>
       </div>
 
-      <div className="h-72 w-full flex items-center justify-center">
+      <div className="w-full overflow-hidden flex items-center justify-center">
         {candidates.length === 0 ? (
           <div className="text-xs text-slate-500 font-sans">No skill data available.</div>
         ) : (
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height={300}>
             <RadialBarChart
               cx="50%"
               cy="50%"

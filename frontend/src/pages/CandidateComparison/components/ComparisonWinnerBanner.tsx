@@ -84,7 +84,7 @@ export const ComparisonWinnerBanner: React.FC<ComparisonWinnerBannerProps> = ({
         damping: 20,
         delay: 0.15,
       }}
-      className="glass-panel p-6 md:p-8 rounded-2xl border-l-4 border-l-amber-500 bg-gradient-to-r from-amber-500/10 to-purple-600/10 shadow-glow mb-6 relative overflow-hidden group"
+      className="w-full max-w-full overflow-hidden rounded-3xl glass-panel p-4 sm:p-6 lg:p-8 border-l-4 border-l-amber-500 bg-gradient-to-r from-amber-500/10 to-purple-600/10 shadow-glow mb-6 relative group"
     >
       {/* Decorative neon background light */}
       <div className="absolute -right-20 -top-20 w-44 h-44 rounded-full bg-amber-500/15 blur-3xl pointer-events-none group-hover:bg-amber-500/25 transition-all duration-300" />
@@ -98,7 +98,7 @@ export const ComparisonWinnerBanner: React.FC<ComparisonWinnerBannerProps> = ({
 
         {/* Content */}
         <div className="flex-1 flex flex-col gap-1">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-[10px] text-amber-400 font-bold uppercase tracking-widest bg-amber-500/15 px-2 py-0.5 rounded border border-amber-500/20 flex items-center gap-1">
               <Sparkles size={10} />
               <span>Recommended Choice</span>
@@ -106,17 +106,17 @@ export const ComparisonWinnerBanner: React.FC<ComparisonWinnerBannerProps> = ({
             <span className="text-xs text-muted">Match Rank #1</span>
           </div>
 
-          <h2 className="text-2xl font-black tracking-tight text-primary mt-1">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-primary mt-1">
             {winner.name}
           </h2>
 
-          <p className="text-xs text-text-muted leading-relaxed font-sans mt-1 max-w-3xl">
+          <p className="text-sm sm:text-base text-text-muted leading-relaxed font-sans mt-1 max-w-3xl break-words whitespace-normal overflow-hidden">
             {reasonSummary}
           </p>
         </div>
 
         {/* Stats */}
-        <div className="flex items-center gap-6 md:border-l border-border md:pl-6 shrink-0 pt-4 md:pt-0 w-full md:w-auto">
+        <div className="grid grid-cols-2 gap-4 sm:flex sm:gap-10 sm:items-center sm:border-l border-border sm:pl-6 shrink-0 pt-4 md:pt-0 w-full md:w-auto">
           <div className="flex flex-col">
             <span className="text-[10px] text-muted font-bold uppercase tracking-wider">
               Composite Score

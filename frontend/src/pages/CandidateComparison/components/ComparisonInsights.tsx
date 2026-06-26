@@ -103,18 +103,18 @@ export const ComparisonInsights: React.FC<ComparisonInsightsProps> = ({
         {insights.map((ins, idx) => (
           <div
             key={idx}
-            className="p-4 rounded-xl glass-panel border-border flex gap-3.5 bg-surface shadow-sm hover:border-border transition-all duration-200"
+            className="p-4 rounded-xl glass-panel border-border flex flex-col sm:flex-row items-start sm:items-center gap-3 bg-surface shadow-sm hover:border-border transition-all duration-200 w-full overflow-hidden break-words whitespace-normal"
           >
             <div
               className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 border ${ins.color}`}
             >
               {ins.icon}
             </div>
-            <div className="flex flex-col gap-1">
-              <h4 className="text-xs font-bold text-primary font-heading">
+            <div className="flex-1 min-w-0 flex flex-col gap-1">
+              <h4 className="font-semibold text-sm sm:text-base break-words text-primary font-heading">
                 {ins.title}
               </h4>
-              <p className="text-[11px] text-text-muted leading-relaxed font-sans">
+              <p className="text-xs sm:text-sm text-slate-500 break-words whitespace-normal leading-relaxed font-sans">
                 {ins.description}
               </p>
             </div>

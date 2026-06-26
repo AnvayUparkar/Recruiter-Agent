@@ -418,54 +418,16 @@ export const CandidateRankingPage: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 py-6 md:py-10 space-y-8 select-none">
 
       {/* Dashboard Page Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-5 border-b border-slate-250/20 dark:border-slate-850 pb-5">
-        <div>
-          <h1 className="text-3xl font-black text-slate-900 dark:text-slate-100 flex items-center gap-2.5 tracking-tight uppercase">
-            <TrendingUp size={28} className="text-blue-500 shrink-0" />
-            <span>Top Ranked Candidates</span>
-          </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-semibold leading-relaxed">
-            AI-ranked shortlist based on job requirements and recruiter intelligence.
-          </p>
-        </div>
-
-        {/* Action Controls & Refetch indicators */}
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Premium Strategy Selection Controls */}
-          <div className="flex flex-col items-end gap-1.5">
-            <div className="flex items-center bg-white/60 dark:bg-[#0A0F1C]/60 backdrop-blur-xl p-1 rounded-2xl border border-slate-200/50 dark:border-slate-800 shadow-sm relative">
-              {(["balanced", "technical_first", "engagement_first"] as const).map((strat) => {
-                const isActive = strategy === strat;
-                return (
-                  <button
-                    key={strat}
-                    onClick={() => {
-                      setStrategy(strat);
-                      const jdText = activePositionJD?.raw_text || activePositionJD?.rawText || "";
-                      if (jdText) {
-                        rankMutation.mutate({ jdText, strat, lim: limit });
-                      }
-                    }}
-                    className={`relative px-4 py-2 rounded-xl text-[11px] font-black uppercase tracking-wider transition-colors outline-none focus-ring z-10
-                      ${isActive ? "text-blue-700 dark:text-blue-400" : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"}`}
-                  >
-                    {isActive && (
-                      <motion.div
-                        layoutId="strategy-pill"
-                        className="absolute inset-0 bg-blue-50 dark:bg-blue-500/10 border border-blue-200/50 dark:border-blue-500/20 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.1)] -z-10"
-                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                      />
-                    )}
-                    <span className="relative z-10 flex items-center gap-1.5">
-                      {strat.replace("_", " ")}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            <span className="text-[9px] text-slate-400 font-bold px-1 uppercase tracking-widest hidden sm:block">
-              AI Ranking Strategy
-            </span>
+      <div className="flex flex-col gap-4 border-b border-slate-250/20 dark:border-slate-850 pb-5">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-slate-100 flex items-center gap-2.5 tracking-tight uppercase">
+              <TrendingUp size={24} className="text-blue-500 shrink-0" />
+              <span>Top Ranked</span>
+            </h1>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 font-semibold leading-relaxed">
+              AI-ranked shortlist based on job requirements.
+            </p>
           </div>
 
           {/* Refresh Button */}
@@ -477,12 +439,52 @@ export const CandidateRankingPage: React.FC = () => {
               }
             }}
             disabled={rankMutation.isPending}
-            className={`p-3.5 rounded-xl border border-slate-350 dark:border-slate-800 bg-slate-200/50 dark:bg-slate-950/50 hover:bg-slate-200 dark:hover:bg-slate-900 text-slate-655 dark:text-slate-405 transition-colors outline-none focus-ring
+            className={`self-start sm:self-auto p-3 rounded-xl border border-slate-350 dark:border-slate-800 bg-slate-200/50 dark:bg-slate-950/50 hover:bg-slate-200 dark:hover:bg-slate-900 text-slate-655 dark:text-slate-405 transition-colors outline-none focus-ring
               ${rankMutation.isPending ? "opacity-60 cursor-not-allowed" : ""}`}
             title="Refresh candidates leaderboard"
           >
             <RefreshCw size={14} className={rankMutation.isPending ? "animate-spin" : ""} />
           </button>
+        </div>
+
+        {/* Strategy selector — full width on mobile */}
+        <div className="flex flex-col gap-1.5">
+          <div className="flex items-center bg-white/60 dark:bg-[#0A0F1C]/60 backdrop-blur-xl p-1 rounded-2xl border border-slate-200/50 dark:border-slate-800 shadow-sm relative w-full">
+            {(["balanced", "technical_first", "engagement_first"] as const).map((strat) => {
+              const isActive = strategy === strat;
+              return (
+                <button
+                  key={strat}
+                  onClick={() => {
+                    setStrategy(strat);
+                    const jdText = activePositionJD?.raw_text || activePositionJD?.rawText || "";
+                    if (jdText) {
+                      rankMutation.mutate({ jdText, strat, lim: limit });
+                    }
+                  }}
+                  className={`flex-1 relative px-2 sm:px-4 py-2 rounded-xl text-[10px] sm:text-[11px] font-black uppercase tracking-wider transition-colors outline-none focus-ring z-10 text-center
+                    ${isActive ? "text-blue-700 dark:text-blue-400" : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"}`}
+                >
+                  {isActive && (
+                    <motion.div
+                      layoutId="strategy-pill"
+                      className="absolute inset-0 bg-blue-50 dark:bg-blue-500/10 border border-blue-200/50 dark:border-blue-500/20 rounded-xl shadow-[0_0_15px_rgba(59,130,246,0.1)] -z-10"
+                      transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                    />
+                  )}
+                  <span className="relative z-10 flex items-center justify-center gap-1">
+                    <span className="hidden sm:inline">{strat.replace(/_/g, " ")}</span>
+                    <span className="sm:hidden">
+                      {strat === "balanced" ? "Balanced" : strat === "technical_first" ? "Technical" : "Engagement"}
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          <span className="text-[9px] text-slate-400 font-bold px-1 uppercase tracking-widest">
+            AI Ranking Strategy
+          </span>
         </div>
       </div>
 
@@ -525,7 +527,7 @@ export const CandidateRankingPage: React.FC = () => {
         <div className="flex-1 min-w-0 flex flex-col gap-6 w-full">
 
           {/* Search, Sort and limit selector */}
-          <div className="flex flex-col lg:flex-row items-stretch lg:items-center gap-3">
+          <div className="flex flex-col gap-3">
             <SearchToolbar
               query={searchQuery}
               onQueryChange={setSearchQuery}
@@ -533,47 +535,44 @@ export const CandidateRankingPage: React.FC = () => {
               onViewModeChange={handleViewModeChange}
             />
 
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex flex-wrap items-center gap-2">
               {/* Mobile Filter Toggle Drawer button */}
               <button
                 onClick={() => setMobileFilterOpen(!mobileFilterOpen)}
-                className="xl:hidden p-3 rounded-xl border border-slate-350 dark:border-slate-800 bg-slate-200/50 dark:bg-slate-950/50 hover:bg-slate-200 dark:hover:bg-slate-900 text-slate-655 dark:text-slate-400 flex items-center gap-2 transition-colors outline-none focus-ring text-xs font-bold shrink-0"
+                className="xl:hidden p-2.5 rounded-xl border border-slate-350 dark:border-slate-800 bg-slate-200/50 dark:bg-slate-950/50 hover:bg-slate-200 dark:hover:bg-slate-900 text-slate-655 dark:text-slate-400 flex items-center gap-2 transition-colors outline-none focus-ring text-xs font-bold"
               >
                 <Filter size={14} />
                 <span>Filters</span>
               </button>
 
-              <SortSelector
-                field={sortField as SortField}
-                direction={sortDirection as SortDirection}
-                onChange={(f, d) => setSort(f, d)}
-              />
+              <div className="flex-1 min-w-0">
+                <SortSelector
+                  field={sortField as SortField}
+                  direction={sortDirection as SortDirection}
+                  onChange={(f, d) => setSort(f, d)}
+                />
+              </div>
 
               {/* Display Limit dropdown */}
-              <div className="flex flex-col items-start gap-1">
-                <span className="text-[9px] text-slate-400 font-bold uppercase tracking-widest px-1 hidden md:block">
-                  Results Returned
-                </span>
-                <div className="flex items-center bg-white/80 dark:bg-[#0A0F1C]/80 backdrop-blur-xl px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all shrink-0">
-                  <span className="text-xs font-medium text-slate-400 mr-2">Top</span>
-                  <select
-                    value={limit}
-                    onChange={(e) => {
-                      const newLimit = Number(e.target.value);
-                      setLimit(newLimit);
-                      const jdText = activePositionJD?.raw_text || activePositionJD?.rawText || "";
-                      if (jdText) {
-                        rankMutation.mutate({ jdText, strat: strategy, lim: newLimit });
-                      }
-                    }}
-                    className="bg-transparent border-none text-xs font-black text-blue-600 dark:text-blue-400 focus:outline-none cursor-pointer tracking-wider"
-                  >
-                    <option value="10">10 Candidates</option>
-                    <option value="25">25 Candidates</option>
-                    <option value="50">50 Candidates</option>
-                    <option value="100">100 Candidates</option>
-                  </select>
-                </div>
+              <div className="flex items-center bg-white/80 dark:bg-[#0A0F1C]/80 backdrop-blur-xl px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm shrink-0">
+                <span className="text-xs font-medium text-slate-400 mr-2">Top</span>
+                <select
+                  value={limit}
+                  onChange={(e) => {
+                    const newLimit = Number(e.target.value);
+                    setLimit(newLimit);
+                    const jdText = activePositionJD?.raw_text || activePositionJD?.rawText || "";
+                    if (jdText) {
+                      rankMutation.mutate({ jdText, strat: strategy, lim: newLimit });
+                    }
+                  }}
+                  className="bg-transparent border-none text-xs font-black text-blue-600 dark:text-blue-400 focus:outline-none cursor-pointer tracking-wider"
+                >
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
               </div>
             </div>
           </div>
@@ -584,7 +583,7 @@ export const CandidateRankingPage: React.FC = () => {
           {/* Mobile Collapsible Filter Drawer Overlay */}
           <AnimatePresence>
             {mobileFilterOpen && (
-              <div className="fixed inset-0 z-50 xl:hidden flex justify-end bg-slate-950/60 backdrop-blur-sm">
+              <div className="fixed inset-0 z-[10001] xl:hidden flex justify-end bg-slate-950/60 backdrop-blur-sm">
                 {/* Backdrop closer click */}
                 <div className="flex-1" onClick={() => setMobileFilterOpen(false)} />
                 <motion.div
@@ -692,9 +691,9 @@ export const CandidateRankingPage: React.FC = () => {
 
               {/* Pagination Controls */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-between py-4 px-6 rounded-xl border border-slate-250/20 dark:border-slate-850 bg-slate-205/30 dark:bg-slate-900/10 mt-4 select-none">
-                  <div className="text-xs font-bold text-slate-500 uppercase tracking-wider">
-                    Page {currentPage} of {totalPages} ({sortedCandidates.length} total candidates)
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 py-4 px-4 sm:px-6 rounded-xl border border-slate-250/20 dark:border-slate-850 bg-slate-205/30 dark:bg-slate-900/10 mt-4 select-none">
+                  <div className="text-xs font-bold text-slate-500 uppercase tracking-wider text-center sm:text-left">
+                    Page {currentPage} of {totalPages} <span className="hidden sm:inline">({sortedCandidates.length} total)</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
@@ -702,14 +701,15 @@ export const CandidateRankingPage: React.FC = () => {
                       disabled={currentPage === 1}
                       className="px-3 py-1.5 rounded-lg border border-slate-350 dark:border-slate-800 bg-slate-205/50 dark:bg-slate-950/50 hover:bg-slate-200 dark:hover:bg-slate-900 text-slate-655 dark:text-slate-400 text-xs font-bold transition-all disabled:opacity-30 disabled:cursor-not-allowed outline-none focus-ring"
                     >
-                      Previous
+                      ← Prev
                     </button>
+                    <span className="text-xs text-slate-400 font-bold">{currentPage} / {totalPages}</span>
                     <button
                       onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                       disabled={currentPage === totalPages}
                       className="px-3 py-1.5 rounded-lg border border-slate-350 dark:border-slate-800 bg-slate-205/50 dark:bg-slate-950/50 hover:bg-slate-200 dark:hover:bg-slate-900 text-slate-655 dark:text-slate-405 text-xs font-bold transition-all disabled:opacity-30 disabled:cursor-not-allowed outline-none focus-ring"
                     >
-                      Next
+                      Next →
                     </button>
                   </div>
                 </div>
@@ -721,13 +721,9 @@ export const CandidateRankingPage: React.FC = () => {
 
           {/* Quick Footer Summary Stats */}
           {stats && !rankMutation.isPending && (
-            <div className="py-4 px-6 rounded-xl border border-slate-250/20 dark:border-slate-850 bg-slate-205/30 dark:bg-slate-900/10 flex flex-wrap justify-between items-center text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-2">
-              <span>
-                Match scoring pipeline resolved in {stats.processingTimeMs.toFixed(1)}ms
-              </span>
-              <span>
-                Filtered {sortedCandidates.length} of {stats.totalCandidatesEvaluated} profiles evaluated
-              </span>
+            <div className="py-3 px-4 rounded-xl border border-slate-250/20 dark:border-slate-850 bg-slate-205/30 dark:bg-slate-900/10 flex flex-col sm:flex-row flex-wrap justify-between items-start sm:items-center gap-1 text-[10px] text-slate-500 font-bold uppercase tracking-wider mt-2">
+              <span>Pipeline: {stats.processingTimeMs.toFixed(1)}ms</span>
+              <span>{sortedCandidates.length} of {stats.totalCandidatesEvaluated} profiles</span>
             </div>
           )}
 

@@ -74,7 +74,7 @@ export const AnalyticsHero: React.FC<AnalyticsHeroProps> = ({
     <div className="flex flex-col gap-6 mb-6">
       {/* Welcome Title */}
       <div>
-        <h1 className="text-3xl font-black tracking-tight text-slate-900 dark:text-white font-heading">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-black tracking-tight text-slate-900 dark:text-white font-heading">
           AI Recruiter Analytics Center
         </h1>
         <p className="text-xs text-slate-600 dark:text-slate-400">
@@ -83,7 +83,7 @@ export const AnalyticsHero: React.FC<AnalyticsHeroProps> = ({
       </div>
 
       {/* KPI Row */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         {kpis.map((kpi, idx) => (
           <motion.div
             key={idx}
@@ -106,7 +106,7 @@ export const AnalyticsHero: React.FC<AnalyticsHeroProps> = ({
               </div>
             </div>
             <div className="flex items-baseline gap-1 mt-1">
-              <span className="text-2xl font-black text-slate-900 dark:text-white font-mono">
+              <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white font-mono">
                 {kpi.value}
               </span>
               <span className="text-xs font-bold text-slate-700 dark:text-slate-400 font-mono">

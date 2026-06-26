@@ -124,68 +124,80 @@ const CandidateHeader: React.FC<CandidateHeaderProps> = ({
 
       <div className="p-6 md:p-8">
         {/* Top bar: back + actions */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-5 gap-2">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors group"
+            className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors group shrink-0"
           >
             <ArrowLeft
               size={15}
               className="group-hover:-translate-x-0.5 transition-transform"
             />
-            Back to Rankings
+            <span className="hidden sm:inline">Back to Rankings</span>
+            <span className="sm:hidden">Back</span>
           </button>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5">
             {onExport && (
               <button
                 onClick={onExport}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-xs font-semibold text-slate-700 dark:text-slate-300 transition-all"
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-xs font-semibold text-slate-700 dark:text-slate-300 transition-all"
               >
-                <Download size={13} />
-                Export
+                <Download size={12} />
+                <span className="hidden sm:inline">Export</span>
               </button>
             )}
             <button
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-xs font-semibold text-slate-700 dark:text-slate-300 transition-all"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-xs font-semibold text-slate-700 dark:text-slate-300 transition-all"
               aria-label="Share profile"
             >
-              <Share2 size={13} />
-              Share
+              <Share2 size={12} />
+              <span className="hidden sm:inline">Share</span>
             </button>
             <Link
               to="/copilot"
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-semibold text-xs shadow-lg shadow-blue-500/20 transition-all"
+              className="flex items-center gap-1 px-2.5 sm:px-4 py-1.5 rounded-lg bg-gradient-to-r from-blue-600 to-violet-600 hover:from-blue-500 hover:to-violet-500 text-white font-semibold text-xs shadow-lg shadow-blue-500/20 transition-all"
             >
-              <Bot size={13} />
-              AI Copilot
+              <Bot size={12} />
+              <span>Copilot</span>
             </Link>
           </div>
         </div>
 
         {/* Main hero row */}
-        <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
-          {/* Avatar */}
-          <div className="relative shrink-0">
-            <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-tr from-blue-500 via-violet-600 to-purple-700 flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-blue-500/25">
-              {initials}
+        <div className="flex flex-col gap-4">
+          {/* Avatar + score ring row */}
+          <div className="flex items-start justify-between gap-4">
+            <div className="relative shrink-0">
+              <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-blue-500 via-violet-600 to-purple-700 flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-blue-500/25">
+                {initials}
+              </div>
+              {rank && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.4, type: "spring", stiffness: 300 }}
+                  className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-gradient-to-tr from-amber-400 to-orange-500 flex items-center justify-center text-[10px] font-black text-white shadow-md shadow-amber-500/30"
+                >
+                  #{rank}
+                </motion.div>
+              )}
             </div>
-            {rank && (
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.4, type: "spring", stiffness: 300 }}
-                className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-gradient-to-tr from-amber-400 to-orange-500 flex items-center justify-center text-[10px] font-black text-white shadow-md shadow-amber-500/30"
-              >
-                #{rank}
-              </motion.div>
+
+            {/* Score ring — top right on mobile */}
+            {finalScore > 0 && (
+              <div className="flex flex-col items-center gap-1 shrink-0">
+                <ScoreRing score={finalScore} size={64} />
+                <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wider">AI Score</span>
+                <span className="text-[9px] text-slate-400">{Math.round(confidence * 100)}% conf.</span>
+              </div>
             )}
           </div>
 
           {/* Identity block */}
           <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-3 mb-1">
-              <h1 className="text-2xl md:text-3xl font-black text-slate-900 dark:text-slate-50 tracking-tight truncate">
+            <div className="flex flex-wrap items-center gap-2 mb-1">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 dark:text-slate-50 tracking-tight">
                 {displayName}
               </h1>
               {verdict && (
@@ -206,21 +218,19 @@ const CandidateHeader: React.FC<CandidateHeaderProps> = ({
               {profile?.headline || profile?.currentTitle || "Senior Professional"}
             </p>
 
-            <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-slate-600 dark:text-slate-400">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-600 dark:text-slate-400">
               <span className="flex items-center gap-1.5">
-                <MapPin size={12} className="text-slate-500 dark:text-slate-500" />
-                {profile?.location || candidate.location || "Remote"}
-                {profile?.country && `, ${profile.country}`}
+                <MapPin size={12} className="text-slate-500 shrink-0" />
+                <span className="truncate max-w-[140px]">{profile?.location || candidate.location || "Remote"}</span>
               </span>
               <span className="flex items-center gap-1.5">
-                <Briefcase size={12} className="text-slate-500 dark:text-slate-500" />
-                {profile?.yearsOfExperience || candidate.experienceYears || 0} yrs experience
+                <Briefcase size={12} className="text-slate-500 shrink-0" />
+                {profile?.yearsOfExperience || candidate.experienceYears || 0} yrs
               </span>
               <span className="flex items-center gap-1.5">
-                <Clock size={12} className="text-slate-500 dark:text-slate-500" />
-                Notice:{" "}
-                {candidate.availability ||
-                  `${candidate.redrob_signals?.noticePeriodDays ?? 0} days`}
+                <Clock size={12} className="text-slate-500 shrink-0" />
+                Notice: {candidate.availability ||
+                  `${candidate.redrob_signals?.noticePeriodDays ?? 0}d`}
               </span>
               {candidate.redrob_signals?.openToWorkFlag && (
                 <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/12 border border-emerald-500/25 text-emerald-600 dark:text-emerald-400 font-bold text-[10px] uppercase tracking-wider">
@@ -230,19 +240,6 @@ const CandidateHeader: React.FC<CandidateHeaderProps> = ({
               )}
             </div>
           </div>
-
-          {/* Score ring + confidence */}
-          {finalScore > 0 && (
-            <div className="flex flex-col items-center gap-1.5 shrink-0">
-              <ScoreRing score={finalScore} />
-              <span className="text-[10px] font-bold text-slate-600 dark:text-slate-500 uppercase tracking-wider">
-                AI Score
-              </span>
-              <span className="text-[10px] text-slate-500 dark:text-slate-600">
-                {Math.round(confidence * 100)}% conf.
-              </span>
-            </div>
-          )}
         </div>
       </div>
     </motion.div>

@@ -60,10 +60,10 @@ export const Sidebar: React.FC<SidebarProps> = () => {
   }, []);
 
 
-  const { isDesktop } = useResponsive();
+  const { isMobile } = useResponsive();
 
-  // Only render on lg+ screens — MobileMenu handles mobile/tablet navigation
-  if (!isDesktop) {
+  // Only render on md+ screens — MobileMenu handles mobile navigation
+  if (isMobile) {
     return null;
   }
 
@@ -84,7 +84,7 @@ export const Sidebar: React.FC<SidebarProps> = () => {
       animate={isSidebarOpen ? "expanded" : "collapsed"}
       variants={sidebarVariants}
       transition={shouldReduceMotion ? { duration: 0.15 } : springConfig}
-      className="hidden lg:flex sticky top-0 h-screen z-40 flex-col bg-slate-150/40 dark:bg-slate-950/40 glass-panel border-r border-slate-200/10 dark:border-slate-800/50 shadow-xl overflow-visible shrink-0"
+      className="hidden md:flex sticky top-0 h-screen z-40 flex-col bg-slate-150/40 dark:bg-slate-950/40 glass-panel border-r border-slate-200/10 dark:border-slate-800/50 shadow-xl overflow-visible shrink-0"
     >
       {/* Header Container */}
       <div className="h-20 border-b border-slate-200/10 dark:border-slate-800/50 flex items-center justify-between px-6 shrink-0 overflow-hidden">

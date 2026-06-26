@@ -70,7 +70,7 @@ export const ScoreBreakdownChart: React.FC<ScoreBreakdownChartProps> = ({
   }, [activeDimension]);
 
   return (
-    <div className="w-full glass-panel rounded-2xl border-white/10 shadow-xl p-5 md:p-6 mb-6">
+    <div className="w-full min-w-0 glass-panel rounded-2xl border-white/10 shadow-xl p-5 md:p-6 mb-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
           <h2 className="text-sm font-bold text-white uppercase tracking-wider font-heading">
@@ -100,13 +100,13 @@ export const ScoreBreakdownChart: React.FC<ScoreBreakdownChartProps> = ({
         </div>
       </div>
 
-      <div className="h-72 w-full">
+      <div className="w-full overflow-hidden">
         {candidates.length === 0 ? (
           <div className="h-full flex items-center justify-center text-xs text-slate-500">
             No candidates to map.
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height={300}>
             <AreaChart data={data} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
               <defs>
                 <linearGradient id="scoreColor" x1="0" y1="0" x2="0" y2="1">

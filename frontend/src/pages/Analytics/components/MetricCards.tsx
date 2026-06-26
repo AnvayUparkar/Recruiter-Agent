@@ -65,7 +65,7 @@ export const MetricCards: React.FC<MetricCardsProps> = ({
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-6 min-w-0 w-full">
       {cards.map((card, idx) => (
         <motion.div
           key={idx}
@@ -77,7 +77,7 @@ export const MetricCards: React.FC<MetricCardsProps> = ({
             damping: 20,
             delay: idx * 0.05 + 0.1,
           }}
-          className="p-5 rounded-2xl glass-panel border-border bg-surface/40 hover:bg-surface-hover/20 transition-all duration-200 flex items-center justify-between group cursor-default relative overflow-hidden"
+          className="p-4 md:p-5 rounded-2xl glass-panel border-border bg-surface/40 hover:bg-surface-hover/20 transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 group cursor-default relative overflow-hidden w-full max-w-full"
         >
           {/* Subtle hover glow circle */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -97,7 +97,7 @@ export const MetricCards: React.FC<MetricCardsProps> = ({
           </div>
 
           <div
-            className={`w-11 h-11 rounded-xl flex items-center justify-center border shrink-0 group-hover:scale-110 transition-all duration-200 shadow-sm
+            className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl flex items-center justify-center border shrink-0 group-hover:scale-110 transition-all duration-200 shadow-sm
               ${card.color}`}
           >
             {card.icon}

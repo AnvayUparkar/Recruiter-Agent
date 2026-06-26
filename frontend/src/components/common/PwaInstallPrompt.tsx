@@ -47,7 +47,7 @@ export const PwaInstallPrompt: React.FC = () => {
           animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
           exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 50 }}
           transition={{ type: "spring", stiffness: 260, damping: 20 }}
-          className="fixed bottom-6 left-6 z-[9990] max-w-sm w-full bg-white dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800/60 backdrop-blur-xl rounded-2xl p-5 shadow-2xl pointer-events-auto select-none"
+          className="fixed bottom-4 left-4 right-4 md:right-auto md:bottom-6 md:left-6 z-[9990] max-w-sm w-auto md:w-full bg-white dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800/60 backdrop-blur-xl rounded-2xl p-4 md:p-5 shadow-2xl pointer-events-auto select-none"
         >
           <div className="flex flex-col gap-4">
             {/* Header / Brand details */}

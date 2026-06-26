@@ -39,7 +39,7 @@ export const ExperienceDistribution: React.FC<ExperienceDistributionProps> = ({
   }, [candidates]);
 
   return (
-    <div className="w-full glass-panel rounded-2xl border-white/10 shadow-xl p-5 md:p-6 mb-6">
+    <div className="w-full min-w-0 glass-panel rounded-2xl border-white/10 shadow-xl p-5 md:p-6 mb-6">
       <div className="mb-4">
         <h2 className="text-sm font-bold text-white uppercase tracking-wider font-heading">
           Candidate Tenure Ranges
@@ -49,13 +49,13 @@ export const ExperienceDistribution: React.FC<ExperienceDistributionProps> = ({
         </p>
       </div>
 
-      <div className="h-72 w-full">
+      <div className="w-full overflow-hidden">
         {candidates.length === 0 ? (
           <div className="h-full flex items-center justify-center text-xs text-slate-500">
             No candidates to group.
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width="100%" height={300}>
             <BarChart data={data} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" />
               <XAxis dataKey="name" stroke="#64748B" fontSize={10} tickLine={false} dy={8} />

@@ -210,7 +210,7 @@ const CandidateProfilePage: React.FC = () => {
 
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
-    <div className="max-w-5xl mx-auto flex flex-col gap-5 pb-12">
+    <div className="max-w-5xl mx-auto flex flex-col gap-5 pb-12 px-3 sm:px-4 md:px-6">
       {/* Sticky dossier header */}
       <CandidateHeader
         candidate={candidate}
@@ -219,7 +219,7 @@ const CandidateProfilePage: React.FC = () => {
       />
 
       {/* Navigation tabs */}
-      <div className="flex items-center gap-1 border-b border-slate-200 dark:border-white/8 overflow-x-auto">
+      <div className="flex items-center border-b border-slate-200 dark:border-white/8 overflow-x-auto scrollbar-none -mx-1">
         {TABS.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -230,14 +230,15 @@ const CandidateProfilePage: React.FC = () => {
               role="tab"
               aria-selected={isActive}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-5 py-3 text-sm font-semibold border-b-2 whitespace-nowrap transition-all ${
+              className={`flex items-center gap-1.5 px-3 sm:px-5 py-3 text-xs sm:text-sm font-semibold border-b-2 whitespace-nowrap transition-all shrink-0 ${
                 isActive
                   ? "border-blue-500 text-blue-600 dark:text-blue-400"
                   : "border-transparent text-slate-500 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
               }`}
             >
               <Icon size={14} />
-              {tab.label}
+              <span className="hidden xs:inline sm:inline">{tab.label}</span>
+              <span className="xs:hidden sm:hidden">{tab.label.split(" ")[0]}</span>
             </button>
           );
         })}

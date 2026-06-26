@@ -17,7 +17,7 @@ interface MobileMenuProps {
 
 export const MobileMenu: React.FC<MobileMenuProps> = ({ navItems, healthStatus }) => {
   const { isSidebarOpen: isOpen, setSidebarOpen: setIsOpen } = useLayoutStore();
-  const { isDesktop } = useResponsive();
+  const { isDesktop, isMobile } = useResponsive();
   const shouldReduceMotion = useReducedMotion();
 
   // Close when screen resizes to desktop width
@@ -40,8 +40,8 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ navItems, healthStatus }
 
   return (
     <AnimatePresence>
-      {!isDesktop && isOpen && (
-        <div className="fixed inset-0 z-[9999] flex">
+      {isMobile && isOpen && (
+        <div className="fixed inset-0 z-[20000] flex">
           {/* Backdrop Blur Overlay */}
           <motion.div
             initial={{ opacity: 0 }}

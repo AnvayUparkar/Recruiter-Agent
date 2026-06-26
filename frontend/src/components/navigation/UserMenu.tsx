@@ -53,9 +53,9 @@ export const UserMenu: React.FC = () => {
 
   if (!isAuthenticated || !displayUser) {
     return (
-      <div className="flex items-center gap-2">
-        <Link to="/login" className="text-sm font-medium text-text-muted hover:text-primary transition-colors">Log In</Link>
-        <Link to="/signup" className="px-3 py-1.5 text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors">Sign Up</Link>
+      <div className="flex items-center gap-1.5 sm:gap-2">
+        <Link to="/login" className="text-xs sm:text-sm font-medium text-text-muted hover:text-primary transition-colors px-1 sm:px-0 w-auto">Log In</Link>
+        <Link to="/signup" className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors w-auto">Sign Up</Link>
       </div>
     );
   }

@@ -21,7 +21,7 @@ interface AppLayoutContentProps {
 
 const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
   const { setSidebarOpen } = useLayoutStore();
-  const { isDesktop } = useResponsive();
+  const { isDesktop, isMobile } = useResponsive();
   const { comparisonCandidateIds } = useCandidateStore();
   const { user } = useAuthStore();
   const isRecruiter = user?.role !== "user";
@@ -67,27 +67,27 @@ const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
   ];
 
   return (
-    <div className="min-h-screen flex text-slate-800 dark:text-slate-200 bg-[#f6f8fa] dark:bg-[#0d1117] transition-colors duration-300 font-sans">
+    <div className="min-h-screen flex w-full max-w-full overflow-x-hidden text-slate-800 dark:text-slate-200 bg-[#f6f8fa] dark:bg-[#0d1117] transition-colors duration-300 font-sans">
       {/* Skip to Content link for screen readers */}
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-100 px-4 py-2 bg-blue-600 text-white rounded-lg">
         Skip to main content
       </a>
 
-      {/* Desktop Sidebar — only on lg+ screens */}
-      {isDesktop && <Sidebar />}
+      {/* Desktop/Tablet Sidebar — only on md+ screens */}
+      {!isMobile && <Sidebar />}
 
-      {/* Mobile/Tablet drawer — shown on screens smaller than 1024px */}
-      {!isDesktop && (
+      {/* Mobile drawer — shown on screens smaller than 768px */}
+      {isMobile && (
         <MobileMenu navItems={navItems} healthStatus="healthy" />
       )}
 
       {/* Main Container */}
-      <div className="flex-1 flex flex-col min-w-0 relative">
+      <div className="flex-1 flex flex-col min-w-0 max-w-full overflow-x-hidden relative">
         {/* Sticky top navigation bar */}
         <TopNavbar />
 
         {/* Dynamic Route Content */}
-        <main id="main-content" className="flex-1 flex flex-col p-6 lg:p-8 outline-none">
+        <main id="main-content" className="flex-1 flex flex-col w-full max-w-full overflow-x-hidden p-4 md:p-6 lg:p-8 outline-none">
           {children}
         </main>
 

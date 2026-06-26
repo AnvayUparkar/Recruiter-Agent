@@ -122,32 +122,32 @@ export const SubmissionExportPanel: React.FC = () => {
 
               {/* Details table */}
               <div className="w-full mt-5 bg-surface rounded-2xl border border-border p-4 text-left flex flex-col gap-3 font-mono text-[11px] text-text-muted">
-                <div className="flex justify-between border-b border-border pb-1.5">
+                <div className="flex flex-col sm:flex-row sm:justify-between border-b border-border pb-1.5 gap-1">
                   <span className="text-muted font-bold">EXPORTPATH:</span>
-                  <span className="text-primary text-right truncate pl-4 select-all">
+                  <span className="text-primary sm:text-right break-all select-all">
                     {modalDetails.exportPath.split(/[\\/]/).pop()}
                   </span>
                 </div>
 
-                <div className="flex justify-between border-b border-border pb-1.5">
+                <div className="flex flex-col sm:flex-row sm:justify-between border-b border-border pb-1.5 gap-1">
                   <span className="text-muted font-bold">ROW COUNT:</span>
                   <span className="text-primary font-bold">{modalDetails.rowCount} candidate logs</span>
                 </div>
 
-                <div className="flex justify-between border-b border-border pb-1.5">
+                <div className="flex flex-col sm:flex-row sm:justify-between border-b border-border pb-1.5 gap-1">
                   <span className="text-muted font-bold">GENERATED:</span>
                   <span className="text-primary">{new Date(modalDetails.timestamp).toLocaleTimeString()}</span>
                 </div>
 
                 <div className="flex flex-col gap-1">
                   <span className="text-muted font-bold">SHA256 CHECKSUM HASH:</span>
-                  <div className="flex items-center gap-2 bg-surface p-2 rounded border border-border mt-1">
-                    <span className="text-primary font-mono text-[10px] select-all flex-1 truncate">
+                  <div className="flex items-center gap-2 bg-surface p-2 rounded border border-border mt-1 w-full max-w-full overflow-hidden">
+                    <span className="text-primary font-mono text-[10px] select-all flex-1 break-all truncate">
                       {modalDetails.sha256Hash}
                     </span>
                     <button
                       onClick={handleCopyHash}
-                      className="p-1 rounded bg-surface-hover hover:bg-surface-hover text-text-muted hover:text-primary"
+                      className="p-1 rounded bg-surface-hover hover:bg-surface-hover text-text-muted hover:text-primary shrink-0"
                       title="Copy checksum hash"
                     >
                       {copied ? <Check size={12} className="text-emerald-400" /> : <Clipboard size={12} />}

@@ -350,7 +350,7 @@ export const CandidateComparisonPage: React.FC = () => {
 
   // 6. Main Dashboard Render
   return (
-    <div className="max-w-6xl mx-auto py-6 px-4 pb-24 relative">
+    <div className="w-full max-w-full overflow-x-hidden max-w-6xl mx-auto py-6 px-4 pb-24 relative">
       {/* Top action row */}
       <ComparisonToolbar
         candidateCount={loadedCandidates.length}

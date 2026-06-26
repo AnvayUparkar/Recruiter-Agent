@@ -334,7 +334,7 @@ export const CommandPalette: React.FC = () => {
             animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
             exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: -8 }}
             transition={{ type: "spring", stiffness: 380, damping: 26 }}
-            className="w-full max-w-2xl bg-slate-900/80 dark:bg-slate-950/70 glass-panel shadow-2xl rounded-2xl border border-slate-200/10 dark:border-slate-800/60 overflow-hidden relative z-10 select-none flex flex-col focus-ring outline-none"
+            className="w-full max-w-2xl bg-white/95 dark:bg-slate-950/70 glass-panel shadow-2xl rounded-2xl border border-slate-200 dark:border-slate-800/60 overflow-hidden relative z-10 select-none flex flex-col focus-ring outline-none"
             onKeyDown={handleKeyDown}
             tabIndex={-1}
             role="combobox"
@@ -343,7 +343,7 @@ export const CommandPalette: React.FC = () => {
             aria-label="Command search palette"
           >
             {/* Search Input */}
-            <div className="flex items-center px-4.5 border-b border-slate-200/10 dark:border-slate-800/50 bg-slate-200/5 dark:bg-slate-900/20">
+            <div className="flex items-center px-4.5 border-b border-slate-200 dark:border-slate-800/50 bg-slate-50 dark:bg-slate-900/20">
               <Search size={18} className="text-slate-400 shrink-0" />
               <input
                 ref={inputRef}
@@ -354,12 +354,12 @@ export const CommandPalette: React.FC = () => {
                   setActiveIndex(0);
                 }}
                 placeholder="Search candidates, routes, themes, calibration strategies..."
-                className="w-full bg-transparent border-none py-4.5 px-3 text-sm focus:outline-none text-slate-100 placeholder-slate-500"
+                className="w-full bg-transparent border-none py-4.5 px-3 text-sm focus:outline-none text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500"
                 aria-autocomplete="list"
                 aria-controls="command-listbox"
               />
               <div className="flex items-center gap-1.5 shrink-0">
-                <span className="px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-[9px] font-mono text-slate-500 border border-slate-300 dark:border-slate-700 font-extrabold shadow-sm">
+                <span className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[9px] font-mono text-slate-500 border border-slate-300 dark:border-slate-700 font-extrabold shadow-sm">
                   ESC
                 </span>
               </div>
@@ -385,12 +385,12 @@ export const CommandPalette: React.FC = () => {
                       className={`flex items-center justify-between px-3.5 py-3 rounded-xl cursor-pointer transition-all duration-150 outline-none
                         ${
                           isActive
-                            ? "bg-blue-600/15 dark:bg-blue-500/15 border border-blue-500/25 dark:border-blue-400/20 text-slate-100"
-                            : "bg-transparent border border-transparent text-slate-400"
+                            ? "bg-blue-50 dark:bg-blue-500/15 border border-blue-300 dark:border-blue-400/20 text-slate-900 dark:text-slate-100"
+                            : "bg-transparent border border-transparent text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40"
                         }`}
                     >
                       <div className="flex items-center gap-3.5 min-w-0">
-                        <div className="w-8 h-8 rounded-lg bg-slate-200/10 dark:bg-slate-900 flex items-center justify-center border border-slate-350/10 shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-900 flex items-center justify-center border border-slate-200 dark:border-slate-700/50 shrink-0">
                           {item.icon}
                         </div>
                         <div className="flex flex-col min-w-0">
@@ -398,11 +398,11 @@ export const CommandPalette: React.FC = () => {
                             <span className={`text-xs font-semibold ${isActive ? "text-blue-500 dark:text-blue-400" : ""}`}>
                               {item.title}
                             </span>
-                            <span className="px-1.5 py-0.2 rounded bg-slate-800 text-[8px] font-bold tracking-wider uppercase text-slate-450 border border-slate-700/60">
+                            <span className="px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-[8px] font-bold tracking-wider uppercase text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700/60">
                               {item.category}
                             </span>
                           </div>
-                          <span className="text-[10px] text-slate-450 dark:text-slate-500 mt-0.5 truncate max-w-[380px] sm:max-w-[480px]">
+                          <span className="text-[10px] text-slate-500 dark:text-slate-500 mt-0.5 truncate max-w-[380px] sm:max-w-[480px]">
                             {item.description}
                           </span>
                         </div>
@@ -418,22 +418,22 @@ export const CommandPalette: React.FC = () => {
                   );
                 })
               ) : (
-                <div className="py-12 text-center text-slate-500 flex flex-col items-center gap-2">
-                  <Search size={22} className="text-slate-700" />
-                  <span className="text-xs font-bold">No results found for "{search}"</span>
-                  <span className="text-[10px] text-slate-600">Try searching for "quantitative", "theme", or "reports".</span>
+                <div className="py-12 text-center text-slate-400 flex flex-col items-center gap-2">
+                  <Search size={22} className="text-slate-300 dark:text-slate-700" />
+                  <span className="text-xs font-bold text-slate-500">No results found for "{search}"</span>
+                  <span className="text-[10px] text-slate-400 dark:text-slate-600">Try searching for "quantitative", "theme", or "reports".</span>
                 </div>
               )}
             </div>
 
             {/* Shortcut HUD Footer */}
-            <div className="p-3 border-t border-slate-200/10 dark:border-slate-800/50 bg-slate-200/5 dark:bg-slate-900/40 flex justify-between items-center text-[10px] text-slate-500">
+            <div className="p-3 border-t border-slate-200 dark:border-slate-800/50 bg-slate-50 dark:bg-slate-900/40 flex justify-between items-center text-[10px] text-slate-500">
               <div className="flex gap-4">
                 <span className="flex items-center gap-1">
-                  <span className="px-1 py-0.2 rounded bg-slate-200 dark:bg-slate-850 font-mono border border-slate-350 dark:border-slate-700">↑↓</span> Navigate
+                  <span className="px-1 py-0.2 rounded bg-slate-100 dark:bg-slate-850 font-mono border border-slate-300 dark:border-slate-700">↑↓</span> Navigate
                 </span>
                 <span className="flex items-center gap-1">
-                  <span className="px-1 py-0.2 rounded bg-slate-200 dark:bg-slate-850 font-mono border border-slate-350 dark:border-slate-700">Enter</span> Run Action
+                  <span className="px-1 py-0.2 rounded bg-slate-100 dark:bg-slate-850 font-mono border border-slate-300 dark:border-slate-700">Enter</span> Run Action
                 </span>
               </div>
               <span className="flex items-center gap-1 text-[9px] font-medium">

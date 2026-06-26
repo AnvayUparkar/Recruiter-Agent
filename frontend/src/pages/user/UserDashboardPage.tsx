@@ -65,13 +65,13 @@ export default function UserDashboardPage() {
   }, [activeTab]);
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
-      <div className="mb-10">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Candidate Dashboard</h1>
-        <p className="text-slate-600 dark:text-gray-400">Discover job opportunities perfectly tailored to your unique skill set.</p>
+    <div className="p-4 md:p-6 lg:p-8 max-w-6xl mx-auto overflow-x-hidden">
+      <div className="mb-6 md:mb-10">
+        <h1 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white mb-2">Candidate Dashboard</h1>
+        <p className="text-sm md:text-base text-slate-600 dark:text-gray-400">Discover job opportunities perfectly tailored to your unique skill set.</p>
       </div>
 
-      <div className="mb-8 border-b border-slate-200 dark:border-slate-700">
+      <div className="mb-6 md:mb-8 border-b border-slate-200 dark:border-slate-700">
         <div className="flex space-x-8">
           <button
             onClick={() => setActiveTab("jobs")}

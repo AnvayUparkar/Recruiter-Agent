@@ -95,7 +95,7 @@ export const SystemHealthPanel: React.FC<SystemHealthPanelProps> = ({
       </div>
 
       {/* Checklist Grid */}
-      <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-border text-[11px]">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 pt-4 border-t border-border text-[11px]">
         <div className="flex items-center justify-between text-text-muted">
           <span>FAISS Hybrid Vector:</span>
           <span className={faissLoaded ? "text-emerald-500 dark:text-emerald-400 font-bold" : "text-rose-500 dark:text-rose-450 font-bold"}>

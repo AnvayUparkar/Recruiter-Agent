@@ -252,10 +252,9 @@ export const AnalyticsDashboardPage: React.FC = () => {
     };
   }, [filteredCandidates]);
 
-  // Loading skeleton screen
   if (isAnyLoading) {
     return (
-      <div className="max-w-6xl mx-auto py-12 px-4 animate-pulse">
+      <div className="max-w-6xl w-full mx-auto py-8 px-4 md:px-6 lg:px-10 overflow-x-hidden animate-pulse">
         <div className="h-10 w-48 bg-white/10 rounded mb-4" />
         <div className="h-4 w-96 bg-white/5 rounded mb-8" />
         <div className="grid grid-cols-2 md:grid-cols-6 gap-4 mb-6">
@@ -271,10 +270,9 @@ export const AnalyticsDashboardPage: React.FC = () => {
     );
   }
 
-  // Error screen
   if (rankingError || metricsError || dashboardError) {
     return (
-      <div className="max-w-2xl mx-auto py-12 px-4">
+      <div className="max-w-2xl w-full mx-auto py-8 px-4 md:px-6 lg:px-10 overflow-x-hidden">
         <div className="p-6 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-450 flex flex-col gap-3 shadow-lg">
           <div className="flex items-center gap-3">
             <AlertCircle className="text-rose-400" size={24} />
@@ -325,7 +323,7 @@ export const AnalyticsDashboardPage: React.FC = () => {
   const latency = processingTimeMs;
 
   return (
-    <div className="max-w-6xl mx-auto py-6 px-4">
+    <div className="max-w-6xl w-full max-w-full mx-auto py-8 px-4 md:px-6 lg:px-10 overflow-x-hidden">
       {/* Hero section */}
       <AnalyticsHero
         totalCandidates={totalCandidates}
@@ -357,7 +355,7 @@ export const AnalyticsDashboardPage: React.FC = () => {
       />
 
       {/* Primary Dashboards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-w-0">
         <ScoreBreakdownChart candidates={filteredCandidates} />
         <CandidateDistributionChart candidates={filteredCandidates} />
         <RecommendationPieChart candidates={filteredCandidates} />
