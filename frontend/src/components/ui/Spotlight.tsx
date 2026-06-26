@@ -2,7 +2,7 @@
 
 import { useRef, useState, useCallback, useEffect } from "react"
 import { motion, useSpring, useTransform, type SpringOptions } from "framer-motion"
-import { cn } from "@/lib/utils"
+import { cn } from "../../utils/cn"
 
 type SpotlightProps = {
   className?: string
