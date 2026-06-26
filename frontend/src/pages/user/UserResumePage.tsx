@@ -10,19 +10,32 @@ export default function UserResumePage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
-  const [parsedData, setParsedData] = useState<any | null>(() => {
+  const [parsedData, setParsedData] = useState<any | null>(null);
+
+  React.useEffect(() => {
+    // Optimistically load from localStorage first
     if (typeof window !== "undefined") {
       const saved = localStorage.getItem("recruiter_user_resume_data");
       if (saved) {
         try {
-          return JSON.parse(saved);
+          setParsedData(JSON.parse(saved));
         } catch (e) {
           console.error("Failed to parse saved resume data");
         }
       }
     }
-    return null;
-  });
+    // Fetch fresh from backend
+    apiClient.get(ENDPOINTS.USER_PROFILE)
+      .then(res => {
+        if (res.data?.resume_data) {
+          setParsedData(res.data.resume_data);
+          localStorage.setItem("recruiter_user_resume_data", JSON.stringify(res.data.resume_data));
+        }
+      })
+      .catch(err => {
+        console.error("Failed to fetch profile", err);
+      });
+  }, []);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const allowedExtensions = ["pdf", "doc", "docx"];
@@ -53,8 +66,6 @@ export default function UserResumePage() {
     try {
       const formData = new FormData();
       formData.append("file", file);
-      // Hardcode candidate_id for demo purposes or pick from auth context if available
-      formData.append("candidate_id", "demo-candidate-123");
 
       const response = await apiClient.post(ENDPOINTS.USER_RESUME_UPLOAD, formData, {
         headers: {

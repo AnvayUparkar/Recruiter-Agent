@@ -12,6 +12,7 @@ const RankingDashboard = lazy(() => import("../pages/RankingDashboard"));
 const CandidateProfile = lazy(() => import("../pages/CandidateProfile"));
 const RecruiterCopilot = lazy(() => import("../pages/RecruiterCopilot"));
 const CandidateComparison = lazy(() => import("../pages/CandidateComparison"));
+const RealTimeCandidatesPage = lazy(() => import("../pages/recruiter/RealTimeCandidatesPage"));
 const Analytics = lazy(() => import("../pages/Analytics"));
 const Reports = lazy(() => import("../pages/Reports"));
 const Settings = lazy(() => import("../pages/Settings"));
@@ -130,6 +131,10 @@ export const router = createBrowserRouter([
   {
     path: "/comparison",
     element: <RouteWrapper element={<CandidateComparison />} allowedRoles={["recruiter"]} />,
+  },
+  {
+    path: "/real-time-candidates",
+    element: <RouteWrapper element={<RealTimeCandidatesPage />} allowedRoles={["recruiter"]} />,
   },
   {
     path: "/analytics",

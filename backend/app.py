@@ -111,6 +111,10 @@ def create_app(config_name: str = None) -> Flask:
     # 3. Setup CORS
     CORS(app)
 
+    # Initialize Socket.IO
+    from api.sockets import socketio
+    socketio.init_app(app)
+
     # 4. Attach request timing and logging middleware
     from api.middleware.request_logger import register_request_logger
     register_request_logger(app)
@@ -131,6 +135,7 @@ def create_app(config_name: str = None) -> Flask:
     from api.routes.submission_routes import submission_bp
     from api.routes.user_routes import user_bp
     from api.routes.job_routes import job_bp
+    from api.routes.chat_routes import chat_bp
     from api.auth import auth_bp
 
     api_v1.register_blueprint(auth_bp, url_prefix="/auth")
@@ -143,6 +148,7 @@ def create_app(config_name: str = None) -> Flask:
     api_v1.register_blueprint(copilot_bp, url_prefix="/copilot")
     api_v1.register_blueprint(submission_bp)
     api_v1.register_blueprint(job_bp, url_prefix="/jobs")
+    api_v1.register_blueprint(chat_bp, url_prefix="/chat")
 
     app.register_blueprint(api_v1)
 
@@ -165,4 +171,7 @@ if __name__ == "__main__":
     debug = app.config.get("DEBUG", False)
 
     logger.info(f"Starting server on http://{host}:{port}")
-    app.run(host=host, port=port, debug=debug)
+    
+    # Import socketio locally to run the app
+    from api.sockets import socketio
+    socketio.run(app, host=host, port=port, debug=debug)

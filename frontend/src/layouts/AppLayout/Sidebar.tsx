@@ -14,7 +14,8 @@ import {
   Shield,
   Terminal,
   User as UserIcon,
-  FileText
+  FileText,
+  Users
 } from "lucide-react";
 import { NavItem } from "../../components/navigation/NavItem";
 import { NavSection } from "../../components/navigation/NavSection";
@@ -87,7 +88,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobile = false }) => {
       <div className="h-20 border-b border-slate-200/10 dark:border-slate-800/50 flex items-center justify-between px-6 shrink-0 overflow-hidden">
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-500 to-purple-600 flex items-center justify-center text-white font-black text-base shadow-lg shadow-blue-500/20 shrink-0">
-            LA
+            NR
           </div>
           {isSidebarOpen && (
             <motion.div
@@ -97,7 +98,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobile = false }) => {
               className="flex flex-col truncate"
             >
               <span className="font-extrabold text-sm tracking-wide text-slate-900 dark:text-slate-100">
-                Antigravity TA
+                NexaRecruiter
               </span>
               <span className="text-[10px] text-blue-550 font-bold tracking-wider uppercase">
                 Recruiter Copilot
@@ -124,6 +125,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobile = false }) => {
                 label="Leaderboard"
                 path="/dashboard"
                 icon={LayoutDashboard}
+                isCollapsed={!isSidebarOpen}
+              />
+              <NavItem
+                label="Real-Time Candidates"
+                path="/real-time-candidates"
+                icon={Users}
                 isCollapsed={!isSidebarOpen}
               />
             </SidebarGroup>
@@ -229,13 +236,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ isMobile = false }) => {
           </div>
           <div className="flex items-center gap-1.5 font-semibold shrink-0">
             <span
-              className={`w-2 h-2 rounded-full ${
-                healthStatus === "healthy"
-                  ? "bg-emerald-500 shadow-sm shadow-emerald-500/50"
-                  : healthStatus === "unhealthy"
+              className={`w-2 h-2 rounded-full ${healthStatus === "healthy"
+                ? "bg-emerald-500 shadow-sm shadow-emerald-500/50"
+                : healthStatus === "unhealthy"
                   ? "bg-rose-500 shadow-sm shadow-rose-500/50"
                   : "bg-amber-500 animate-pulse"
-              }`}
+                }`}
             />
             {isSidebarOpen && <span className="capitalize text-[10px] text-slate-700 dark:text-slate-350">{healthStatus}</span>}
           </div>

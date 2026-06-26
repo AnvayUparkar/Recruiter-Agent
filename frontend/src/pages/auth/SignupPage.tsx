@@ -3,10 +3,11 @@ import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   UserPlus, Mail, Lock, User as UserIcon, Loader, CheckCircle,
-  Sparkles, Shield, Zap, ArrowRight, Briefcase,
+  Sparkles, Shield, Zap, ArrowRight, Briefcase, ArrowLeft,
 } from 'lucide-react';
 import { apiClient } from '../../api/client';
 import { useAuthStore } from '../../store/authStore';
+import { ThemeToggle } from '../../components/navigation/ThemeToggle';
 
 // ─── Animated Background ────────────────────────────────────────────────────
 const AnimatedBackground = () => (
@@ -143,6 +144,20 @@ export default function SignupPage() {
   return (
     <div className="relative min-h-screen flex items-center justify-center px-4 py-20">
       <AnimatedBackground />
+
+      {/* Top Navigation */}
+      <div className="absolute top-10 left-6 right-6 z-50 flex justify-between items-center max-w-7xl mx-auto">
+        <Link 
+          to="/"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-slate-200/50 dark:border-slate-700/50 text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition-all shadow-sm"
+        >
+          <ArrowLeft size={18} />
+          <span className="font-medium text-sm hidden sm:inline">Back to Home</span>
+        </Link>
+        <div className="bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-slate-200/50 dark:border-slate-700/50 rounded-xl shadow-sm">
+          <ThemeToggle />
+        </div>
+      </div>
 
       <div className="relative z-10 w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
 
@@ -368,7 +383,7 @@ export default function SignupPage() {
             <motion.div
               initial={{ scale: 0 }} animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: 'spring' }}
-              className="inline-block p-4 bg-gradient-to-r from-green-500 to-blue-500 rounded-2xl mb-4"
+              className="inline-block p-4 bg-gradient-to-r from-green-500 to-blue-500 rounded-2xl mb-4 mt-16"
             >
               <UserPlus className="h-12 w-12 text-white" />
             </motion.div>

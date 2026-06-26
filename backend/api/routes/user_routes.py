@@ -4,10 +4,13 @@ from flask import Blueprint, request, jsonify
 from werkzeug.utils import secure_filename
 import io
 import os
+from bson.objectid import ObjectId
 
 from services.resume_parser import ResumeParser
 from api.db import get_db
 from utils.logger import get_logger
+from api.auth.auth_utils import require_auth
+from flask import g
 
 logger = get_logger(__name__)
 
@@ -18,6 +21,7 @@ _resume_parser = ResumeParser()
 # But for parsing we can just read from the stream
 
 @user_bp.route("/upload-resume", methods=["POST"])
+@require_auth()
 def upload_resume():
     """POST /api/v1/user/upload-resume
 
@@ -46,24 +50,35 @@ def upload_resume():
         parsed_resume = _resume_parser.parse_file(file.filename, file_stream)
         parsed_data = parsed_resume.model_dump()
         
-        # 3. Store in MongoDB
-        # If user is authenticated, we would get user_id from token.
-        # Since auth middleware isn't fully strictly applied here yet, we'll try to get 
-        # a candidate_id from form data or headers, otherwise we just return the parsed data.
-        candidate_id = request.form.get("candidate_id") or request.headers.get("X-Candidate-ID")
+        # 3. Store in MongoDB using authenticated user
+        candidate_id = g.user_id
         
         if candidate_id:
             db = get_db()
             if db is not None:
+                try:
+                    query_id = ObjectId(candidate_id)
+                except Exception:
+                    query_id = candidate_id
+                
                 db.users.update_one(
-                    {"_id": candidate_id},
+                    {"_id": query_id},
                     {"$set": {"resume_data": parsed_data}},
                     upsert=True
                 )
                 logger.info(f"Updated resume data for candidate {candidate_id}")
             else:
                 logger.warning("Database connection not available to save resume data.")
-        
+        # Emit a WebSocket event to recruiters
+        try:
+            from api.sockets import socketio
+            socketio.emit("new_candidate", {
+                "candidate_id": candidate_id,
+                "resume_data": parsed_data
+            }, to="recruiters")
+        except Exception as e:
+            logger.error(f"Failed to emit new_candidate event: {e}")
+            
         # 4. Return structured JSON
         return jsonify({
             "message": "Resume parsed successfully.",
@@ -76,3 +91,50 @@ def upload_resume():
     except Exception as e:
         logger.error(f"Error during resume upload and parse: {e}", exc_info=True)
         return jsonify({"error": "Internal Server Error"}), 500
+
+@user_bp.route("/candidates", methods=["GET"])
+def get_recent_candidates():
+    """GET /api/v1/user/candidates
+    Returns candidates that have uploaded and parsed resumes.
+    """
+    db = get_db()
+    if db is None:
+        return jsonify({"error": "Database not available"}), 500
+        
+    # Find users that have resume_data
+    cursor = db.users.find({"resume_data": {"$exists": True}}).limit(50)
+    candidates = []
+    
+    for user in cursor:
+        candidates.append({
+            "candidate_id": str(user.get("_id")),
+            "resume_data": user.get("resume_data")
+        })
+        
+    return jsonify({"candidates": candidates}), 200
+
+@user_bp.route("/profile", methods=["GET"])
+@require_auth()
+def get_user_profile():
+    """GET /api/v1/user/profile
+    Returns the authenticated user's profile including resume_data.
+    """
+    db = get_db()
+    user_id = g.user_id
+    
+    if db is None:
+        return jsonify({"error": "Database not available"}), 500
+        
+    try:
+        query_id = ObjectId(user_id)
+    except Exception:
+        query_id = user_id
+        
+    user = db.users.find_one({"_id": query_id})
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+        
+    return jsonify({
+        "user_id": user_id,
+        "resume_data": user.get("resume_data")
+    }), 200

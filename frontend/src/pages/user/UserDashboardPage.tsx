@@ -1,27 +1,43 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Briefcase, Building, MapPin, DollarSign, ExternalLink, Activity, Target } from "lucide-react";
-import { motion } from "framer-motion";
+import { Briefcase, Building, MapPin, DollarSign, ExternalLink, Activity, Target, MessageCircle, ArrowLeft, User } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { jobService, RecommendedJob } from "../../services/jobService";
+import { ChatWindow } from "../../components/chat/ChatWindow";
+import { apiClient } from "../../api/client";
+import { ENDPOINTS } from "../../api/endpoints";
 
 export default function UserDashboardPage() {
   const [jobs, setJobs] = useState<RecommendedJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [hasSkills, setHasSkills] = useState(false);
+  const [activeTab, setActiveTab] = useState<"jobs" | "messages">("jobs");
+  const [conversations, setConversations] = useState<any[]>([]);
+  const [selectedConversation, setSelectedConversation] = useState<any | null>(null);
 
   useEffect(() => {
     async function fetchJobs() {
       try {
-        const savedData = localStorage.getItem("recruiter_user_resume_data");
-        if (savedData) {
-          const parsedData = JSON.parse(savedData);
-          if (parsedData && parsedData.skills && parsedData.skills.length > 0) {
-            setHasSkills(true);
-            const recommendations = await jobService.getRecommendations(parsedData.skills);
-            setJobs(recommendations);
-          } else {
-            setHasSkills(false);
+        // Try fetching profile from backend first
+        let parsedData = null;
+        try {
+          const res = await apiClient.get(ENDPOINTS.USER_PROFILE);
+          if (res.data?.resume_data) {
+            parsedData = res.data.resume_data;
+            localStorage.setItem("recruiter_user_resume_data", JSON.stringify(parsedData));
           }
+        } catch (err) {
+          console.error("Failed to fetch profile, falling back to local storage", err);
+          const savedData = localStorage.getItem("recruiter_user_resume_data");
+          if (savedData) parsedData = JSON.parse(savedData);
+        }
+
+        if (parsedData && parsedData.skills && parsedData.skills.length > 0) {
+          setHasSkills(true);
+          const recommendations = await jobService.getRecommendations(parsedData.skills);
+          setJobs(recommendations);
+        } else {
+          setHasSkills(false);
         }
       } catch (error) {
         console.error("Error fetching recommended jobs:", error);
@@ -33,6 +49,21 @@ export default function UserDashboardPage() {
     fetchJobs();
   }, []);
 
+  useEffect(() => {
+    if (activeTab === "messages") {
+      apiClient.get("/api/v1/chat/conversations")
+        .then(res => {
+          console.log("Conversations fetched:", res.data);
+          if (res.data && res.data.conversations) {
+            setConversations(res.data.conversations);
+          }
+        })
+        .catch(err => {
+          console.error("Failed to fetch conversations", err);
+        });
+    }
+  }, [activeTab]);
+
   return (
     <div className="p-8 max-w-6xl mx-auto">
       <div className="mb-10">
@@ -40,15 +71,54 @@ export default function UserDashboardPage() {
         <p className="text-slate-600 dark:text-gray-400">Discover job opportunities perfectly tailored to your unique skill set.</p>
       </div>
 
-      <div className="space-y-8">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center">
-            <Target size={20} />
-          </div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Recommended For You</h2>
+      <div className="mb-8 border-b border-slate-200 dark:border-slate-700">
+        <div className="flex space-x-8">
+          <button
+            onClick={() => setActiveTab("jobs")}
+            className={`pb-4 text-sm font-bold transition-colors relative ${
+              activeTab === "jobs"
+                ? "text-blue-600 dark:text-blue-400"
+                : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <Target size={18} />
+              Recommended Jobs
+            </div>
+            {activeTab === "jobs" && (
+              <motion.div layoutId="userTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400" />
+            )}
+          </button>
+          
+          <button
+            onClick={() => setActiveTab("messages")}
+            className={`pb-4 text-sm font-bold transition-colors relative ${
+              activeTab === "messages"
+                ? "text-blue-600 dark:text-blue-400"
+                : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300"
+            }`}
+          >
+            <div className="flex items-center gap-2">
+              <MessageCircle size={18} />
+              Recruiter Messages
+            </div>
+            {activeTab === "messages" && (
+              <motion.div layoutId="userTab" className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 dark:bg-blue-400" />
+            )}
+          </button>
         </div>
+      </div>
 
-        {loading ? (
+      <AnimatePresence mode="wait">
+        {activeTab === "jobs" ? (
+          <motion.div
+            key="jobs"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="space-y-8"
+          >
+            {loading ? (
           <div className="flex flex-col items-center justify-center py-20">
             <Activity className="animate-spin text-blue-500 mb-4" size={32} />
             <p className="text-slate-500 dark:text-slate-400">Analyzing your profile and searching for matches...</p>
@@ -149,9 +219,82 @@ export default function UserDashboardPage() {
                 </div>
               </motion.div>
             ))}
-          </div>
+            </div>
+          )}
+        </motion.div>
+        ) : (
+          <motion.div
+            key="messages"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="h-[600px] flex flex-col"
+          >
+            {!selectedConversation ? (
+              <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden h-full flex flex-col">
+                <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800">
+                  <h2 className="text-lg font-bold text-slate-900 dark:text-white">Your Messages</h2>
+                </div>
+                <div className="overflow-y-auto flex-grow p-4 space-y-2">
+                  {conversations.length === 0 ? (
+                    <div className="h-full flex flex-col items-center justify-center text-slate-500 py-10">
+                      <MessageCircle size={48} className="mb-4 text-slate-300 dark:text-slate-700" />
+                      <p>No messages yet. Check back later!</p>
+                    </div>
+                  ) : (
+                    conversations.map(conv => (
+                      <div 
+                        key={conv.conversationId}
+                        onClick={() => setSelectedConversation(conv)}
+                        className="flex items-center gap-4 p-4 rounded-xl cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700"
+                      >
+                        <div className="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center overflow-hidden shrink-0">
+                          {conv.participantPicture ? (
+                            <img src={conv.participantPicture} alt={conv.participantName} className="w-full h-full object-cover" />
+                          ) : (
+                            <User className="text-slate-500" />
+                          )}
+                        </div>
+                        <div className="flex-grow min-w-0">
+                          <div className="flex justify-between items-baseline mb-1">
+                            <h3 className="text-base font-bold text-slate-900 dark:text-white truncate">
+                              {conv.participantName}
+                            </h3>
+                            <span className="text-xs text-slate-400 shrink-0 ml-2">
+                              {new Date(conv.lastUpdated).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <p className="text-sm text-slate-500 dark:text-slate-400 truncate">
+                            {conv.lastMessage || "Started a conversation"}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="h-full flex flex-col">
+                <button 
+                  onClick={() => setSelectedConversation(null)}
+                  className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 mb-4 px-2 w-fit transition-colors"
+                >
+                  <ArrowLeft size={16} />
+                  Back to Messages
+                </button>
+                <div className="flex-grow min-h-0">
+                  <ChatWindow 
+                    conversationId={selectedConversation.conversationId}
+                    receiverId={selectedConversation.recruiterId}
+                    receiverName={selectedConversation.participantName}
+                    receiverRole={selectedConversation.participantRole}
+                  />
+                </div>
+              </div>
+            )}
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
     </div>
   );
 }

@@ -10,7 +10,11 @@ export const ENDPOINTS = {
   HEALTH: `${API_BASE_PREFIX}/health`,
   VERSION: `${API_BASE_PREFIX}/version`,
   USER_RESUME_UPLOAD: `${API_BASE_PREFIX}/user/upload-resume`,
+  USER_PROFILE: `${API_BASE_PREFIX}/user/profile`,
   USER_JOB_RECOMMENDATIONS: `${API_BASE_PREFIX}/jobs/recommendations`,
+  CHAT_MESSAGES: `${API_BASE_PREFIX}/chat/messages`,
+  CHAT_SEND: `${API_BASE_PREFIX}/chat/send`,
+  CHAT_CONVERSATIONS: `${API_BASE_PREFIX}/chat/conversations`,
 } as const;
 
 export type EndpointKey = keyof typeof ENDPOINTS;

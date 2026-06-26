@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { User, Mail, Phone, Link2, Github, Briefcase, Award, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { apiClient } from "../../api/client";
+import { ENDPOINTS } from "../../api/endpoints";
 
 export default function UserProfilePage() {
   const [profileData, setProfileData] = useState<any | null>(null);
 
   useEffect(() => {
-    // Read parsed resume data from local storage
+    // Read parsed resume data from local storage optimistically
     if (typeof window !== "undefined") {
       const savedData = localStorage.getItem("recruiter_user_resume_data");
       if (savedData) {
@@ -18,6 +20,18 @@ export default function UserProfilePage() {
         }
       }
     }
+    
+    // Fetch from backend
+    apiClient.get(ENDPOINTS.USER_PROFILE)
+      .then(res => {
+        if (res.data?.resume_data) {
+          setProfileData(res.data.resume_data);
+          localStorage.setItem("recruiter_user_resume_data", JSON.stringify(res.data.resume_data));
+        }
+      })
+      .catch(err => {
+        console.error("Failed to fetch profile", err);
+      });
   }, []);
 
   return (
