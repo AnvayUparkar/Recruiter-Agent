@@ -21,7 +21,7 @@ interface AppLayoutContentProps {
 
 const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
   const { setSidebarOpen } = useLayoutStore();
-  const { isMobile, isTablet, isDesktop } = useResponsive();
+  const { isDesktop } = useResponsive();
   const { comparisonCandidateIds } = useCandidateStore();
   const { user } = useAuthStore();
   const isRecruiter = user?.role !== "user";

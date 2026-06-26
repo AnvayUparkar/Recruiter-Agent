@@ -26,11 +26,9 @@ import { useAuthStore } from "../../store/authStore";
 import { healthService } from "../../services/healthService";
 import { useResponsive } from "../ResponsiveLayout";
 
-interface SidebarProps {
-  isMobile?: boolean;
-}
+interface SidebarProps {}
 
-export const Sidebar: React.FC<SidebarProps> = ({ isMobile = false }) => {
+export const Sidebar: React.FC<SidebarProps> = () => {
   const { isSidebarOpen, setSidebarOpen } = useLayoutStore();
   const { comparisonCandidateIds } = useCandidateStore();
   const { user } = useAuthStore();
