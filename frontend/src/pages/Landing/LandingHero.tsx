@@ -4,9 +4,12 @@ import { motion, useReducedMotion } from "framer-motion";
 import { FileText, Play, Sparkles, Database, ShieldCheck, UserCheck } from "lucide-react";
 import { SplineScene } from "@/components/ui/SplineScene";
 import { Spotlight } from "@/components/ui/Spotlight";
+import { useAuthStore } from "../../store/authStore";
 
 export const LandingHero: React.FC = () => {
   const shouldReduceMotion = useReducedMotion();
+  const { user } = useAuthStore();
+  const analyzeRoute = user?.role === "user" ? "/profile" : "/jd-analysis";
 
   const headline = "Find the Right Candidate — Not Just the Right Keywords";
   const words = headline.split(" ");
@@ -201,7 +204,7 @@ export const LandingHero: React.FC = () => {
             {/* CTA buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
               <Link
-                to="/jd-analysis"
+                to={analyzeRoute}
                 className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold text-sm flex items-center justify-center gap-2.5 shadow-lg shadow-blue-500/25 transition-all active:scale-95 duration-200 focus-ring"
               >
                 <FileText size={16} />
