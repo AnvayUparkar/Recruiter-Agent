@@ -1,26 +1,25 @@
-# 🤖 Talent Intelligence AI Recruiter (LinkedIn Premium Recruiter Clone)
+# Nexa AI - Talent Recruiter Platform
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python: 3.12](https://img.shields.io/badge/Python-3.12-blue.svg)](https://www.python.org/)
 [![React: 19](https://img.shields.io/badge/React-19-cyan.svg)](https://react.dev/)
 [![Tailwind: 3](https://img.shields.io/badge/Tailwind-3-purple.svg)](https://tailwindcss.com/)
-[![Built for: Hackathon](https://img.shields.io/badge/Competition-India%20Runs%20Data%20&%20AI%20Challenge-orange.svg)]()
 
-> A state-of-the-art talent acquisition platform designed for high-scale recruitments, featuring lexical-semantic hybrid retrieval, dynamic ranking engines, recruiter copilot behavior analytics, and a comprehensive DevOps observability launch suite.
-
----
-
-## 📸 Platform Highlights
-
-- **Hybrid Search Fusion**: Combines lexical exact matching (BM25) with semantic dense vectors (FAISS index) using Reciprocal Rank Fusion (RRF).
-- **Executive JD Dossier Parser**: High-performance parsing of `.txt`, `.docx` (via native zip XML traversal), and `.pdf` (via `pypdf`) files to automatically generate requirements, competencies, notice periods, and weight profiles.
-- **Recruiter Copilot**: AI-advisor offering explainable fit verdicts, behavioral consistency checks, candidate availability timelines, and candidate join probability index scores.
-- **DevOps Launch cockpit**: Interactive production readiness panel tracking Core Web Vitals, API latency telemetry, diagnostics checks, environment nodes, and secrets verification.
-- **Judge Presentation Suite**: Dynamic tour controls, database backup/restore centers, and final submission CSV packagers.
+A talent acquisition platform designed for scalable recruitment processes. It features a lexical-semantic hybrid retrieval system, dynamic ranking engines, recruiter copilot behavior analytics, and a comprehensive observability suite.
 
 ---
 
-## 🏗️ System Architecture
+## Platform Highlights
+
+- **Hybrid Search Fusion**: Integrates lexical exact matching (BM25) with semantic dense vectors (FAISS index) using Reciprocal Rank Fusion (RRF).
+- **Job Description (JD) Parsing Engine**: Supports parsing of `.txt`, `.docx` (via native zip XML traversal), and `.pdf` (via `pypdf`) files to automatically extract requirements, competencies, notice periods, and weight profiles.
+- **Recruiter Copilot**: An AI-assisted advisor providing explainable candidate fit verdicts, behavioral consistency checks, availability timelines, and join probability estimates.
+- **System Observability Dashboard**: An interactive panel tracking Core Web Vitals, API latency telemetry, diagnostic checks, environment node status, and configuration verification.
+- **Presentation and Administration Suite**: Includes dynamic system tours, database backup and restoration controls, and final submission data packaging.
+
+---
+
+## System Architecture
 
 ```mermaid
 graph TD
@@ -93,62 +92,60 @@ graph TD
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Component | Technology | Purpose |
 | :--- | :--- | :--- |
-| **Frontend Core** | React 19, TypeScript, Vite | High-performance React application structure |
-| **Styling** | TailwindCSS, Custom HSL themes | Premium glassmorphic interface with micro-animations |
-| **State Management** | Zustand (Persistent LocalStorage) | Fast, atomic global state slices |
-| **Data Fetching** | TanStack Query v5 (React Query) | Server caching, background refetching, retry policies |
-| **Animations** | Framer Motion | Smooth dashboard transitions and motion-reduced support |
-| **Backend Framework**| Flask (Python 3.12) | API Gateway & Middleware Routing |
-| **Vector Search** | FAISS (Dense index) | Semantic context match based on profile embeddings |
-| **Lexical Search** | BM25 (Sparse index) | Keyword match for syntax, frameworks, and exact criteria |
-| **Text Extraction** | `pypdf`, native `zipfile` & `xml.etree` | Multi-format parser for JD documents |
-| **Diagnostics** | ReportLab | PDF Report generator fallbacks to Markdown/HTML |
-| **Unit Testing** | pytest, Vitest | Dual-engine verification for backend/frontend |
+| **Frontend Core** | React 19, TypeScript, Vite | User interface and application structure |
+| **Styling** | TailwindCSS | Component styling and responsive design |
+| **State Management** | Zustand (Persistent LocalStorage) | Global state management |
+| **Data Fetching** | TanStack Query v5 (React Query) | Server caching, background refetching, and retry policies |
+| **Backend Framework**| Flask (Python 3.12) | API Gateway and Middleware Routing |
+| **Vector Search** | FAISS (Dense index) | Semantic context matching based on profile embeddings |
+| **Lexical Search** | BM25 (Sparse index) | Keyword matching for exact criteria |
+| **Text Extraction** | `pypdf`, native `zipfile` & `xml.etree` | Multi-format parsing for documents |
+| **Diagnostics** | ReportLab | Report generation capabilities |
+| **Unit Testing** | pytest, Vitest | Verification and testing across the backend and frontend |
 
 ---
 
-## 📁 Repository Directory Structure
+## Repository Directory Structure
 
-```
+```text
 Talent-Intelligence-Recruiter/
 ├── backend/                       # Python Flask API Subsystem
 │   ├── api/                       # API routes blueprint, schemas, and middleware
 │   │   ├── middleware/            # Timing tracker, request loggers, error handlers
-│   │   ├── routes/                # Endpoints (jd, rank, explain, metrics, copilot, etc.)
+│   │   ├── routes/                # Endpoints
 │   │   └── schemas/               # Request/Response validation models (Pydantic)
-│   ├── models/                    # Domain structures (ParsedJD, RankedCandidate, etc.)
+│   ├── models/                    # Domain structures
 │   ├── services/                  # Core algorithms (BM25, FAISS, Hybrid, RRF, Copilot)
-│   ├── tests/                     # 310+ test assertions (pytest)
-│   ├── app.py                     # Flask application factory entry point
-│   ├── config.py                  # Configurations (dev, prod, test environment configs)
-│   └── requirements.txt           # Python application dependencies
+│   ├── tests/                     # Test suite (pytest)
+│   ├── app.py                     # Flask application entry point
+│   ├── config.py                  # Environment configurations
+│   └── requirements.txt           # Python dependencies
 │
 ├── frontend/                      # React Frontend Client
-│   ├── src/                       # Application source
-│   │   ├── api/                   # Axios client endpoints configurations
-│   │   ├── services/              # API interfaces (jdService, rankingService)
-│   │   ├── store/                 # Zustand stores (appStore, candidateStore)
-│   │   ├── theme/                 # Design system tokens and HSL palettes
-│   │   ├── components/            # Shared UI components, charts, layout cards
-│   │   ├── pages/                 # Route page components (JDAnalysis, Dashboard, System)
-│   │   └── routes/                # React Router v7 definitions
+│   ├── src/                       # Application source code
+│   │   ├── api/                   # API client configurations
+│   │   ├── services/              # API interfaces
+│   │   ├── store/                 # Zustand stores
+│   │   ├── components/            # Shared UI components
+│   │   ├── pages/                 # Route page components
+│   │   └── routes/                # Router definitions
 │   ├── package.json               # Node.js dependencies
 │   └── vite.config.ts             # Vite server configurations
 │
-└── docs/                          # Architecture guides, system walkthroughs, and logs
+└── docs/                          # Architecture documentation and guides
 ```
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### 1. Prerequisites
-- **Python**: version 3.12.x or higher
-- **Node.js**: version 18.x or higher (npm 9.x+)
+- **Python**: Version 3.12.x or higher
+- **Node.js**: Version 18.x or higher (npm 9.x+)
 
 ### 2. Backend Setup
 1. Navigate to the `backend/` directory:
@@ -175,7 +172,7 @@ Talent-Intelligence-Recruiter/
    ```bash
    python app.py
    ```
-   *The server starts by default on [http://localhost:5000](http://localhost:5000).*
+   *The server starts by default on http://localhost:5000.*
 
 ### 3. Frontend Setup
 1. Navigate to the `frontend/` directory:
@@ -186,25 +183,25 @@ Talent-Intelligence-Recruiter/
    ```bash
    npm install
    ```
-3. Boot the Vite development environment server:
+3. Start the development server:
    ```bash
    npm run dev
    ```
-   *The client dev environment launches on [http://localhost:5173](http://localhost:5173).*
+   *The client environment launches on http://localhost:5173.*
 
 ---
 
-## 🧪 Verification & Testing
+## Verification and Testing
 
 ### Running Backend Unit Tests
-We maintain **314 test assertions** covering embedding generators, retrievers, rankers, copilot recommendations, and API blueprints:
+The test suite covers embedding generators, retrievers, rankers, copilot recommendations, and API endpoints. Execute the following commands to run the tests:
 ```bash
 cd backend
 python -m pytest
 ```
 
 ### Compiling Frontend Bundle
-Verify that all TypeScript code types and imports compile cleanly for production optimization builds:
+Verify that the TypeScript codebase compiles successfully for production builds:
 ```bash
 cd frontend
 npm run build
@@ -212,20 +209,15 @@ npm run build
 
 ---
 
-## 💎 Design System & Motion Standards
+## Design and Accessibility Standards
 
-- **Theme Palettes**: Slate and dark layout structures accented by bright electric-blue nodes. Responsive color coding for match verdicts:
-  - `Strong Hire` (Emerald ring & badges)
-  - `Interview` (Amber outlines)
-  - `Backup` (Slate indicators)
-- **Glassmorphic Glass Panels**: Utilizes Tailwind backdrop blurs combined with thin semi-transparent borders for visual layering.
-- **Accessibility AA Standards**: Features keyboard tab selections, custom focus states, and native system motion-reduction audits (`prefers-reduced-motion`) that automatically disable Framer Motion animations when toggled.
+- **Theme**: Slate and dark layout structures accented by blue nodes. Responsive color coding for match verdicts (`Strong Hire`, `Interview`, `Backup`).
+- **Accessibility**: Includes keyboard navigation, custom focus states, and native system motion-reduction compliance (`prefers-reduced-motion`) to minimize animations when required.
 
 ---
 
-## 🏆 Submission & Presentation Suite
-Click **Launch Center** in the sidebar navigation menu to access:
-1. **Launch Checklist**: 100% compliant audits verifying environments, secrets configurations, secure CORS policies, and browser storage states.
-2. **System Diagnostics**: Real-time observability sparklines tracking API latency, memory profiles, client error counts, and server load volumes.
-3. **Backup & Restore**: Live export configurations allowing you to backup database settings to local JSON and restore configurations dynamically.
-4. **Presentation Guides**: Assisted presentation triggers, slide outlines, diagram mappings, and judge tour indicators.
+## Administration Suite
+Accessible via the **Launch Center** in the sidebar navigation menu:
+1. **System Audits**: Environment verification, secrets configurations, secure CORS policies, and browser storage states.
+2. **System Diagnostics**: Observability tracking API latency, memory profiles, client error counts, and server load volumes.
+3. **Backup and Restore**: Functionality to backup configurations to local JSON files and restore them as needed.
