@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import { Link } from "react-router-dom";
 import {
   LayoutDashboard,
   FileSearch,
@@ -88,7 +89,7 @@ export const Sidebar: React.FC<SidebarProps> = () => {
     >
       {/* Header Container */}
       <div className="h-20 border-b border-slate-200/10 dark:border-slate-800/50 flex items-center justify-between px-6 shrink-0 overflow-hidden">
-        <div className="flex items-center gap-3 min-w-0">
+        <Link to="/" className="flex items-center gap-3 min-w-0 hover:opacity-80 transition-opacity outline-none rounded-lg focus-ring">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-500 to-purple-600 flex items-center justify-center text-white font-black text-base shadow-lg shadow-blue-500/20 shrink-0">
             NR
           </div>
@@ -100,14 +101,14 @@ export const Sidebar: React.FC<SidebarProps> = () => {
               className="flex flex-col truncate"
             >
               <span className="font-extrabold text-sm tracking-wide text-slate-900 dark:text-slate-100">
-                NexaRecruiter
+                Nexa AI
               </span>
               <span className="text-[10px] text-blue-550 font-bold tracking-wider uppercase">
                 Recruiter Copilot
               </span>
             </motion.div>
           )}
-        </div>
+        </Link>
       </div>
 
       {/* Navigation Sections */}

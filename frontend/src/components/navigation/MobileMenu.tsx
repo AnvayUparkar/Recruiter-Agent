@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { X, Server, LucideIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 import { NavItem } from "./NavItem";
 import { useLayoutStore } from "../../store/layoutStore";
 import { useResponsive } from "../../layouts/ResponsiveLayout";
@@ -67,19 +68,19 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ navItems, healthStatus }
           >
             {/* Header info */}
             <div className="h-20 border-b border-slate-200/10 dark:border-slate-800/50 flex items-center justify-between px-6 shrink-0 bg-slate-200/30 dark:bg-slate-900/10">
-              <div className="flex items-center gap-3">
+              <Link to="/" onClick={() => setIsOpen(false)} className="flex items-center gap-3 hover:opacity-80 transition-opacity outline-none rounded-lg focus-ring">
                 <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-500 to-purple-600 flex items-center justify-center text-white font-black text-base shadow-lg shadow-blue-500/20">
-                  LA
+                  NR
                 </div>
                 <div className="flex flex-col">
                   <span className="font-extrabold text-sm tracking-wide text-slate-900 dark:text-slate-100">
-                    Antigravity TA
+                    Nexa AI
                   </span>
                   <span className="text-[10px] text-blue-500 font-bold tracking-wider uppercase">
                     Recruiter Copilot
                   </span>
                 </div>
-              </div>
+              </Link>
 
               <button
                 onClick={() => setIsOpen(false)}
@@ -91,7 +92,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ navItems, healthStatus }
             </div>
 
             {/* Navigation Lists */}
-            <nav className="flex-1 py-6 px-4 space-y-1.5 overflow-y-auto" role="navigation" aria-label="Mobile links">
+            <nav className="flex-1 py-6 px-4 space-y-1.5 overflow-y-auto custom-scrollbar" role="navigation" aria-label="Mobile links">
               {navItems.map((item) => (
                 <NavItem
                   key={item.path}
@@ -111,13 +112,12 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ navItems, healthStatus }
                 <span>Backend Gateway:</span>
                 <div className="flex items-center gap-1.5 ml-auto font-semibold">
                   <span
-                    className={`w-2 h-2 rounded-full ${
-                      healthStatus === "healthy"
-                        ? "bg-emerald-500 shadow-sm shadow-emerald-500/50"
-                        : healthStatus === "unhealthy"
+                    className={`w-2 h-2 rounded-full ${healthStatus === "healthy"
+                      ? "bg-emerald-500 shadow-sm shadow-emerald-500/50"
+                      : healthStatus === "unhealthy"
                         ? "bg-rose-500 shadow-sm shadow-rose-500/50"
                         : "bg-amber-500 animate-pulse"
-                    }`}
+                      }`}
                   />
                   <span className="capitalize text-slate-700 dark:text-slate-350">{healthStatus}</span>
                 </div>

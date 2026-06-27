@@ -13,7 +13,7 @@ import { useAuthStore } from "../../store/authStore";
 import GuidedTour from "../../pages/Demo/components/GuidedTour.tsx";
 import { ToastContainer } from "../../components/common/ToastContainer";
 import { OfflineStatusBanner } from "../../components/common/OfflineStatusBanner";
-import { PwaInstallPrompt } from "../../components/common/PwaInstallPrompt";
+// import { PwaInstallPrompt } from "../../components/common/PwaInstallPrompt";
 
 interface AppLayoutContentProps {
   children: React.ReactNode;
@@ -108,7 +108,7 @@ const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
       <OfflineStatusBanner />
 
       {/* PWA desktop/mobile app installation prompt */}
-      <PwaInstallPrompt />
+      {/* <PwaInstallPrompt /> */}
     </div>
   );
 };
