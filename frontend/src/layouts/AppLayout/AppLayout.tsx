@@ -72,14 +72,19 @@ const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
     { label: "Analytics Hub", path: "/analytics", icon: BarChart3 },
     { label: "Export & Report", path: "/reports", icon: FileDown },
     { label: "Settings", path: "/settings", icon: Settings },
-    { label: "Admin Console", path: "/admin", icon: Shield },
-    { label: "Launch Center", path: "/launch", icon: Terminal },
   ] : [
     { label: "Dashboard", path: "/user-dashboard", icon: LayoutDashboard },
     { label: "Profile", path: "/profile", icon: UserIcon },
     { label: "Resume", path: "/resume", icon: FileText },
     { label: "Settings", path: "/settings", icon: Settings },
   ];
+
+  if (user?.role === "recruiter") {
+    navItems.push(
+      { label: "Admin Console", path: "/admin", icon: Shield },
+      { label: "Launch Center", path: "/launch", icon: Terminal }
+    );
+  }
 
   return (
     <div className="min-h-screen flex w-full max-w-full overflow-x-hidden text-slate-800 dark:text-slate-200 bg-[#f6f8fa] dark:bg-[#0d1117] transition-colors duration-300 font-sans">

@@ -177,18 +177,22 @@ export const Sidebar: React.FC<SidebarProps> = () => {
                 icon={Settings}
                 isCollapsed={!isSidebarOpen}
               />
-              <NavItem
-                label="Admin Console"
-                path="/admin"
-                icon={Shield}
-                isCollapsed={!isSidebarOpen}
-              />
-              <NavItem
-                label="Launch Center"
-                path="/launch"
-                icon={Terminal}
-                isCollapsed={!isSidebarOpen}
-              />
+              {user?.role === "recruiter" && (
+                <>
+                  <NavItem
+                    label="Admin Console"
+                    path="/admin"
+                    icon={Shield}
+                    isCollapsed={!isSidebarOpen}
+                  />
+                  <NavItem
+                    label="Launch Center"
+                    path="/launch"
+                    icon={Terminal}
+                    isCollapsed={!isSidebarOpen}
+                  />
+                </>
+              )}
             </SidebarGroup>
           </>
         ) : (

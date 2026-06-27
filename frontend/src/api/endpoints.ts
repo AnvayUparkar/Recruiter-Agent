@@ -16,6 +16,9 @@ export const ENDPOINTS = {
   CHAT_MESSAGES: `${API_BASE_PREFIX}/chat/messages`,
   CHAT_SEND: `${API_BASE_PREFIX}/chat/send`,
   CHAT_CONVERSATIONS: `${API_BASE_PREFIX}/chat/conversations`,
+  AUTH_FORGOT_PASSWORD: `${API_BASE_PREFIX}/auth/forgot-password`,
+  AUTH_VERIFY_OTP: `${API_BASE_PREFIX}/auth/verify-otp`,
+  AUTH_RESET_PASSWORD: `${API_BASE_PREFIX}/auth/reset-password`,
 } as const;
 
 export type EndpointKey = keyof typeof ENDPOINTS;

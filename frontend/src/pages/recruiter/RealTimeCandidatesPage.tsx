@@ -9,6 +9,7 @@ export default function RealTimeCandidatesPage() {
   const { socket, isConnected } = useSocket();
   const [candidates, setCandidates] = useState<any[]>([]);
   const [selectedCandidate, setSelectedCandidate] = useState<any | null>(null);
+  const [expandedCandidateId, setExpandedCandidateId] = useState<string | null>(null);
 
   const formatExperience = (expData: any) => {
     if (!expData) return "N/A";
@@ -28,9 +29,11 @@ export default function RealTimeCandidatesPage() {
         if (data.candidates) {
           const initialCandidates = data.candidates.map((c: any) => ({
             id: c.candidate_id,
-            name: c.resume_data?.name || "Unknown",
+            name: c.full_name || c.resume_data?.name || "Unknown",
             role: "Applicant",
             experience: formatExperience(c.resume_data?.experience),
+            fullExperience: c.resume_data?.experience || [],
+            fullEducation: c.resume_data?.education || [],
             location: "Remote",
             skills: Array.isArray(c.resume_data?.skills) ? c.resume_data.skills : [],
             timestamp: new Date().toISOString(),
@@ -51,9 +54,11 @@ export default function RealTimeCandidatesPage() {
       
       const newCandidate = {
         id: data.candidate_id,
-        name: data.resume_data?.name || "Unknown",
+        name: data.full_name || data.resume_data?.name || "Unknown",
         role: "Applicant",
         experience: formatExperience(data.resume_data?.experience),
+        fullExperience: data.resume_data?.experience || [],
+        fullEducation: data.resume_data?.education || [],
         location: "Remote", // Defaulting for demo
         skills: Array.isArray(data.resume_data?.skills) ? data.resume_data.skills : [],
         timestamp: new Date().toISOString(),
@@ -142,7 +147,8 @@ export default function RealTimeCandidatesPage() {
                 key={cand.id}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all group"
+                onClick={() => setExpandedCandidateId(expandedCandidateId === cand.id ? null : cand.id)}
+                className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all group cursor-pointer"
               >
                 <div className="flex justify-between items-start">
                   <div>
@@ -167,13 +173,50 @@ export default function RealTimeCandidatesPage() {
                       <div className="text-xs text-slate-400">AI Score</div>
                     </div>
                     <button 
-                      onClick={() => setSelectedCandidate(cand)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedCandidate(cand);
+                      }}
                       className="p-2 bg-slate-50 hover:bg-blue-50 dark:bg-slate-800 dark:hover:bg-blue-500/20 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl transition-colors"
                     >
                       <MessageCircle size={18} />
                     </button>
                   </div>
                 </div>
+
+                {/* Expanded Details Section */}
+                <AnimatePresence>
+                  {expandedCandidateId === cand.id && (
+                    <motion.div 
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 overflow-hidden"
+                    >
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                          <h4 className="text-sm font-black text-slate-900 dark:text-white mb-4 uppercase tracking-wider">Experience</h4>
+                          {cand.fullExperience.length > 0 ? cand.fullExperience.map((exp: any, i: number) => (
+                            <div key={i} className="mb-4">
+                              <div className="font-bold text-slate-800 dark:text-slate-200 text-[13px]">{exp.title}</div>
+                              {exp.description && <p className="text-[11px] text-slate-500 dark:text-slate-400 whitespace-pre-wrap mt-1 leading-relaxed">{exp.description}</p>}
+                            </div>
+                          )) : <p className="text-xs text-slate-400 italic">No experience data.</p>}
+                        </div>
+
+                        <div>
+                          <h4 className="text-sm font-black text-slate-900 dark:text-white mb-4 uppercase tracking-wider">Education</h4>
+                          {cand.fullEducation.length > 0 ? cand.fullEducation.map((edu: any, i: number) => (
+                            <div key={i} className="mb-4">
+                              <div className="font-bold text-slate-800 dark:text-slate-200 text-[13px]">{edu.institution}</div>
+                              {edu.description && <p className="text-[11px] text-slate-500 dark:text-slate-400 whitespace-pre-wrap mt-1 leading-relaxed">{edu.description}</p>}
+                            </div>
+                          )) : <p className="text-xs text-slate-400 italic">No education data.</p>}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             ))
           )}

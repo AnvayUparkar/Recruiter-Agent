@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import {
   UserPlus, Mail, Lock, User as UserIcon, Loader, CheckCircle,
   Sparkles, Shield, Zap, ArrowRight, Briefcase, ArrowLeft,
+  Eye, EyeOff
 } from 'lucide-react';
 import { apiClient } from '../../api/client';
 import { useAuthStore } from '../../store/authStore';
@@ -95,6 +96,8 @@ export default function SignupPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
   const { login } = useAuthStore();
@@ -275,14 +278,21 @@ export default function SignupPage() {
                   <div className="relative group">
                     <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-green-500 transition-colors duration-200" />
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       id="signup-password"
                       placeholder="Minimum 6 characters"
-                      className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 dark:border-neutral-600 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 bg-white/70 dark:bg-neutral-800/70 dark:text-neutral-100 dark:placeholder-neutral-500 backdrop-blur-sm"
+                      className="w-full pl-12 pr-12 py-3.5 border-2 border-gray-200 dark:border-neutral-600 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 bg-white/70 dark:bg-neutral-800/70 dark:text-neutral-100 dark:placeholder-neutral-500 backdrop-blur-sm"
                       value={password}
                       onChange={e => setPassword(e.target.value)}
                       required
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-500 transition-colors duration-200 focus:outline-none"
+                    >
+                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
                   </div>
                 </motion.div>
 
@@ -292,14 +302,21 @@ export default function SignupPage() {
                   <div className="relative group">
                     <Lock className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-green-500 transition-colors duration-200" />
                     <input
-                      type="password"
+                      type={showConfirmPassword ? "text" : "password"}
                       id="signup-confirm-password"
                       placeholder="Re-enter your password"
-                      className="w-full pl-12 pr-4 py-3.5 border-2 border-gray-200 dark:border-neutral-600 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 bg-white/70 dark:bg-neutral-800/70 dark:text-neutral-100 dark:placeholder-neutral-500 backdrop-blur-sm"
+                      className="w-full pl-12 pr-12 py-3.5 border-2 border-gray-200 dark:border-neutral-600 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200 bg-white/70 dark:bg-neutral-800/70 dark:text-neutral-100 dark:placeholder-neutral-500 backdrop-blur-sm"
                       value={confirmPassword}
                       onChange={e => setConfirmPassword(e.target.value)}
                       required
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-500 transition-colors duration-200 focus:outline-none"
+                    >
+                      {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                    </button>
                   </div>
                 </motion.div>
 

@@ -72,8 +72,18 @@ def upload_resume():
         # Emit a WebSocket event to recruiters
         try:
             from api.sockets import socketio
+            
+            # Fetch user to get real full_name
+            db = get_db()
+            user_doc = None
+            if db is not None:
+                user_doc = db.users.find_one({"_id": query_id})
+            
+            full_name = user_doc.get("full_name") if user_doc else None
+
             socketio.emit("new_candidate", {
                 "candidate_id": candidate_id,
+                "full_name": full_name,
                 "resume_data": parsed_data
             }, to="recruiters")
         except Exception as e:
@@ -108,7 +118,8 @@ def get_recent_candidates():
     for user in cursor:
         candidates.append({
             "candidate_id": str(user.get("_id")),
-            "resume_data": user.get("resume_data")
+            "resume_data": user.get("resume_data"),
+            "full_name": user.get("full_name")
         })
         
     return jsonify({"candidates": candidates}), 200

@@ -25,7 +25,7 @@ const LaunchCenterPage = lazy(() => import("../pages/System/LaunchCenterPage"));
 // Auth pages
 const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
 const SignupPage = lazy(() => import("../pages/auth/SignupPage"));
-const ForgotPasswordPlaceholder = lazy(() => import("../pages/auth/ForgotPasswordPlaceholder"));
+const ForgotPasswordPage = lazy(() => import("../pages/auth/ForgotPasswordPage"));
 
 // User pages
 const UserProfilePage = lazy(() => import("../pages/user/UserProfilePage"));
@@ -105,7 +105,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/forgot-password",
-    element: <RouteWrapper element={<ForgotPasswordPlaceholder />} protectedRoute={false} useAppLayout={false} />,
+    element: <RouteWrapper element={<ForgotPasswordPage />} protectedRoute={false} useAppLayout={false} />,
   },
   // Recruiter TA Pages (Protected, using AppLayout)
   {
