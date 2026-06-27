@@ -10,6 +10,8 @@ export default function RealTimeCandidatesPage() {
   const [candidates, setCandidates] = useState<any[]>([]);
   const [selectedCandidate, setSelectedCandidate] = useState<any | null>(null);
   const [expandedCandidateId, setExpandedCandidateId] = useState<string | null>(null);
+  const [jdSkills, setJdSkills] = useState<string[]>([]);
+  const isLoggedIn = !!localStorage.getItem("recruiter_auth_token");
 
   const formatExperience = (expData: any) => {
     if (!expData) return "N/A";
@@ -37,12 +39,28 @@ export default function RealTimeCandidatesPage() {
             location: "Remote",
             skills: Array.isArray(c.resume_data?.skills) ? c.resume_data.skills : [],
             timestamp: new Date().toISOString(),
-            score: Math.floor(Math.random() * 40) + 60,
+            score: c.score !== undefined ? c.score : 0,
           }));
           setCandidates(initialCandidates);
         }
       })
       .catch(err => console.error("Failed to fetch initial candidates", err));
+      
+    // Fetch recruiter's JD for live scoring ONLY if logged in
+    const token = localStorage.getItem("recruiter_auth_token");
+    if (token) {
+      apiClient.get("/api/v1/user/profile")
+        .then(res => {
+          const jd = res.data?.parsed_jd;
+          if (jd && jd.skills && Array.isArray(jd.skills)) {
+            const skills = jd.skills.map((s: any) => 
+              typeof s === 'string' ? s.trim().toLowerCase() : (s.name || '').trim().toLowerCase()
+            ).filter(Boolean);
+            setJdSkills(skills);
+          }
+        })
+        .catch(err => console.error("Failed to fetch JD profile", err));
+    }
   }, []);
 
   useEffect(() => {
@@ -52,6 +70,18 @@ export default function RealTimeCandidatesPage() {
     socket.on("new_candidate", (data: any) => {
       console.log("New candidate received in real-time:", data);
       
+      const rawCandSkills = Array.isArray(data.resume_data?.skills) ? data.resume_data.skills : [];
+      let calculatedScore = 0;
+      
+      if (jdSkills.length > 0 && rawCandSkills.length > 0) {
+        const candSkills = rawCandSkills.map((s: any) => 
+          typeof s === 'string' ? s.trim().toLowerCase() : (s.name || '').trim().toLowerCase()
+        ).filter(Boolean);
+        
+        const intersection = jdSkills.filter(s => candSkills.includes(s));
+        calculatedScore = Math.floor((intersection.length / jdSkills.length) * 100);
+      }
+      
       const newCandidate = {
         id: data.candidate_id,
         name: data.full_name || data.resume_data?.name || "Unknown",
@@ -60,9 +90,9 @@ export default function RealTimeCandidatesPage() {
         fullExperience: data.resume_data?.experience || [],
         fullEducation: data.resume_data?.education || [],
         location: "Remote", // Defaulting for demo
-        skills: Array.isArray(data.resume_data?.skills) ? data.resume_data.skills : [],
+        skills: rawCandSkills,
         timestamp: new Date().toISOString(),
-        score: Math.floor(Math.random() * 40) + 60, // Mock score for demo
+        score: calculatedScore,
       };
       
       setCandidates(prev => {
@@ -76,7 +106,7 @@ export default function RealTimeCandidatesPage() {
     return () => {
       socket.off("new_candidate");
     };
-  }, [socket]);
+  }, [socket, jdSkills]);
 
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8">
@@ -168,10 +198,12 @@ export default function RealTimeCandidatesPage() {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="text-right">
-                      <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400">{cand.score}% Match</div>
-                      <div className="text-xs text-slate-400">AI Score</div>
-                    </div>
+                    {isLoggedIn && (
+                      <div className="text-right">
+                        <div className="text-sm font-bold text-emerald-600 dark:text-emerald-400">{cand.score}% Match</div>
+                        <div className="text-xs text-slate-400">AI Score</div>
+                      </div>
+                    )}
                     <button 
                       onClick={(e) => {
                         e.stopPropagation();

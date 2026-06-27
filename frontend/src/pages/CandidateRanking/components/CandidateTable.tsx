@@ -41,7 +41,7 @@ const TableRow = React.memo<{
   const finalScorePct = rankedInfo.finalScore * 100;
   const confidencePct = rankedInfo.confidence * 100;
 
-  const technicalScore = rankedInfo.scoreDetails?.technicalScore 
+  const technicalScore = rankedInfo.scoreDetails?.technicalScore
     ? Math.round(rankedInfo.scoreDetails.technicalScore * 100)
     : Math.min(100, Math.max(55, finalScorePct + (seed % 10) - 5));
   const reliabilityScore = Math.round(candidateData?.reliabilityProfile?.reliabilityScore ? candidateData.reliabilityProfile.reliabilityScore * 100 : Math.min(98, Math.max(70, confidencePct)));
@@ -61,21 +61,21 @@ const TableRow = React.memo<{
   if (isRowLoading) {
     return (
       <tr className="animate-pulse">
-        <td className="py-4.5 px-6"><div className="h-7 w-7 rounded bg-slate-300 dark:bg-slate-800 mx-auto" /></td>
-        <td className="py-4.5 px-6">
+        <td className="py-4.5 px-2 sm:px-6"><div className="h-7 w-7 rounded bg-slate-300 dark:bg-slate-800 mx-auto" /></td>
+        <td className="py-4.5 px-4 sm:px-6">
           <div className="space-y-1.5">
             <div className="h-3.5 w-32 rounded bg-slate-300 dark:bg-slate-800" />
             <div className="h-2 w-48 rounded bg-slate-300 dark:bg-slate-850" />
           </div>
         </td>
-        <td className="py-4.5 px-6"><div className="h-3.5 w-10 rounded bg-slate-300 dark:bg-slate-850" /></td>
-        <td className="py-4.5 px-6"><div className="h-3.5 w-8 rounded bg-slate-300 dark:bg-slate-850" /></td>
-        <td className="py-4.5 px-6"><div className="h-5 w-24 rounded-lg bg-slate-300 dark:bg-slate-850" /></td>
-        <td className="py-4.5 px-6"><div className="h-3.5 w-12 rounded bg-slate-300 dark:bg-slate-850" /></td>
-        <td className="py-4.5 px-6"><div className="h-5 w-20 rounded-lg bg-slate-300 dark:bg-slate-850" /></td>
-        <td className="py-4.5 px-6"><div className="h-3.5 w-16 rounded bg-slate-300 dark:bg-slate-850" /></td>
-        <td className="py-4.5 px-6"><div className="h-4.5 w-4.5 rounded bg-slate-300 dark:bg-slate-850 mx-auto" /></td>
-        <td className="py-4.5 px-6"><div className="h-8 w-24 rounded-lg bg-slate-300 dark:bg-slate-800 ml-auto" /></td>
+        <td className="py-4.5 px-6 hidden lg:table-cell"><div className="h-3.5 w-10 rounded bg-slate-300 dark:bg-slate-850" /></td>
+        <td className="py-4.5 px-6 hidden xl:table-cell"><div className="h-3.5 w-8 rounded bg-slate-300 dark:bg-slate-850" /></td>
+        <td className="py-4.5 px-6 hidden lg:table-cell"><div className="h-5 w-24 rounded-lg bg-slate-300 dark:bg-slate-850" /></td>
+        <td className="py-4.5 px-4 sm:px-6"><div className="h-3.5 w-12 rounded bg-slate-300 dark:bg-slate-850" /></td>
+        <td className="py-4.5 px-6 hidden md:table-cell"><div className="h-5 w-20 rounded-lg bg-slate-300 dark:bg-slate-850" /></td>
+        <td className="py-4.5 px-6 hidden xl:table-cell"><div className="h-3.5 w-16 rounded bg-slate-300 dark:bg-slate-850" /></td>
+        <td className="py-4.5 px-6 hidden sm:table-cell"><div className="h-4.5 w-4.5 rounded bg-slate-300 dark:bg-slate-850 mx-auto" /></td>
+        <td className="py-4.5 px-4 sm:px-6"><div className="h-8 w-24 rounded-lg bg-slate-300 dark:bg-slate-800 ml-auto" /></td>
       </tr>
     );
   }
@@ -83,16 +83,16 @@ const TableRow = React.memo<{
   return (
     <tr className="hover:bg-slate-200/30 dark:hover:bg-slate-800/15 transition-all group select-none cursor-pointer" onClick={onSelect}>
       {/* Rank Indicator */}
-      <td className="py-4.5 px-6 text-center">
+      <td className="py-4.5 px-2 sm:px-6 text-center">
         <span className={`inline-flex items-center justify-center w-7.5 h-7.5 rounded-lg font-black text-[11px] leading-none ${getRankStyle(rankedInfo.rank)}`}>
           {rankedInfo.rank}
         </span>
       </td>
 
       {/* Name and headline */}
-      <td className="py-4.5 px-6">
-        <div className="flex flex-col gap-0.5 max-w-sm">
-          <span className="font-extrabold text-[12.5px] text-slate-900 dark:text-slate-100 group-hover:text-blue-500 transition-colors">
+      <td className="py-4.5 px-4 sm:px-6">
+        <div className="flex flex-col gap-0.5 max-w-[120px] sm:max-w-sm">
+          <span className="font-extrabold text-[12.5px] text-slate-900 dark:text-slate-100 group-hover:text-blue-500 transition-colors truncate">
             {name}
           </span>
           <span className="text-[10px] text-slate-500 dark:text-slate-450 font-semibold truncate">
@@ -102,22 +102,22 @@ const TableRow = React.memo<{
       </td>
 
       {/* Experience Tenure */}
-      <td className="py-4.5 px-6 text-slate-700 dark:text-slate-300 text-xs font-bold whitespace-nowrap">
+      <td className="py-4.5 px-6 text-slate-700 dark:text-slate-300 text-xs font-bold whitespace-nowrap hidden lg:table-cell">
         {experienceYears} Years
       </td>
 
       {/* Technical Score */}
-      <td className="py-4.5 px-6 text-slate-700 dark:text-slate-355 text-xs font-mono font-bold text-center">
+      <td className="py-4.5 px-6 text-slate-700 dark:text-slate-355 text-xs font-mono font-bold text-center hidden xl:table-cell">
         {Math.round(technicalScore)}%
       </td>
 
       {/* Reliability */}
-      <td className="py-4.5 px-6 text-center">
+      <td className="py-4.5 px-6 text-center hidden lg:table-cell">
         <ReliabilityBadge score={reliabilityScore} />
       </td>
 
       {/* Final Score */}
-      <td className="py-4.5 px-6 text-center whitespace-nowrap">
+      <td className="py-4.5 px-4 sm:px-6 text-center whitespace-nowrap">
         <span className="text-xs font-black text-blue-500 dark:text-blue-405 flex items-center justify-center gap-0.5">
           <Sparkles size={11} className="animate-pulse" />
           <span>{Math.round(finalScorePct)}%</span>
@@ -125,17 +125,17 @@ const TableRow = React.memo<{
       </td>
 
       {/* Recommendation badges */}
-      <td className="py-4.5 px-6 text-center">
+      <td className="py-4.5 px-6 text-center hidden md:table-cell">
         <RecommendationBadge verdict={rankedInfo.verdict} />
       </td>
 
       {/* Location */}
-      <td className="py-4.5 px-6 text-slate-500 text-xs font-semibold whitespace-nowrap">
+      <td className="py-4.5 px-6 text-slate-500 text-xs font-semibold whitespace-nowrap hidden xl:table-cell">
         {location}
       </td>
 
       {/* Compare Finalists checkbox */}
-      <td className="py-4.5 px-6 text-center" onClick={(e) => e.stopPropagation()}>
+      <td className="py-4.5 px-6 text-center hidden sm:table-cell" onClick={(e) => e.stopPropagation()}>
         <input
           type="checkbox"
           checked={isCompared}
@@ -147,7 +147,7 @@ const TableRow = React.memo<{
       </td>
 
       {/* Action shortcuts */}
-      <td className="py-4.5 px-6 text-right" onClick={(e) => e.stopPropagation()}>
+      <td className="py-4.5 px-4 sm:px-6 text-right" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-end gap-1.5">
           <button
             onClick={onSelect}
@@ -159,12 +159,12 @@ const TableRow = React.memo<{
           </button>
           <button
             onClick={onSelect}
-            className="px-2.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] flex items-center gap-1 shadow transition-colors"
+            className="px-2 py-1.5 sm:px-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-bold text-[10px] flex items-center gap-1 shadow transition-colors"
             title="AI Copilot evaluation"
             aria-label="View Copilot Report"
           >
             <Bot size={12} />
-            <span>Copilot</span>
+            <span className="hidden sm:inline">Copilot</span>
           </button>
         </div>
       </td>
@@ -181,20 +181,20 @@ export const CandidateTable = React.memo<CandidateTableProps>(({
 }) => {
   return (
     <div className="glass-panel rounded-2xl shadow-2xl border border-slate-200/10 dark:border-slate-805 bg-slate-100/60 dark:bg-slate-900/60 select-none overflow-hidden">
-      <div className="w-full overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-[1000px]">
+      <div className="w-full overflow-x-auto custom-scrollbar">
+        <table className="w-full text-left border-collapse lg:min-w-[1000px]">
           <thead>
             <tr className="border-b border-slate-250/20 dark:border-slate-850 bg-slate-200/40 dark:bg-slate-950/40 text-slate-500 dark:text-slate-450 text-[10px] font-black uppercase tracking-wider">
-              <th className="py-4 px-6 text-center w-16">Rank</th>
-              <th className="py-4 px-6">Candidate Profile</th>
-              <th className="py-4 px-6 w-28">Experience</th>
-              <th className="py-4 px-6 text-center w-20">Technical</th>
-              <th className="py-4 px-6 text-center w-36">Reliability</th>
-              <th className="py-4 px-6 text-center w-24">Overall Fit</th>
-              <th className="py-4 px-6 text-center w-36">Verdict</th>
-              <th className="py-4 px-6 w-36">Location</th>
-              <th className="py-4 px-6 text-center w-20">Compare</th>
-              <th className="py-4 px-6 text-right w-32">Actions</th>
+              <th className="py-4 px-2 sm:px-6 text-center w-14 sm:w-16">Rank</th>
+              <th className="py-4 px-4 sm:px-6">Candidate Profile</th>
+              <th className="py-4 px-6 w-28 hidden lg:table-cell">Experience</th>
+              <th className="py-4 px-6 text-center w-20 hidden xl:table-cell">Technical</th>
+              <th className="py-4 px-6 text-center w-36 hidden lg:table-cell">Reliability</th>
+              <th className="py-4 px-4 sm:px-6 text-center w-20 sm:w-24">Overall Fit</th>
+              <th className="py-4 px-6 text-center w-36 hidden md:table-cell">Verdict</th>
+              <th className="py-4 px-6 w-36 hidden xl:table-cell">Location</th>
+              <th className="py-4 px-6 text-center w-20 hidden sm:table-cell">Compare</th>
+              <th className="py-4 px-4 sm:px-6 text-right w-24 sm:w-32">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-250/20 dark:divide-slate-850/50">

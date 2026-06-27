@@ -57,13 +57,13 @@ export const SortSelector: React.FC<SortSelectorProps> = ({
       <div className="flex items-center bg-white/80 dark:bg-[#0A0F1C]/80 backdrop-blur-xl rounded-xl border border-slate-200 dark:border-slate-800 p-1 shadow-sm hover:shadow-md transition-all group">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="pl-4 pr-3 py-2 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors outline-none focus-ring"
+          className="pl-3 sm:pl-4 pr-2 sm:pr-3 py-2 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5 sm:gap-2 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors outline-none focus-ring whitespace-nowrap"
           aria-expanded={isOpen}
           aria-haspopup="listbox"
         >
-          <SlidersHorizontal size={14} className="text-slate-400 group-hover:text-blue-500 transition-colors" />
+          <SlidersHorizontal size={14} className="text-slate-400 group-hover:text-blue-500 transition-colors hidden sm:block" />
           <span className="flex items-center gap-1.5">
-            <span className="text-slate-400 font-medium">Sort by:</span> 
+            <span className="text-slate-400 font-medium hidden sm:inline-block">Sort by:</span> 
             <span>{activeOption.icon} {activeOption.label}</span>
           </span>
           <ChevronDown size={14} className={`text-slate-400 transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} />

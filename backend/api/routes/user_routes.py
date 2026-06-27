@@ -105,21 +105,61 @@ def upload_resume():
 @user_bp.route("/candidates", methods=["GET"])
 def get_recent_candidates():
     """GET /api/v1/user/candidates
-    Returns candidates that have uploaded and parsed resumes.
+    Returns candidates that have uploaded and parsed resumes, along with a computed match score.
     """
     db = get_db()
     if db is None:
         return jsonify({"error": "Database not available"}), 500
         
+    jd_skills = []
+    
+    # Optional auth for personalized score
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ")[1]
+        try:
+            from api.auth.jwt_utils import decode_token
+            payload = decode_token(token)
+            recruiter_id = payload.get("sub")
+            if recruiter_id:
+                try:
+                    query_id = ObjectId(recruiter_id)
+                except Exception:
+                    query_id = recruiter_id
+                    
+                recruiter = db.users.find_one({"_id": query_id})
+                if recruiter and recruiter.get("parsed_jd") and isinstance(recruiter["parsed_jd"].get("skills"), list):
+                    raw_jd_skills = recruiter["parsed_jd"]["skills"]
+                    jd_skills = [
+                        str(s.get("name") if isinstance(s, dict) else s).strip().lower()
+                        for s in raw_jd_skills if s
+                    ]
+        except Exception as e:
+            logger.warning(f"Optional auth token decoding failed: {e}")
+
     # Find users that have resume_data
     cursor = db.users.find({"resume_data": {"$exists": True}}).limit(50)
     candidates = []
     
     for user in cursor:
+        cand_skills = []
+        if user.get("resume_data") and isinstance(user["resume_data"].get("skills"), list):
+            raw_cand_skills = user["resume_data"]["skills"]
+            cand_skills = [
+                str(s.get("name") if isinstance(s, dict) else s).strip().lower() 
+                for s in raw_cand_skills if s
+            ]
+            
+        score = 0
+        if jd_skills:
+            intersection = set(jd_skills).intersection(set(cand_skills))
+            score = int((len(intersection) / len(jd_skills)) * 100)
+            
         candidates.append({
             "candidate_id": str(user.get("_id")),
             "resume_data": user.get("resume_data"),
-            "full_name": user.get("full_name")
+            "full_name": user.get("full_name"),
+            "score": score
         })
         
     return jsonify({"candidates": candidates}), 200

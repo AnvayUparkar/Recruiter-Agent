@@ -1,6 +1,7 @@
 import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { FileText, Cpu, ShieldAlert, Bot, ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 interface FeatureCardProps {
   icon: React.ComponentType<any>;
@@ -8,6 +9,7 @@ interface FeatureCardProps {
   description: string;
   metric: string;
   delay: number;
+  path: string;
 }
 
 const FloatingElements = () => (
@@ -37,8 +39,10 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
   description,
   metric,
   delay,
+  path,
 }) => {
   const shouldReduceMotion = useReducedMotion();
+  const navigate = useNavigate();
 
   const hoverAnim = shouldReduceMotion
     ? {}
@@ -54,7 +58,8 @@ const FeatureCard: React.FC<FeatureCardProps> = ({
       viewport={{ once: true, margin: "-100px" }}
       transition={{ type: "spring", stiffness: 200, damping: 25, delay }}
       whileHover={hoverAnim}
-      className="group relative h-full flex flex-col"
+      onClick={() => navigate(path)}
+      className="group relative h-full flex flex-col cursor-pointer"
     >
       {/* Animated gradient border wrapper */}
       <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-cyan-500/20 opacity-50 group-hover:opacity-100 transition-opacity duration-500 blur-sm" />
@@ -110,24 +115,28 @@ export const FeatureSection: React.FC = () => {
       title: "Understand the Role",
       description: "Transforms complex job description texts into detailed, structured semantic requirement profiles automatically.",
       metric: "98% JD Parsing Accuracy",
+      path: "/jd-analysis",
     },
     {
       icon: Cpu,
       title: "Retrieve the Best Matches",
       description: "Unifies deep semantic embeddings search (FAISS) with lexical keyword matching (BM25) to maintain perfect recall.",
       metric: "Top 5 Candidates in <2 sec",
+      path: "/real-time-candidates",
     },
     {
       icon: ShieldAlert,
       title: "Rank with Confidence",
       description: "Analyzes profile tenure, job hops, verification gaps, and anomalies to score candidate reliability.",
       metric: "Reliability Score Engine",
+      path: "/dashboard",
     },
     {
       icon: Bot,
       title: "Recruit with AI",
       description: "Access instant recruiter summaries, structured manager submission proposals, and pre-calibrated interview lists.",
       metric: "AI-Generated Interview Insights",
+      path: "/copilot",
     },
   ];
 
@@ -189,6 +198,7 @@ export const FeatureSection: React.FC = () => {
               description={feat.description}
               metric={feat.metric}
               delay={idx * 0.15}
+              path={feat.path}
             />
           ))}
         </div>
