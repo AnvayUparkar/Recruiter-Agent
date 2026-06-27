@@ -113,6 +113,40 @@ def get_recent_candidates():
         
     return jsonify({"candidates": candidates}), 200
 
+@user_bp.route("/jd", methods=["POST"])
+@require_auth()
+def save_user_jd():
+    """POST /api/v1/user/jd
+    Saves parsed JD data for the authenticated recruiter.
+    """
+    logger.info("Received request to save parsed JD.")
+    data = request.get_json()
+    if not data or "parsed_jd" not in data:
+        return jsonify({"error": "Missing parsed_jd in request body"}), 400
+        
+    user_id = g.user_id
+    
+    if user_id:
+        db = get_db()
+        if db is not None:
+            try:
+                query_id = ObjectId(user_id)
+            except Exception:
+                query_id = user_id
+            
+            db.users.update_one(
+                {"_id": query_id},
+                {"$set": {"parsed_jd": data["parsed_jd"]}},
+                upsert=True
+            )
+            logger.info(f"Saved parsed JD for user {user_id}")
+            return jsonify({"message": "Parsed JD saved successfully."}), 200
+        else:
+            logger.warning("Database connection not available to save JD data.")
+            return jsonify({"error": "Database not available"}), 500
+            
+    return jsonify({"error": "Unauthorized"}), 401
+
 @user_bp.route("/profile", methods=["GET"])
 @require_auth()
 def get_user_profile():
@@ -136,5 +170,6 @@ def get_user_profile():
         
     return jsonify({
         "user_id": user_id,
-        "resume_data": user.get("resume_data")
+        "resume_data": user.get("resume_data"),
+        "parsed_jd": user.get("parsed_jd")
     }), 200

@@ -11,6 +11,7 @@ export const ENDPOINTS = {
   VERSION: `${API_BASE_PREFIX}/version`,
   USER_RESUME_UPLOAD: `${API_BASE_PREFIX}/user/upload-resume`,
   USER_PROFILE: `${API_BASE_PREFIX}/user/profile`,
+  USER_JD_SAVE: `${API_BASE_PREFIX}/user/jd`,
   USER_JOB_RECOMMENDATIONS: `${API_BASE_PREFIX}/jobs/recommendations`,
   CHAT_MESSAGES: `${API_BASE_PREFIX}/chat/messages`,
   CHAT_SEND: `${API_BASE_PREFIX}/chat/send`,

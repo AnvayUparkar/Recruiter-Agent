@@ -63,5 +63,16 @@ export const jdService = {
     );
     return response.data.text;
   },
+
+  /**
+   * Saves the parsed JD to the backend (MongoDB) for the authenticated recruiter.
+   * 
+   * @param parsedJd The structured ParsedJD object to save.
+   */
+  async saveParsedJD(parsedJd: ParsedJD): Promise<void> {
+    await apiClient.post(ENDPOINTS.USER_JD_SAVE, {
+      parsed_jd: parsedJd
+    });
+  },
 };
 export type JdService = typeof jdService;

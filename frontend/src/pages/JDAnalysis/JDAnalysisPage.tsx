@@ -4,6 +4,7 @@ import { useAppStore } from "../../store/appStore";
 import { useJDAnalysis } from "../../hooks/queries/useJDAnalysis";
 import { BrainCircuit, RefreshCw, AlertCircle, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { jdService } from "../../services/jdService";
 
 import { JDUploadCard } from "./JDUploadCard";
 import { JDEditorPanel } from "./JDEditorPanel";
@@ -87,6 +88,7 @@ export const JDAnalysisPage: React.FC = () => {
     if (pendingParsedJD) {
       // Complete state updates
       setParsedJD(pendingParsedJD);
+      jdService.saveParsedJD(pendingParsedJD).catch((err) => console.error("Failed to sync parsed JD:", err));
       if (setActiveJD) {
         setActiveJD(pendingParsedJD);
       }

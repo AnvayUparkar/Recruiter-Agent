@@ -13,7 +13,9 @@ import { useAuthStore } from "../../store/authStore";
 import GuidedTour from "../../pages/Demo/components/GuidedTour.tsx";
 import { ToastContainer } from "../../components/common/ToastContainer";
 import { OfflineStatusBanner } from "../../components/common/OfflineStatusBanner";
-// import { PwaInstallPrompt } from "../../components/common/PwaInstallPrompt";
+import { apiClient } from "../../api/client";
+import { ENDPOINTS } from "../../api/endpoints";
+import { useAppStore } from "../../store/appStore";
 
 interface AppLayoutContentProps {
   children: React.ReactNode;
@@ -26,6 +28,19 @@ const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
   const { user } = useAuthStore();
   const isRecruiter = user?.role !== "user";
   const location = useLocation();
+
+  // Sync JD from backend if the user is a recruiter and local store is empty
+  useEffect(() => {
+    if (isRecruiter && user?.id) {
+      apiClient.get(ENDPOINTS.USER_PROFILE)
+        .then(res => {
+          if (res.data.parsed_jd && !useAppStore.getState().parsedJD) {
+            useAppStore.getState().setParsedJD(res.data.parsed_jd);
+          }
+        })
+        .catch(err => console.error("Failed to sync parsed JD on load:", err));
+    }
+  }, [isRecruiter, user?.id]);
 
   // Handle auto-collapsing sidebar on smaller desktop viewports
   useEffect(() => {
