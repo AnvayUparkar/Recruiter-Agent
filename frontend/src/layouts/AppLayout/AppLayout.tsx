@@ -7,7 +7,7 @@ import { Footer } from "./Footer";
 import { MobileMenu } from "../../components/navigation/MobileMenu";
 import { CommandPalette } from "../../components/navigation/CommandPalette";
 import { useLayoutStore } from "../../store/layoutStore";
-import { LayoutDashboard, FileSearch, Bot, GitCompare, BarChart3, FileDown, Settings, Shield, Terminal, User as UserIcon, FileText } from "lucide-react";
+import { LayoutDashboard, FileSearch, Bot, GitCompare, BarChart3, FileDown, Settings, Shield, Terminal, User as UserIcon, FileText, Users } from "lucide-react";
 import { useCandidateStore } from "../../store/candidateStore";
 import { useAuthStore } from "../../store/authStore";
 import GuidedTour from "../../pages/Demo/components/GuidedTour.tsx";
@@ -60,8 +60,9 @@ const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
 
   // Navigation configurations
   const navItems = isRecruiter ? [
-    { label: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
     { label: "JD Parser", path: "/jd-analysis", icon: FileSearch },
+    { label: "Leaderboard", path: "/dashboard", icon: LayoutDashboard },
+    { label: "Real-Time Candidates", path: "/real-time-candidates", icon: Users },
     { label: "Copilot Report", path: "/copilot", icon: Bot },
     {
       label: "Finalist Comparison",
@@ -70,7 +71,7 @@ const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
       badge: comparisonCandidateIds.length > 0 ? comparisonCandidateIds.length : undefined,
     },
     { label: "Analytics Hub", path: "/analytics", icon: BarChart3 },
-    { label: "Export & Report", path: "/reports", icon: FileDown },
+    { label: "Export & Reports", path: "/reports", icon: FileDown },
     { label: "Settings", path: "/settings", icon: Settings },
   ] : [
     { label: "Dashboard", path: "/user-dashboard", icon: LayoutDashboard },
