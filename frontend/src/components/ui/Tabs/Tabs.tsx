@@ -28,7 +28,7 @@ export const Tabs: React.FC<TabsProps> = ({
   return (
     <div
       className={cn(
-        "flex select-none font-sans",
+        "flex select-none font-sans overflow-x-auto max-w-full hide-scrollbar",
         variant === "underline" && "border-b border-glass-border w-full gap-8",
         variant === "pill" && "glass-panel p-1 rounded-xl border border-glass-border gap-1 items-center self-start",
         className
@@ -42,7 +42,7 @@ export const Tabs: React.FC<TabsProps> = ({
             key={tab.id}
             onClick={() => onChange(tab.id)}
             className={cn(
-              "relative px-4 py-2.5 text-body-sm font-semibold select-none transition-colors duration-200 outline-none focus:outline-none",
+              "relative px-4 py-2.5 text-body-sm font-semibold select-none transition-colors duration-200 outline-none focus:outline-none shrink-0 whitespace-nowrap",
               // Underline classes
               variant === "underline" &&
                 "text-text-muted hover:text-text-primary pb-3 border-b-2 border-transparent focus-visible:text-accent",

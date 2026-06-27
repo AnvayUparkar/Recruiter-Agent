@@ -545,7 +545,7 @@ export const CandidateRankingPage: React.FC = () => {
                 <span>Filters</span>
               </button>
 
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-fit sm:min-w-0">
                 <SortSelector
                   field={sortField as SortField}
                   direction={sortDirection as SortDirection}

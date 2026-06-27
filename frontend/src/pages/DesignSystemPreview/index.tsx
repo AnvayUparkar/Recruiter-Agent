@@ -159,7 +159,7 @@ export const DesignSystemPreview: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
         
         {/* Navigation Sidebar */}
-        <aside className="md:col-span-1 flex flex-col gap-2 self-start sticky top-8 z-20">
+        <aside className="md:col-span-1 flex flex-col gap-2 self-start md:sticky md:top-8 z-20 mb-8 md:mb-0">
           <span className="text-caption font-bold text-text-muted uppercase tracking-wider px-3 mb-2">
             Showcase Sections
           </span>
@@ -481,13 +481,15 @@ export const DesignSystemPreview: React.FC = () => {
           </section>
 
           {/* Skeleton States Section */}
-          <section id="skeletonstates" className="scroll-mt-8">
+          <section id="skeletonstates" className="scroll-mt-8 hidden md:block">
             <h2 className="text-heading-xl font-bold border-b border-glass-border pb-2 mb-6">
               Skeleton Screen Shimmers
             </h2>
             <div className="space-y-6">
               {/* Table skeleton */}
-              <TableSkeleton />
+              <div className="hidden md:block">
+                <TableSkeleton />
+              </div>
 
               {/* Card & grid skeletons */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
