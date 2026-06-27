@@ -39,25 +39,31 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ navItems, healthStatus }
   }, [isOpen, setIsOpen]);
 
   return (
-    <AnimatePresence>
-      {isMobile && isOpen && (
-        <div className="fixed inset-0 z-[20000] flex">
-          {/* Backdrop Blur Overlay */}
+    <>
+      {/* Backdrop AnimatePresence */}
+      <AnimatePresence>
+        {isMobile && isOpen && (
           <motion.div
+            key="mobile-backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsOpen(false)}
-            className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm"
+            className="fixed inset-0 z-[19999] bg-slate-950/60 backdrop-blur-sm"
           />
+        )}
+      </AnimatePresence>
 
-          {/* Sliding Drawer Container */}
+      {/* Drawer AnimatePresence */}
+      <AnimatePresence>
+        {isMobile && isOpen && (
           <motion.div
+            key="mobile-drawer"
             initial={shouldReduceMotion ? { opacity: 0 } : { x: "-100%" }}
             animate={shouldReduceMotion ? { opacity: 1 } : { x: 0 }}
             exit={shouldReduceMotion ? { opacity: 0 } : { x: "-100%" }}
             transition={{ type: "spring", stiffness: 350, damping: 30 }}
-            className="relative w-80 max-w-[85vw] h-full flex flex-col bg-slate-100/90 dark:bg-slate-950/95 glass-panel shadow-2xl border-r border-slate-250/20 dark:border-slate-800/60 z-10 overflow-hidden"
+            className="fixed top-0 left-0 bottom-0 w-80 max-w-[85vw] flex flex-col bg-slate-100/90 dark:bg-slate-950/95 glass-panel shadow-2xl border-r border-slate-250/20 dark:border-slate-800/60 z-[20000] overflow-hidden"
           >
             {/* Header info */}
             <div className="h-20 border-b border-slate-200/10 dark:border-slate-800/50 flex items-center justify-between px-6 shrink-0 bg-slate-200/30 dark:bg-slate-900/10">
@@ -118,9 +124,9 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ navItems, healthStatus }
               </div>
             </div>
           </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 
