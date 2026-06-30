@@ -5,6 +5,7 @@ import {
   RadialBar,
   Legend,
   Tooltip,
+  PolarAngleAxis,
 } from "recharts";
 import { Candidate } from "../../../types/candidate";
 import { ParsedJD, RequirementDetail } from "../../../types/common";
@@ -84,10 +85,10 @@ export const SkillCoverageChart: React.FC<SkillCoverageChartProps> = ({
   return (
     <div className="w-full min-w-0 glass-panel rounded-2xl border-white/10 shadow-xl p-5 md:p-6 mb-6">
       <div className="mb-4">
-        <h2 className="text-sm font-bold text-white uppercase tracking-wider font-heading">
+        <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider font-heading">
           Cohort Skill Match Telemetry
         </h2>
-        <p className="text-[11px] text-slate-400">
+        <p className="text-[11px] text-slate-500 dark:text-slate-400">
           Average skill gap ratios evaluated across the shortlisted candidate pool.
         </p>
       </div>
@@ -105,6 +106,7 @@ export const SkillCoverageChart: React.FC<SkillCoverageChartProps> = ({
               barSize={15}
               data={data}
             >
+              <PolarAngleAxis type="number" domain={[0, 100]} angleAxisId={0} tick={false} />
               <RadialBar
                 background={{ fill: "rgba(255, 255, 255, 0.03)" }}
                 label={{ position: "insideStart", fill: "#fff", fontSize: 10, fontWeight: "bold" }}
@@ -118,6 +120,9 @@ export const SkillCoverageChart: React.FC<SkillCoverageChartProps> = ({
                   color: "#FFFFFF",
                   fontSize: "12px",
                 }}
+                itemStyle={{ color: "#FFFFFF" }}
+                formatter={(value: any, _name: string, props: any) => [`${value}%`, props?.payload?.name || "Value"]}
+                labelFormatter={() => null}
               />
               <Legend
                 iconSize={10}
@@ -126,7 +131,7 @@ export const SkillCoverageChart: React.FC<SkillCoverageChartProps> = ({
                 verticalAlign="bottom"
                 wrapperStyle={{ fontSize: 11 }}
                 formatter={(value) => (
-                  <span className="text-slate-350 font-semibold">{value}</span>
+                  <span className="text-slate-400 font-semibold">{value}</span>
                 )}
               />
             </RadialBarChart>

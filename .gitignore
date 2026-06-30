@@ -72,3 +72,4 @@ backend/data/jobs/
 [PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/candidates.jsonl
 candidates.jsonl
 backend.log
+candidate_report_*

@@ -37,8 +37,16 @@ export const StickyCompareFooter: React.FC<StickyCompareFooterProps> = ({
     navigate("/copilot");
   };
 
-  const handleGenerateReport = () => {
-    alert("Generating consolidated executive comparison briefing (PDF)...");
+  const [isExporting, setIsExporting] = React.useState(false);
+
+  const handleGenerateReport = async () => {
+    setIsExporting(true);
+    try {
+      const { exportToPDF } = await import("../../../utils/exportPDF");
+      await exportToPDF("comparison-workspace", "executive-summary.pdf");
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   if (candidates.length < 2) return null;
@@ -83,10 +91,11 @@ export const StickyCompareFooter: React.FC<StickyCompareFooterProps> = ({
             <div className="flex items-center gap-3 shrink-0">
               <button
                 onClick={handleGenerateReport}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface border border-border hover:bg-surface-hover text-text-muted text-[11px] font-semibold transition-all"
+                disabled={isExporting}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-surface border border-border hover:bg-surface-hover text-text-muted disabled:opacity-40 disabled:pointer-events-none text-[11px] font-semibold transition-all"
               >
-                <FileText size={12} />
-                <span>Executive Summary</span>
+                <FileText size={12} className={isExporting ? "animate-bounce" : ""} />
+                <span>{isExporting ? "Exporting..." : "Executive Summary"}</span>
               </button>
 
               <button

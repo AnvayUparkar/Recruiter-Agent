@@ -21,4 +21,5 @@ export interface SubmissionResult {
   sha256Hash: string;
   rowCount: number;
   timestamp: string;
+  csvContent?: string;
 }

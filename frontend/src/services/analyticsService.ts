@@ -49,5 +49,39 @@ export const analyticsService = {
     });
     return response.data;
   },
+
+  /**
+   * Downloads a previously generated submission CSV file.
+   * 
+   * @param filename Name of the file to download.
+   */
+  async downloadSubmission(filename: string): Promise<Blob> {
+    const response = await apiClient.get(`/api/v1/submission/download/${encodeURIComponent(filename)}`, {
+      responseType: 'blob',
+    });
+    return response.data;
+  },
+
+  /**
+   * Exports a detailed candidate dossier report.
+   */
+  async exportCandidateReport(candidateId: string, formatType: string = "markdown"): Promise<{ content: string, filePath: string, format: string }> {
+    const response = await apiClient.post("/api/v1/report/export", {
+      candidate_id: candidateId,
+      format_type: formatType,
+    });
+    return response.data;
+  },
+
+  /**
+   * Generates a side-by-side comparison for finalists.
+   */
+  async compareCandidates(candidateIds: string[], jobDescription: string = ""): Promise<any> {
+    const response = await apiClient.post("/api/v1/copilot/compare", {
+      candidate_ids: candidateIds,
+      job_description: jobDescription,
+    });
+    return response.data;
+  }
 };
 export type AnalyticsService = typeof analyticsService;

@@ -2,6 +2,7 @@ import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAnalyticsStore } from "../../../store/analyticsStore";
 import { Download, CheckCircle, Clock } from "lucide-react";
+import { analyticsService } from "../../../services/analyticsService";
 
 export const ExportHistoryPanel: React.FC = () => {
   const { exportHistory, clearExportHistory } = useAnalyticsStore();
@@ -12,8 +13,24 @@ export const ExportHistoryPanel: React.FC = () => {
       ", " + d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   };
 
-  const handleDownload = (filename: string) => {
-    alert(`Retrieving exported file: ${filename} from local outputs manifest.`);
+  const [downloadingFile, setDownloadingFile] = React.useState<string | null>(null);
+
+  const handleDownload = async (filename: string) => {
+    try {
+      setDownloadingFile(filename);
+      const blob = await analyticsService.downloadSubmission(filename);
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (e: any) {
+      alert(`Failed to download file: ${e.message}`);
+    } finally {
+      setDownloadingFile(null);
+    }
   };
 
   return (
@@ -78,10 +95,19 @@ export const ExportHistoryPanel: React.FC = () => {
                   </span>
                   <button
                     onClick={() => handleDownload(item.filename)}
-                    className="p-2 rounded bg-surface border border-border hover:bg-surface-hover text-text-muted hover:text-primary"
+                    disabled={downloadingFile === item.filename}
+                    className={`p-2 rounded bg-surface border border-border ${
+                      downloadingFile === item.filename 
+                        ? "opacity-50 cursor-not-allowed" 
+                        : "hover:bg-surface-hover hover:text-primary"
+                    } text-text-muted`}
                     title="Retrieve local file"
                   >
-                    <Download size={12} />
+                    {downloadingFile === item.filename ? (
+                      <Clock size={12} className="animate-spin" />
+                    ) : (
+                      <Download size={12} />
+                    )}
                   </button>
                 </div>
               </motion.div>

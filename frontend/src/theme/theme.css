@@ -230,3 +230,199 @@ body {
 .font-body-sm { font-size: var(--body-sm); font-family: var(--font-body); font-weight: 400; line-height: 1.4; }
 .font-caption { font-size: var(--caption); font-family: var(--font-body); font-weight: 500; line-height: 1.4; letter-spacing: 0.01em; }
 .font-code { font-size: var(--code); font-family: var(--font-mono); }
+
+/* Print Styles: Force light theme for printing to save ink and ensure text visibility */
+@media print {
+  :root, .dark {
+    --background: #FAFAFA !important;
+    --surface: #FFFFFF !important;
+    --surface-hover: #F4F4F5 !important;
+    --text-primary: #09090B !important;
+    --text-muted: #71717A !important;
+    --text-disabled: #D4D4D8 !important;
+    --border: rgba(9, 9, 11, 0.08) !important;
+    --glass: rgba(255, 255, 255, 0.65) !important;
+    --glass-border: rgba(9, 9, 11, 0.06) !important;
+  }
+  
+  body {
+    background-color: #FFFFFF !important;
+    color: #09090B !important;
+  }
+  
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}
+
+/* Global Export Overrides for Framer Motion and Clipping */
+.pdf-exporting [style*="opacity: 0"],
+.pdf-exporting [style*="opacity:0"] {
+  opacity: 1 !important;
+}
+
+.pdf-exporting * {
+  /* Prevent scrollbars or hidden content in canvas */
+  scrollbar-width: none !important;
+}
+
+.pdf-exporting ::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* PDF Export Layout Overrides - Premium ATS Report */
+.pdf-export {
+  padding: 32px !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+  /* Disable hover effects and animations globally */
+  pointer-events: none !important;
+}
+
+/* Remove max-width constraints on the dashboard container */
+.pdf-export .max-w-6xl,
+.pdf-export .max-w-4xl,
+.pdf-export .max-w-2xl {
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+/* Typography Scaling */
+.pdf-export h2, 
+.pdf-export h2.font-heading {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+}
+
+.pdf-export h3 {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+}
+
+.pdf-export .candidate-name {
+  font-size: 16px !important;
+  font-weight: 700 !important;
+}
+
+.pdf-export p {
+  font-size: 13px !important;
+  line-height: 1.5 !important;
+}
+
+.pdf-export .text-xs,
+.pdf-export .text-\[11px\],
+.pdf-export .text-\[10px\] {
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+}
+
+/* Compact Vertical Spacing */
+.pdf-export .mb-6 {
+  margin-bottom: 24px !important;
+}
+
+.pdf-export .gap-4,
+.pdf-export .gap-6 {
+  gap: 20px !important;
+}
+
+/* Grids and Candidate Cards */
+.pdf-export .skill-coverage-grid,
+.pdf-export .behavior-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 420px) !important;
+  justify-content: center !important;
+  gap: 28px !important;
+}
+
+.pdf-export .candidate-card {
+  width: 420px !important;
+  min-width: 420px !important;
+  max-width: 420px !important;
+  height: auto !important;
+  min-height: fit-content !important;
+  max-height: none !important;
+  flex: none !important;
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+  flex-basis: 420px !important;
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+  -webkit-column-break-inside: avoid !important;
+  overflow: visible !important;
+  padding: 24px !important; /* Premium inner padding */
+}
+
+/* Enlarge Avatar inside candidate cards */
+.pdf-export .candidate-card .w-10,
+.pdf-export .candidate-card .h-10 {
+  width: 48px !important;
+  height: 48px !important;
+  font-size: 18px !important; /* Larger initial in avatar */
+}
+
+/* Center single remaining card horizontally without stretching */
+.pdf-export .skill-coverage-grid > .candidate-card:last-child:nth-child(odd),
+.pdf-export .behavior-grid > .candidate-card:last-child:nth-child(odd) {
+  grid-column: span 2 !important;
+  justify-self: center !important;
+  margin: 0 auto !important;
+}
+
+/* Skill Chips */
+.pdf-export .skills {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+}
+
+.pdf-export .skills > span {
+  max-width: 100% !important;
+  padding: 6px 10px !important;
+  font-size: 12px !important;
+}
+
+/* Score Breakdowns and Progress Bars */
+.pdf-export .h-2 {
+  height: 10px !important; /* Thicker progress bars */
+}
+
+/* Radar Chart Scaling */
+/* The parent has h-[360px] inline class, override it */
+.pdf-export .h-\[360px\] {
+  height: 520px !important; /* Increase size by ~40-50% */
+}
+
+/* Comparison Table Overrides */
+.pdf-export table {
+  width: 100% !important;
+  min-width: 100% !important;
+}
+
+.pdf-export th {
+  font-size: 14px !important;
+  padding: 16px 20px !important;
+  height: 60px !important;
+}
+
+.pdf-export td {
+  font-size: 13px !important;
+  padding: 16px 20px !important;
+}
+
+/* Ensure Page Breaks avoid cutting containers */
+.pdf-export .section-container,
+.pdf-export .glass-panel {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+
+/* Hide UI-only elements */
+.pdf-export button,
+.pdf-export .hover-sweep::after {
+  display: none !important;
+}

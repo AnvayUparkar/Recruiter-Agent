@@ -14,14 +14,21 @@ export const ComparisonToolbar: React.FC<ComparisonToolbarProps> = ({
   onAddMore,
 }) => {
   const navigate = useNavigate();
+  const [isExporting, setIsExporting] = React.useState(false);
 
-  const handleExport = () => {
-    alert("Exporting comparison report as PDF... (Feature placeholder for Phase 10)");
+  const handleExport = async () => {
+    setIsExporting(true);
+    try {
+      const { exportToPDF } = await import("../../../utils/exportPDF");
+      await exportToPDF("comparison-workspace", "candidate-comparison.pdf");
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
-    alert("Comparison link copied to clipboard! (Feature placeholder for Phase 10)");
+    alert("Comparison link copied to clipboard!");
   };
 
   return (
@@ -61,11 +68,11 @@ export const ComparisonToolbar: React.FC<ComparisonToolbarProps> = ({
 
         <button
           onClick={handleExport}
-          disabled={candidateCount === 0}
+          disabled={candidateCount === 0 || isExporting}
           className="flex items-center gap-2 px-4 py-2 rounded-xl bg-surface border border-border hover:bg-surface-hover text-text-muted disabled:opacity-40 disabled:pointer-events-none text-xs transition-all"
         >
-          <Download size={14} />
-          <span>Export Report</span>
+          <Download size={14} className={isExporting ? "animate-bounce" : ""} />
+          <span>{isExporting ? "Exporting..." : "Export Report"}</span>
         </button>
 
         <button

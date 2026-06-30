@@ -108,7 +108,7 @@ export const ComparisonSkills: React.FC<ComparisonSkillsProps> = ({
           <h3 className="text-xs text-muted font-bold uppercase tracking-wider">
             Skill Coverage
           </h3>
-          <p className="text-sm font-semibold text-primary mt-0.5">
+          <p className="text-sm font-semibold text-primary mt-0.5 candidate-name">
             {candidate.name}
           </p>
         </div>
@@ -129,7 +129,7 @@ export const ComparisonSkills: React.FC<ComparisonSkillsProps> = ({
             <span className="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1">
               <Check size={11} className="text-emerald-400" /> Matched Skills
             </span>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5 skills">
               {matchedSkills.map((s) => (
                 <span
                   key={s.name}
@@ -149,7 +149,7 @@ export const ComparisonSkills: React.FC<ComparisonSkillsProps> = ({
             <span className="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1">
               <Award size={11} className="text-blue-400" /> Preferred Matched
             </span>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5 skills">
               {preferredSkills.map((s) => (
                 <span
                   key={s.name}
@@ -168,7 +168,7 @@ export const ComparisonSkills: React.FC<ComparisonSkillsProps> = ({
             <span className="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1">
               <X size={11} className="text-rose-400" /> Missing Requirements
             </span>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5 skills">
               {missingSkills.map((name) => (
                 <span
                   key={name}
@@ -187,7 +187,7 @@ export const ComparisonSkills: React.FC<ComparisonSkillsProps> = ({
             <span className="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1">
               <Users size={11} className="text-blue-400" /> Shared Skills (Cohort Overlap)
             </span>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5 skills">
               {sharedSkills.map((s) => (
                 <span
                   key={s.name}
@@ -206,7 +206,7 @@ export const ComparisonSkills: React.FC<ComparisonSkillsProps> = ({
             <span className="text-[10px] text-muted font-bold uppercase tracking-wider flex items-center gap-1">
               <ShieldAlert size={11} className="text-amber-400" /> Unique Skills (Cohort Edge)
             </span>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-1.5 skills">
               {uniqueSkills.map((s) => (
                 <span
                   key={s.name}

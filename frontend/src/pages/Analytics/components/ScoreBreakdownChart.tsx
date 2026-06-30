@@ -73,10 +73,10 @@ export const ScoreBreakdownChart: React.FC<ScoreBreakdownChartProps> = ({
     <div className="w-full min-w-0 glass-panel rounded-2xl border-white/10 shadow-xl p-5 md:p-6 mb-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
-          <h2 className="text-sm font-bold text-white uppercase tracking-wider font-heading">
+          <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider font-heading">
             AI Score Distribution Density
           </h2>
-          <p className="text-[11px] text-slate-400">
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">
             Density of candidate pool ratings partitioned across score levels.
           </p>
         </div>
@@ -91,7 +91,7 @@ export const ScoreBreakdownChart: React.FC<ScoreBreakdownChartProps> = ({
                 ${
                   activeDimension === opt
                     ? "bg-blue-600 text-white shadow-sm"
-                    : "text-slate-400 hover:text-white"
+                    : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
                 }`}
             >
               {opt}
@@ -125,6 +125,7 @@ export const ScoreBreakdownChart: React.FC<ScoreBreakdownChartProps> = ({
                   color: "#FFFFFF",
                   fontSize: "12px",
                 }}
+                itemStyle={{ color: "#FFFFFF" }}
               />
               <Area
                 type="monotone"

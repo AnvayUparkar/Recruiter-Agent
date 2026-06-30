@@ -55,17 +55,17 @@ export const ReliabilityHistogram: React.FC<ReliabilityHistogramProps> = ({
     <div className="w-full min-w-0 glass-panel rounded-2xl border-white/10 shadow-xl p-5 md:p-6 mb-6 relative group">
       <div className="flex items-start justify-between gap-4 mb-4">
         <div>
-          <h2 className="text-sm font-bold text-white uppercase tracking-wider font-heading flex items-center gap-1.5">
+          <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider font-heading flex items-center gap-1.5">
             <span>Profile Reliability Index</span>
           </h2>
-          <p className="text-[11px] text-slate-400 mt-0.5">
+          <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
             Integrity check categorizations based on timeline, experience, and skill verification.
           </p>
         </div>
 
         {/* Info Explainer Tooltip */}
         <div className="relative group/tooltip">
-          <button className="text-slate-400 hover:text-white" aria-label="About Reliability Index">
+          <button className="text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white" aria-label="About Reliability Index">
             <HelpCircle size={16} />
           </button>
           <div className="absolute right-0 top-6 w-64 p-3 rounded-xl bg-black/95 border border-white/10 text-[10px] text-slate-300 leading-relaxed invisible opacity-0 group-hover/tooltip:visible group-hover/tooltip:opacity-100 transition-all duration-200 z-20 shadow-xl">
@@ -99,6 +99,7 @@ export const ReliabilityHistogram: React.FC<ReliabilityHistogramProps> = ({
                   color: "#FFFFFF",
                   fontSize: "12px",
                 }}
+                itemStyle={{ color: "#FFFFFF" }}
               />
               <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={45}>
                 {data.map((entry, index) => (

@@ -45,11 +45,11 @@ const Reports: React.FC = () => {
     setCsvResult(null);
 
     try {
-      if (!rankingResults || rankingResults.length !== 100) {
+      if (!rankingResults || rankingResults.length !== 50) {
         throw new Error(
-          `Invalid candidate count: expected exactly 100 candidates to compile the submission, but found ${
+          `Invalid candidate count: expected exactly 50 candidates to compile the submission, but found ${
             rankingResults?.length || 0
-          } ranked candidates in the store. Please ensure you execute the ranking leaderboard with a limit of 100 first.`
+          } ranked candidates in the store. Please ensure you execute the ranking leaderboard with a limit of 50 first.`
         );
       }
 
@@ -57,10 +57,10 @@ const Reports: React.FC = () => {
 
       const ranks = sortedByRank.map((r) => r.rank);
       const uniqueRanks = new Set(ranks);
-      if (uniqueRanks.size !== 100) {
+      if (uniqueRanks.size !== 50) {
         throw new Error("Validation Error: candidate ranks are not unique.");
       }
-      for (let i = 1; i <= 100; i++) {
+      for (let i = 1; i <= 50; i++) {
         if (!uniqueRanks.has(i)) {
           throw new Error(`Validation Error: missing rank ${i} in results.`);
         }
@@ -127,6 +127,24 @@ const Reports: React.FC = () => {
     try {
       const res = await reportService.exportReport(selectedCandidateId, dossierFormat);
       setDossierResult(res);
+
+      // Trigger browser download
+      const mimeTypes: Record<string, string> = {
+        json: "application/json",
+        html: "text/html",
+        markdown: "text/markdown",
+      };
+      
+      const blob = new Blob([res.content], { type: mimeTypes[dossierFormat] || "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      const extension = dossierFormat === "markdown" ? "md" : dossierFormat;
+      link.setAttribute("download", `candidate_report_${selectedCandidateId}.${extension}`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
     } catch (err: any) {
       setDossierError(err.message || "Failed to generate report dossier.");
     } finally {

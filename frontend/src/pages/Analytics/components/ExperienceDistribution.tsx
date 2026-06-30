@@ -41,10 +41,10 @@ export const ExperienceDistribution: React.FC<ExperienceDistributionProps> = ({
   return (
     <div className="w-full min-w-0 glass-panel rounded-2xl border-white/10 shadow-xl p-5 md:p-6 mb-6">
       <div className="mb-4">
-        <h2 className="text-sm font-bold text-white uppercase tracking-wider font-heading">
+        <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider font-heading">
           Candidate Tenure Ranges
         </h2>
-        <p className="text-[11px] text-slate-400">
+        <p className="text-[11px] text-slate-500 dark:text-slate-400">
           Distribution of candidate career length grouped by experience brackets.
         </p>
       </div>
@@ -68,6 +68,7 @@ export const ExperienceDistribution: React.FC<ExperienceDistributionProps> = ({
                   color: "#FFFFFF",
                   fontSize: "12px",
                 }}
+                itemStyle={{ color: "#FFFFFF" }}
               />
               <Bar dataKey="count" radius={[6, 6, 0, 0]} maxBarSize={45} data-testid="bar-exp" />
             </BarChart>

@@ -358,165 +358,167 @@ export const CandidateComparisonPage: React.FC = () => {
         onAddMore={handleAddMore}
       />
 
-      {/* Selected candidates overview cards */}
-      <SelectedCandidatesBar
-        candidates={loadedCandidates}
-        onRemove={removeComparisonCandidate}
-      />
+      <div id="comparison-workspace">
+        {/* Selected candidates overview cards */}
+        <SelectedCandidatesBar
+          candidates={loadedCandidates}
+          onRemove={removeComparisonCandidate}
+        />
 
-      {/* Winner advisor banner callout */}
-      <ComparisonWinnerBanner
-        candidates={loadedCandidates}
-        reports={loadedReportsMap}
-        comparisonResult={comparisonResult}
-      />
+        {/* Winner advisor banner callout */}
+        <ComparisonWinnerBanner
+          candidates={loadedCandidates}
+          reports={loadedReportsMap}
+          comparisonResult={comparisonResult}
+        />
 
-      {/* Dynamic comparison insights row */}
-      <ComparisonInsights candidates={loadedCandidates} />
+        {/* Dynamic comparison insights row */}
+        <ComparisonInsights candidates={loadedCandidates} />
 
-      {/* Radar chart overlays */}
-      <ComparisonRadarChart candidates={loadedCandidates} />
+        {/* Radar chart overlays */}
+        <ComparisonRadarChart candidates={loadedCandidates} />
 
-      {/* Grid Comparison Table */}
-      <ComparisonTable candidates={loadedCandidates} />
+        {/* Grid Comparison Table */}
+        <ComparisonTable candidates={loadedCandidates} />
 
-      {/* Expandable Accordion sections (Scores, Skills, Timeline, Reliability, Behavior) */}
-      <div className="flex flex-col gap-4 mt-6">
-        {/* Section 1: Scores Breakdown */}
-        <SectionContainer
-          id="scores"
-          title="Full Score Dimension Comparison"
-          description="Detailed break down of aggregated core matching scores."
-          icon={<LineChart size={16} />}
-          isExpanded={expandedSections.includes("scores")}
-          onToggle={() => toggleExpandedSection("scores")}
-        >
-          <ComparisonGrid candidates={loadedCandidates}>
-            {(c) => (
-              <ComparisonScoreCard
-                key={c.candidateId}
-                candidate={c}
-                allCandidates={loadedCandidates}
-              />
-            )}
-          </ComparisonGrid>
-        </SectionContainer>
-
-        {/* Section 2: Skill Matrices */}
-        <SectionContainer
-          id="skills"
-          title="Job Description Skill Coverage"
-          description="Requirement matches, missing tools, and candidate-specific skill strengths."
-          icon={<BookOpen size={16} />}
-          isExpanded={expandedSections.includes("skills")}
-          onToggle={() => toggleExpandedSection("skills")}
-        >
-          <ComparisonGrid candidates={loadedCandidates}>
-            {(c) => (
-              <ComparisonSkills
-                key={c.candidateId}
-                candidate={c}
-                allCandidates={loadedCandidates}
-                parsedJD={parsedJD}
-              />
-            )}
-          </ComparisonGrid>
-        </SectionContainer>
-
-        {/* Section 3: Strengths and Gaps */}
-        <SectionContainer
-          id="strengths_gaps"
-          title="Strengths & Growth Areas"
-          description="Highlight positive traits and potential development areas."
-          icon={<Award size={16} />}
-          isExpanded={expandedSections.includes("strengths_gaps")}
-          onToggle={() => toggleExpandedSection("strengths_gaps")}
-        >
-          <ComparisonGrid candidates={loadedCandidates}>
-            {(c) => (
-              <div key={c.candidateId} className="flex flex-col gap-4">
-                <ComparisonStrengths
-                  candidate={c}
-                  explanation={loadedExplanationsMap[c.candidateId]}
-                />
-                <ComparisonWeaknesses
-                  candidate={c}
-                  explanation={loadedExplanationsMap[c.candidateId]}
-                />
-              </div>
-            )}
-          </ComparisonGrid>
-        </SectionContainer>
-
-        {/* Section 4: Career Timeline Progression */}
-        <SectionContainer
-          id="timeline"
-          title="Career Progression Timelines"
-          description="Promotion rates, years of exposure, and corporate progression timelines."
-          icon={<TrendingUp size={16} />}
-          isExpanded={expandedSections.includes("timeline")}
-          onToggle={() => toggleExpandedSection("timeline")}
-        >
-          <ComparisonGrid candidates={loadedCandidates}>
-            {(c) => <ComparisonTimeline key={c.candidateId} candidate={c} />}
-          </ComparisonGrid>
-        </SectionContainer>
-
-        {/* Section 5: Reliability & Integrity Audit */}
-        <SectionContainer
-          id="reliability"
-          title="Verification & Profile Reliability Logs"
-          description="Resume authenticity check, anomaly warning flags, and documentation quality."
-          icon={<Activity size={16} />}
-          isExpanded={expandedSections.includes("reliability")}
-          onToggle={() => toggleExpandedSection("reliability")}
-        >
-          <ComparisonGrid candidates={loadedCandidates}>
-            {(c) => <ComparisonReliability key={c.candidateId} candidate={c} />}
-          </ComparisonGrid>
-        </SectionContainer>
-
-        {/* Section 6: Behavioral Intelligence */}
-        <SectionContainer
-          id="behavior"
-          title="Engagement & Communication Indicators"
-          description="Collaboration signals, email verification, notice period, and join probabilities."
-          icon={<Heart size={16} />}
-          isExpanded={expandedSections.includes("behavior")}
-          onToggle={() => toggleExpandedSection("behavior")}
-        >
-          <ComparisonGrid candidates={loadedCandidates}>
-            {(c) => <ComparisonBehavior key={c.candidateId} candidate={c} />}
-          </ComparisonGrid>
-        </SectionContainer>
-
-        {/* Section 7: Hiring Proposals */}
-        <SectionContainer
-          id="proposals"
-          title="Hiring Proposals & Verdicts"
-          description="AI recommended decisions, risk assessments, and justifications."
-          icon={<Award size={16} />}
-          isExpanded={expandedSections.includes("proposals")}
-          onToggle={() => toggleExpandedSection("proposals")}
-        >
-          <div className="flex flex-col gap-4">
+        {/* Expandable Accordion sections (Scores, Skills, Timeline, Reliability, Behavior) */}
+        <div className="flex flex-col gap-4 mt-6">
+          {/* Section 1: Scores Breakdown */}
+          <SectionContainer
+            id="scores"
+            title="Full Score Dimension Comparison"
+            description="Detailed break down of aggregated core matching scores."
+            icon={<LineChart size={16} />}
+            isExpanded={expandedSections.includes("scores")}
+            onToggle={() => toggleExpandedSection("scores")}
+          >
             <ComparisonGrid candidates={loadedCandidates}>
               {(c) => (
-                <div key={c.candidateId} className="flex flex-col h-full justify-between">
-                  <ComparisonRecommendation
+                <ComparisonScoreCard
+                  key={c.candidateId}
+                  candidate={c}
+                  allCandidates={loadedCandidates}
+                />
+              )}
+            </ComparisonGrid>
+          </SectionContainer>
+
+          {/* Section 2: Skill Matrices */}
+          <SectionContainer
+            id="skills"
+            title="Job Description Skill Coverage"
+            description="Requirement matches, missing tools, and candidate-specific skill strengths."
+            icon={<BookOpen size={16} />}
+            isExpanded={expandedSections.includes("skills")}
+            onToggle={() => toggleExpandedSection("skills")}
+          >
+            <ComparisonGrid candidates={loadedCandidates}>
+              {(c) => (
+                <ComparisonSkills
+                  key={c.candidateId}
+                  candidate={c}
+                  allCandidates={loadedCandidates}
+                  parsedJD={parsedJD}
+                />
+              )}
+            </ComparisonGrid>
+          </SectionContainer>
+
+          {/* Section 3: Strengths and Gaps */}
+          <SectionContainer
+            id="strengths_gaps"
+            title="Strengths & Growth Areas"
+            description="Highlight positive traits and potential development areas."
+            icon={<Award size={16} />}
+            isExpanded={expandedSections.includes("strengths_gaps")}
+            onToggle={() => toggleExpandedSection("strengths_gaps")}
+          >
+            <ComparisonGrid candidates={loadedCandidates}>
+              {(c) => (
+                <div key={c.candidateId} className="flex flex-col gap-4">
+                  <ComparisonStrengths
                     candidate={c}
-                    report={loadedReportsMap[c.candidateId]}
                     explanation={loadedExplanationsMap[c.candidateId]}
                   />
-                  <ComparisonActions
-                    candidateId={c.candidateId}
-                    candidateName={c.name}
+                  <ComparisonWeaknesses
+                    candidate={c}
+                    explanation={loadedExplanationsMap[c.candidateId]}
                   />
                 </div>
               )}
             </ComparisonGrid>
-          </div>
-        </SectionContainer>
+          </SectionContainer>
+
+          {/* Section 4: Career Timeline Progression */}
+          <SectionContainer
+            id="timeline"
+            title="Career Progression Timelines"
+            description="Promotion rates, years of exposure, and corporate progression timelines."
+            icon={<TrendingUp size={16} />}
+            isExpanded={expandedSections.includes("timeline")}
+            onToggle={() => toggleExpandedSection("timeline")}
+          >
+            <ComparisonGrid candidates={loadedCandidates}>
+              {(c) => <ComparisonTimeline key={c.candidateId} candidate={c} />}
+            </ComparisonGrid>
+          </SectionContainer>
+
+          {/* Section 5: Reliability & Integrity Audit */}
+          <SectionContainer
+            id="reliability"
+            title="Verification & Profile Reliability Logs"
+            description="Resume authenticity check, anomaly warning flags, and documentation quality."
+            icon={<Activity size={16} />}
+            isExpanded={expandedSections.includes("reliability")}
+            onToggle={() => toggleExpandedSection("reliability")}
+          >
+            <ComparisonGrid candidates={loadedCandidates}>
+              {(c) => <ComparisonReliability key={c.candidateId} candidate={c} />}
+            </ComparisonGrid>
+          </SectionContainer>
+
+          {/* Section 6: Behavioral Intelligence */}
+          <SectionContainer
+            id="behavior"
+            title="Engagement & Communication Indicators"
+            description="Collaboration signals, email verification, notice period, and join probabilities."
+            icon={<Heart size={16} />}
+            isExpanded={expandedSections.includes("behavior")}
+            onToggle={() => toggleExpandedSection("behavior")}
+          >
+            <ComparisonGrid candidates={loadedCandidates}>
+              {(c) => <ComparisonBehavior key={c.candidateId} candidate={c} />}
+            </ComparisonGrid>
+          </SectionContainer>
+
+          {/* Section 7: Hiring Proposals */}
+          <SectionContainer
+            id="proposals"
+            title="Hiring Proposals & Verdicts"
+            description="AI recommended decisions, risk assessments, and justifications."
+            icon={<Award size={16} />}
+            isExpanded={expandedSections.includes("proposals")}
+            onToggle={() => toggleExpandedSection("proposals")}
+          >
+            <div className="flex flex-col gap-4">
+              <ComparisonGrid candidates={loadedCandidates}>
+                {(c) => (
+                  <div key={c.candidateId} className="flex flex-col h-full justify-between">
+                    <ComparisonRecommendation
+                      candidate={c}
+                      report={loadedReportsMap[c.candidateId]}
+                      explanation={loadedExplanationsMap[c.candidateId]}
+                    />
+                    <ComparisonActions
+                      candidateId={c.candidateId}
+                      candidateName={c.name}
+                    />
+                  </div>
+                )}
+              </ComparisonGrid>
+            </div>
+          </SectionContainer>
+        </div>
       </div>
 
       {/* Sticky decision finalize footer */}
@@ -545,7 +547,7 @@ const SectionContainer: React.FC<SectionContainerProps> = ({
   children,
 }) => {
   return (
-    <div className="w-full glass-panel rounded-2xl border-border overflow-hidden shadow-lg">
+    <div className="w-full glass-panel rounded-2xl border-border overflow-hidden shadow-lg section-container">
       <button
         onClick={onToggle}
         className="w-full px-6 py-4 flex items-center justify-between hover:bg-surface-hover transition-colors text-left"

@@ -1,14 +1,17 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Download, Play, CheckCircle } from "lucide-react";
+import { analyticsService } from "../../../services/analyticsService";
 
 interface ReportGeneratorPanelProps {
   candidates: Array<{ id: string; name: string }>;
+  jobDescription: string;
   onReportGenerated: (type: string, filename: string) => void;
 }
 
 export const ReportGeneratorPanel: React.FC<ReportGeneratorPanelProps> = ({
   candidates,
+  jobDescription,
   onReportGenerated,
 }) => {
   const [reportType, setReportType] = useState("executive");
@@ -17,44 +20,88 @@ export const ReportGeneratorPanel: React.FC<ReportGeneratorPanelProps> = ({
   const [progress, setProgress] = useState(0);
   const [progressMessage, setProgressMessage] = useState("");
   const [readyFile, setReadyFile] = useState<string | null>(null);
+  const [reportContent, setReportContent] = useState<string>("");
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     setIsGenerating(true);
     setProgress(0);
     setReadyFile(null);
+    setReportContent("");
+    setProgressMessage("Initiating report generation...");
 
-    const steps = [
-      { p: 15, m: "Hydrating candidate profiles..." },
-      { p: 40, m: "Running hybrid semantic calculations..." },
-      { p: 70, m: "Synthesizing advisor justification texts..." },
-      { p: 90, m: "Finalizing markdown layout formatting..." },
-      { p: 100, m: "Report generated successfully!" },
-    ];
+    try {
+      if (reportType === "dossier") {
+        const cId = targetCandidateId === "all" ? candidates[0]?.id : targetCandidateId;
+        if (!cId) throw new Error("No candidate selected");
 
-    let currentStep = 0;
-    const interval = setInterval(() => {
-      if (currentStep < steps.length) {
-        setProgress(steps[currentStep].p);
-        setProgressMessage(steps[currentStep].m);
-        currentStep++;
-      } else {
-        clearInterval(interval);
-        setTimeout(() => {
-          setIsGenerating(false);
-          const filename = `${reportType}_report_${targetCandidateId}.md`;
-          setReadyFile(filename);
-          onReportGenerated(
-            reportType === "executive" ? "Executive Summary" : "Candidate Briefing",
-            filename
-          );
-        }, 600);
+        setProgress(30);
+        setProgressMessage(`Fetching dossier for ${cId}...`);
+
+        const res = await analyticsService.exportCandidateReport(cId, "markdown");
+        setReportContent(res.content);
+        setProgress(100);
+        setProgressMessage("Dossier generated successfully!");
       }
-    }, 800);
+      else if (reportType === "comparison") {
+        const cIds = targetCandidateId === "all" ? candidates.slice(0, 5).map(c => c.id) : [targetCandidateId];
+        if (cIds.length < 2) {
+          cIds.push(candidates.find(c => c.id !== cIds[0])?.id || "");
+        }
+        setProgress(30);
+        setProgressMessage("Running hybrid semantic comparison...");
+        const res = await analyticsService.compareCandidates(cIds.filter(Boolean), jobDescription);
+
+        const md = `# Side-by-Side Finalist Comparison\n\nGenerated on: ${new Date().toLocaleString()}\n\n` +
+          `## Comparative Summary\n${res.comparative_summary}\n\n` +
+          `## Candidates\n` + res.candidates.map((c: any) => `- **${c.candidate_id}**: ${c.summary}`).join("\n");
+
+        setReportContent(md);
+        setProgress(100);
+        setProgressMessage("Comparison generated successfully!");
+      }
+      else if (reportType === "executive") {
+        setProgress(30);
+        setProgressMessage("Gathering executive pool rankings...");
+        const res = await analyticsService.exportSubmission(jobDescription);
+        setReportContent(res.csvContent || "Candidate ID, Match Score, Match Category\n");
+        setProgress(100);
+        setProgressMessage("Executive Summary generated successfully!");
+      }
+      else {
+        setProgress(100);
+        setReportContent("# Chat Logs\nThis feature is currently simulated.");
+        setProgressMessage("Chat manifest generated.");
+      }
+
+      const filename = `${reportType}_report_${targetCandidateId === "all" ? "summary" : targetCandidateId}.${reportType === "executive" ? "csv" : "md"}`;
+      setReadyFile(filename);
+      onReportGenerated(
+        reportType === "executive" ? "Executive Summary" : "Candidate Briefing",
+        filename
+      );
+    } catch (error) {
+      console.error(error);
+      setProgressMessage("Error generating report.");
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleDownload = () => {
     if (!readyFile) return;
-    alert(`Downloading ${readyFile} to local storage output/reports/ directory.`);
+
+    const mimeType = readyFile.endsWith(".csv") ? "text/csv" : "text/markdown";
+    const blob = new Blob([reportContent], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", readyFile);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
     setReadyFile(null);
   };
 

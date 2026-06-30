@@ -394,6 +394,7 @@ export const AnalyticsDashboardPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
         <ReportGeneratorPanel
           candidates={reportCandidates}
+          jobDescription={activeJd}
           onReportGenerated={() => {}}
         />
 

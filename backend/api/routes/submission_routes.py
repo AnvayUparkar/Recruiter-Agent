@@ -105,11 +105,20 @@ def export_submission():
         sub_res = SubmissionService.generate_submission(result.ranked_candidates, output_dir)
 
         # 7. Package and return response
+        
+        csv_content = ""
+        try:
+            with open(sub_res.file_path, "r", encoding="utf-8") as f:
+                csv_content = f.read()
+        except Exception as e:
+            logger.warning(f"Could not read generated CSV: {e}")
+
         return jsonify({
             "exportPath": sub_res.file_path,
             "sha256Hash": sub_res.checksum,
             "rowCount": sub_res.candidate_count,
-            "timestamp": sub_res.generated_at
+            "timestamp": sub_res.generated_at,
+            "csvContent": csv_content
         }), 200
 
     except ValidationError as ve:
@@ -176,4 +185,23 @@ def export_candidate_report():
         return jsonify({"error": "Validation Error", "details": ve.errors()}), 400
     except Exception as e:
         logger.error(f"Error during report export: {e}", exc_info=True)
+        return jsonify({"error": "Internal Server Error"}), 500
+
+from flask import send_file
+
+@submission_bp.route("/submission/download/<filename>", methods=["GET"])
+def download_submission(filename: str):
+    """GET /api/v1/submission/download/<filename>"""
+    try:
+        # Prevent path traversal
+        clean_name = Path(filename).name
+        output_dir = Path(current_app.config.get("OUTPUT_PATH")) / "submissions"
+        file_path = output_dir / clean_name
+        
+        if not file_path.exists():
+            return jsonify({"error": "File not found"}), 404
+            
+        return send_file(file_path, as_attachment=True)
+    except Exception as e:
+        logger.error(f"Error downloading submission {filename}: {e}", exc_info=True)
         return jsonify({"error": "Internal Server Error"}), 500

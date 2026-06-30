@@ -28,6 +28,19 @@ export const SubmissionExportPanel: React.FC = () => {
         status: "completed",
       });
 
+      // Trigger browser download if CSV content is available
+      if (data.csvContent) {
+        const blob = new Blob([data.csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        const filename = data.exportPath.split(/[\\/]/).pop() || "candidate_submission.csv";
+        link.setAttribute('download', filename);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
       // Populate details and trigger modal
       setModalDetails(data);
       setShowModal(true);

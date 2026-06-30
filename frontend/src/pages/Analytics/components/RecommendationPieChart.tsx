@@ -56,10 +56,10 @@ export const RecommendationPieChart: React.FC<RecommendationPieChartProps> = ({
   return (
     <div className="w-full min-w-0 glass-panel rounded-2xl border-white/10 shadow-xl p-5 md:p-6 mb-6">
       <div className="mb-4">
-        <h2 className="text-sm font-bold text-white uppercase tracking-wider font-heading">
+        <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider font-heading">
           Hiring Recommendation Share
         </h2>
-        <p className="text-[11px] text-slate-400">
+        <p className="text-[11px] text-slate-500 dark:text-slate-400">
           Distribution of candidate pool verdicts issued by AI advisor models.
         </p>
       </div>
@@ -94,6 +94,7 @@ export const RecommendationPieChart: React.FC<RecommendationPieChartProps> = ({
                   color: "#FFFFFF",
                   fontSize: "12px",
                 }}
+                itemStyle={{ color: "#FFFFFF" }}
               />
               <Legend
                 verticalAlign="bottom"

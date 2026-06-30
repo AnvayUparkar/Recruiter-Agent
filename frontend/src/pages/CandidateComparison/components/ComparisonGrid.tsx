@@ -16,7 +16,7 @@ export const ComparisonGrid: React.FC<ComparisonGridProps> = ({
   return (
     <div className="w-full overflow-x-auto pb-4 -mx-4 px-4 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
       <div
-        className="grid gap-6 min-w-max md:min-w-0"
+        className="grid gap-6 min-w-max md:min-w-0 skill-coverage-grid"
         style={{
           gridTemplateColumns: `repeat(${columnCount}, minmax(280px, 1fr))`,
         }}
@@ -32,7 +32,7 @@ export const ComparisonGrid: React.FC<ComparisonGridProps> = ({
               damping: 20,
               delay: index * 0.05,
             }}
-            className="flex flex-col h-full"
+            className="flex flex-col h-full candidate-card"
           >
             {children(candidate, index)}
           </motion.div>
