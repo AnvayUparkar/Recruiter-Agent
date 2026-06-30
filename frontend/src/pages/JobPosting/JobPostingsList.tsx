@@ -1,20 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { jobService } from "../../services/jobService";
 import { 
   Briefcase, Plus, MapPin, DollarSign, Users, 
-  MoreVertical, Activity
+  MoreVertical, Activity, Trash2, AlertTriangle
 } from "lucide-react";
 
 export const JobPostingsList: React.FC = () => {
   const [jobs, setJobs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchJobs();
   }, []);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setOpenMenuId(null);
+      }
+    };
+    if (openMenuId) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [openMenuId]);
 
   const fetchJobs = async () => {
     try {
@@ -25,6 +42,21 @@ export const JobPostingsList: React.FC = () => {
       console.error(e);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDelete = async (jobId: string) => {
+    try {
+      setIsDeleting(true);
+      await jobService.deleteJob(jobId);
+      setJobs((prev) => prev.filter((j) => j._id !== jobId));
+    } catch (e) {
+      console.error("Failed to delete job:", e);
+      alert("Failed to delete the job posting. Please try again.");
+    } finally {
+      setIsDeleting(false);
+      setDeleteConfirmId(null);
+      setOpenMenuId(null);
     }
   };
 
@@ -100,6 +132,8 @@ export const JobPostingsList: React.FC = () => {
               <motion.div 
                 key={job._id}
                 variants={itemVariants}
+                exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+                layout
                 className="group glass-panel bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-1 transition-all cursor-pointer flex flex-col h-full"
                 onClick={() => navigate(`/recruiter/jobs/${job._id}`)}
               >
@@ -109,12 +143,41 @@ export const JobPostingsList: React.FC = () => {
                     {job.status || 'Draft'}
                   </span>
                   
-                  <button 
-                    onClick={(e) => { e.stopPropagation(); /* show menu logic */ }}
-                    className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
-                  >
-                    <MoreVertical size={18} />
-                  </button>
+                  <div className="relative" ref={openMenuId === job._id ? menuRef : undefined}>
+                    <button 
+                      onClick={(e) => { 
+                        e.stopPropagation(); 
+                        setOpenMenuId(openMenuId === job._id ? null : job._id);
+                      }}
+                      className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                    >
+                      <MoreVertical size={18} />
+                    </button>
+
+                    {/* Dropdown Menu */}
+                    <AnimatePresence>
+                      {openMenuId === job._id && (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.9, y: -4 }}
+                          animate={{ opacity: 1, scale: 1, y: 0 }}
+                          exit={{ opacity: 0, scale: 0.9, y: -4 }}
+                          transition={{ duration: 0.15 }}
+                          className="absolute right-0 top-full mt-1 w-44 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-xl shadow-black/10 z-50 overflow-hidden"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <button
+                            onClick={() => {
+                              setDeleteConfirmId(job._id);
+                            }}
+                            className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
+                          >
+                            <Trash2 size={15} />
+                            Delete Posting
+                          </button>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
                 
                 {/* Title & Company */}
@@ -170,8 +233,69 @@ export const JobPostingsList: React.FC = () => {
           </AnimatePresence>
         </motion.div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {deleteConfirmId && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+            onClick={() => { if (!isDeleting) setDeleteConfirmId(null); }}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xl p-6 w-full max-w-sm"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 bg-red-100 dark:bg-red-500/15 rounded-full flex items-center justify-center">
+                  <AlertTriangle size={20} className="text-red-600 dark:text-red-400" />
+                </div>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">Delete Job Posting</h3>
+              </div>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mb-6">
+                Are you sure you want to delete <span className="font-semibold text-slate-700 dark:text-slate-200">
+                  {jobs.find((j) => j._id === deleteConfirmId)?.title}
+                </span>? This action cannot be undone.
+              </p>
+              <div className="flex items-center gap-3 justify-end">
+                <button
+                  disabled={isDeleting}
+                  onClick={() => setDeleteConfirmId(null)}
+                  className="px-4 py-2 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  disabled={isDeleting}
+                  onClick={() => handleDelete(deleteConfirmId)}
+                  className="px-4 py-2 rounded-xl text-sm font-bold bg-red-600 hover:bg-red-700 text-white transition-colors flex items-center gap-2 disabled:opacity-50"
+                >
+                  {isDeleting ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white/30 border-t-white"></div>
+                      Deleting...
+                    </>
+                  ) : (
+                    <>
+                      <Trash2 size={14} />
+                      Delete
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
 
 export default JobPostingsList;
+

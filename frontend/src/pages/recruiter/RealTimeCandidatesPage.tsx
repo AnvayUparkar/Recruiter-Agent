@@ -190,7 +190,7 @@ export default function RealTimeCandidatesPage() {
                               <div className="font-bold text-slate-800 dark:text-slate-200 text-[13px]">{exp.title}</div>
                               {exp.description && (
                                 <ul className="list-disc pl-4 space-y-1 mt-1">
-                                  {exp.description.split('\n').filter((item: string) => item.trim()).map((item: string, idx: number) => (
+                                  {(exp.description || '').split('\n').filter((item: string) => item.trim()).map((item: string, idx: number) => (
                                     <li key={idx} className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
                                       {item.replace(/^[-•*]\s*/, '')}
                                     </li>
@@ -208,7 +208,7 @@ export default function RealTimeCandidatesPage() {
                               <div className="font-bold text-slate-800 dark:text-slate-200 text-[13px]">{edu.institution}</div>
                               {edu.description && (
                                 <ul className="list-disc pl-4 space-y-1 mt-1">
-                                  {edu.description.split('\n').filter((item: string) => item.trim()).map((item: string, idx: number) => (
+                                  {(edu.description || '').split('\n').filter((item: string) => item.trim()).map((item: string, idx: number) => (
                                     <li key={idx} className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
                                       {item.replace(/^[-•*]\s*/, '')}
                                     </li>

@@ -184,18 +184,38 @@ export default function UserProfilePage() {
                   <h4 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4 border-b border-slate-100 dark:border-slate-700/50 pb-2">Experience</h4>
                   {profileData.experience && profileData.experience.length > 0 ? (
                     <div className="space-y-4">
-                      {profileData.experience.map((exp: any, i: number) => (
-                        <div key={i} className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
-                          <h5 className="font-bold text-slate-800 dark:text-slate-200 text-base mb-1">{exp.title}</h5>
-                          <ul className="list-disc pl-5 space-y-1 mt-2">
-                            {exp.description.split('\n').filter((item: string) => item.trim()).map((item: string, idx: number) => (
-                              <li key={idx} className="text-sm text-slate-600 dark:text-slate-400">
-                                {item.replace(/^[-•*]\s*/, '')}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
+                      {profileData.experience.map((exp: any, i: number) => {
+                        const title = exp.designation || exp.title || "Position";
+                        const company = exp.company || "";
+                        
+                        let responsibilities: string[] = [];
+                        if (Array.isArray(exp.responsibilities)) {
+                          responsibilities = exp.responsibilities;
+                        } else if (typeof exp.responsibilities === 'string' && exp.responsibilities) {
+                          responsibilities = [exp.responsibilities];
+                        } else {
+                          responsibilities = (exp.description || '').split('\n').filter((item: string) => item.trim());
+                        }
+
+                        return (
+                          <div key={i} className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                            <h5 className="font-bold text-slate-800 dark:text-slate-200 text-base mb-1">
+                              {title}
+                            </h5>
+                            {company && company !== "Company" && (
+                              <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{company}</p>
+                            )}
+                            {exp.duration && <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{exp.duration}</p>}
+                            <ul className="list-disc pl-5 space-y-1 mt-2">
+                              {responsibilities.map((item: string, idx: number) => (
+                                <li key={idx} className="text-sm text-slate-600 dark:text-slate-400">
+                                  {item.replace(/^[-•*]\s*/, '')}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        );
+                      })}
                     </div>
                   ) : (
                     <p className="text-slate-500 dark:text-slate-500 text-sm italic">No experience blocks automatically detected.</p>
@@ -207,18 +227,46 @@ export default function UserProfilePage() {
                   <h4 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4 border-b border-slate-100 dark:border-slate-700/50 pb-2">Education</h4>
                   {profileData.education && profileData.education.length > 0 ? (
                     <div className="space-y-4">
-                      {profileData.education.map((edu: any, i: number) => (
-                        <div key={i} className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
-                          <h5 className="font-bold text-slate-800 dark:text-slate-200 text-base mb-1">{edu.institution}</h5>
-                          <ul className="list-disc pl-5 space-y-1 mt-2">
-                            {edu.description.split('\n').filter((item: string) => item.trim()).map((item: string, idx: number) => (
-                              <li key={idx} className="text-sm text-slate-600 dark:text-slate-400">
-                                {item.replace(/^[-•*]\s*/, '')}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
+                      {profileData.education.map((edu: any, i: number) => {
+                        // The user's screenshot has "Aug-2023-27" rendered somewhere? Let's render everything gracefully
+                        // Actually, wait, if edu is a string, handle that
+                        if (typeof edu === 'string') {
+                          return (
+                            <div key={i} className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                              <h5 className="font-bold text-slate-800 dark:text-slate-200 text-base mb-1">{edu}</h5>
+                            </div>
+                          );
+                        }
+                        
+                        const inst = edu.institution || edu.university || edu.degree || "Education Entry";
+                        const deg = edu.degree && inst !== edu.degree ? edu.degree : "";
+                        const gradYear = edu.graduation_year || edu.duration || "";
+                        
+                        let descriptionItems: string[] = [];
+                        if (Array.isArray(edu.description)) {
+                           descriptionItems = edu.description;
+                        } else {
+                           descriptionItems = (edu.description || '').split('\n').filter((item: string) => item.trim());
+                        }
+
+                        return (
+                          <div key={i} className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
+                            <h5 className="font-bold text-slate-800 dark:text-slate-200 text-base mb-1">{inst}</h5>
+                            {deg && <p className="text-sm text-slate-700 dark:text-slate-300 mb-1">{deg}</p>}
+                            {gradYear && <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">{gradYear}</p>}
+                            
+                            {descriptionItems.length > 0 && (
+                              <ul className="list-disc pl-5 space-y-1 mt-2">
+                                {descriptionItems.map((item: string, idx: number) => (
+                                  <li key={idx} className="text-sm text-slate-600 dark:text-slate-400">
+                                    {item.replace(/^[-•*]\s*/, '')}
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   ) : (
                     <p className="text-slate-500 dark:text-slate-500 text-sm italic">No education blocks automatically detected.</p>

@@ -41,40 +41,75 @@ class MatchScoreService:
     def build_dummy_candidate_from_resume(self, candidate_id: str, resume_data: dict) -> Candidate:
         """Helper to build a robust Candidate object from basic parsed resume data."""
         try:
-            years_exp = 0.0
+            # Use the new years_of_experience field if available
+            years_exp = float(resume_data.get("years_of_experience", 0))
+            
             career_history = []
             if resume_data.get("experience"):
-                years_exp = len(resume_data["experience"]) * 1.5
                 for exp in resume_data["experience"]:
+                    # Handle new structured format
+                    company = exp.get("company", "Unknown Company")
+                    title = exp.get("designation") or exp.get("title", "Professional")
+                    description = ""
+                    
+                    # Build description from responsibilities and technologies
+                    if exp.get("responsibilities"):
+                        description = "\n".join(exp["responsibilities"][:5])  # First 5 responsibilities
+                    elif exp.get("description"):
+                        description = exp["description"]
+                    
+                    if exp.get("technologies"):
+                        description += f"\n\nTechnologies: {', '.join(exp['technologies'][:10])}"
+                    
+                    # Calculate duration in months
+                    exp_years = exp.get("experience_years", 1.0)
+                    duration_months = int(exp_years * 12)
+                    
+                    # Determine if current based on end_date
+                    is_current = False
+                    if exp.get("end_date"):
+                        is_current = exp["end_date"].lower() in ["present", "current", "now"]
+                    
                     career_history.append(CareerHistory(
-                        company=exp.get("title", "Unknown Company").split(" at ")[-1] if " at " in exp.get("title", "") else "Unknown Company",
-                        title=exp.get("title", "Professional"),
-                        start_date=datetime(2020, 1, 1).date(),
-                        end_date=None,
-                        duration_months=12,
-                        is_current=True,
+                        company=company,
+                        title=title,
+                        start_date=datetime(2020, 1, 1).date(),  # Default date
+                        end_date=None if is_current else datetime(2021, 1, 1).date(),
+                        duration_months=duration_months,
+                        is_current=is_current,
                         industry="Unknown",
                         company_size=CompanySize.SMALL,
-                        description=exp.get("description", "")
+                        description=description[:500]  # Limit description length
                     ))
+            
+            # If no experience found, create a default entry
             if not career_history:
-                 career_history.append(CareerHistory(
-                        company="Unknown Company",
-                        title="Professional",
-                        start_date=datetime(2020, 1, 1).date(),
-                        end_date=None,
-                        duration_months=12,
-                        is_current=True,
-                        industry="Unknown",
-                        company_size=CompanySize.SMALL,
-                        description="Professional experience."
-                    ))
+                career_history.append(CareerHistory(
+                    company="Unknown Company",
+                    title="Professional",
+                    start_date=datetime(2020, 1, 1).date(),
+                    end_date=None,
+                    duration_months=12,
+                    is_current=True,
+                    industry="Unknown",
+                    company_size=CompanySize.SMALL,
+                    description="Professional experience."
+                ))
 
+            # Build skills list
             skills = []
             if resume_data.get("skills"):
                 for s in resume_data["skills"]:
                     name = s.get("name", str(s)) if isinstance(s, dict) else str(s)
                     skills.append(Skill(name=name, proficiency=SkillProficiency.INTERMEDIATE, endorsements=1))
+
+            # Get first experience for current title/company
+            current_title = "Professional"
+            current_company = "Unknown"
+            if career_history:
+                current_job = next((job for job in career_history if job.is_current), career_history[0])
+                current_title = current_job.title
+                current_company = current_job.company
 
             return Candidate(
                 candidate_id="CAND_0000000",
@@ -85,8 +120,8 @@ class MatchScoreService:
                     location="Unknown",
                     country="Unknown",
                     years_of_experience=years_exp,
-                    current_title="Professional",
-                    current_company="Unknown",
+                    current_title=current_title,
+                    current_company=current_company,
                     current_company_size=CompanySize.SMALL,
                     current_industry="Unknown"
                 ),
