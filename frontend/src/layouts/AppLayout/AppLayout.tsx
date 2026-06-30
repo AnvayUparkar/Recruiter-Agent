@@ -63,7 +63,7 @@ const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
     { label: "JD Parser", path: "/jd-analysis", icon: FileSearch },
     { label: "Leaderboard", path: "/dashboard", icon: LayoutDashboard },
     { label: "Real-Time Candidates", path: "/real-time-candidates", icon: Users },
-    { label: "Create Job Posting", path: "/jobs/create", icon: Briefcase },
+    { label: "View Job Postings", path: "/recruiter/jobs", icon: Briefcase },
     { label: "Copilot Report", path: "/copilot", icon: Bot },
     {
       label: "Finalist Comparison",
@@ -76,6 +76,8 @@ const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
     { label: "Settings", path: "/settings", icon: Settings },
   ] : [
     { label: "Dashboard", path: "/user-dashboard", icon: LayoutDashboard },
+    { label: "Jobs", path: "/portal/jobs", icon: Briefcase },
+    { label: "My Applications", path: "/portal/applications", icon: FileText },
     { label: "Profile", path: "/profile", icon: UserIcon },
     { label: "Resume", path: "/resume", icon: FileText },
     { label: "Settings", path: "/settings", icon: Settings },
