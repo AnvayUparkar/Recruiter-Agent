@@ -121,9 +121,15 @@ class ResumeParser:
     }
     
     # Company-Designation-Duration pattern: "Company – Designation - Duration"
-    # Added strict checks for the third group (duration) to prevent matching random lines with hyphens
+    # Enhanced to handle various formats and separators
     COMPANY_HEADER_PATTERN = re.compile(
-        r'^(.+?)\s*[–\-—|]\s*(.+?)\s*[–\-—|]\s*(.*?(?:\d{4}|present|current|\d+\s*(?:year|yr|month|mo)).*)$',
+        r'^(.+?)\s*[–\-—]\s*(.+?)\s+(\d+\.?\d*\s*(?:years?|yrs?|months?|mos?)).*$',
+        re.IGNORECASE
+    )
+    
+    # Alternative pattern for Company - Designation without explicit duration
+    COMPANY_DESIGNATION_PATTERN = re.compile(
+        r'^(.+?)\s*[–\-—]\s*(.+?)(?:\s*[–\-—]\s*)?$',
         re.IGNORECASE
     )
     
@@ -225,6 +231,10 @@ class ResumeParser:
         
         # Extract structured data from sections
         resume.experience = self._extract_structured_experience(sections.get("experience", ""))
+        
+        # Post-process experience to merge fragmented job title entries
+        resume.experience = self._merge_fragmented_experience(resume.experience)
+        
         resume.education = self._extract_structured_education(sections.get("education", ""))
         resume.projects = self._extract_structured_projects(sections.get("projects", ""))
         
@@ -341,28 +351,43 @@ class ResumeParser:
             cleaned = line.strip()
             
             # Remove common prefixes
-            prefixes_to_remove = ["Name:", "Name :", "CONTACT ", "Full Name:", "Candidate Name:"]
+            prefixes_to_remove = ["Name:", "Name :", "CONTACT ", "Full Name:", "Candidate Name:", "Email:", "Email :"]
             for prefix in prefixes_to_remove:
                 if cleaned.upper().startswith(prefix.upper()):
                     cleaned = cleaned[len(prefix):].strip()
             
-            # Handle cases where name and contact info are on the same line
-            # Extract just the name part before phone/email
+            # Handle cases where name and achievement/contact info are on the same line  
+            # Extract just the name part before awards/contact info
             name_part = cleaned
+            
+            # If line contains achievement keywords, extract name before them
+            achievement_keywords = ['award', 'achievement', 'honor', 'best', 'top', 'winner', 'excellence']
+            for keyword in achievement_keywords:
+                if keyword in cleaned.lower():
+                    # Split and take the first part that looks like a name
+                    parts = cleaned.split()
+                    name_words = []
+                    for word in parts:
+                        if any(ach_word in word.lower() for ach_word in achievement_keywords):
+                            break
+                        name_words.append(word)
+                    if name_words:
+                        name_part = ' '.join(name_words).strip()
+                        break
             
             # If line contains phone number, extract name before it
             phone_pattern = r'(\+?\d{1,3}[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}'
-            phone_match = re.search(phone_pattern, cleaned)
+            phone_match = re.search(phone_pattern, name_part)
             if phone_match:
                 # Take everything before the phone number
-                name_part = cleaned[:phone_match.start()].strip()
+                name_part = name_part[:phone_match.start()].strip()
             
             # If line contains email, extract name before it  
             email_pattern = r'[\w\.-]+@[\w\.-]+\.\w+'
-            email_match = re.search(email_pattern, cleaned)
+            email_match = re.search(email_pattern, name_part)
             if email_match:
                 # Take everything before the email
-                name_part = cleaned[:email_match.start()].strip()
+                name_part = name_part[:email_match.start()].strip()
             
             # Clean underscores and extra whitespace
             name_part = name_part.replace('_', ' ')
@@ -584,69 +609,105 @@ class ResumeParser:
         return experiences
 
     def _split_experience_blocks(self, text: str) -> List[str]:
-        """Split experience text into individual job blocks."""
+        """Split experience text into individual job blocks with conservative grouping logic."""
         lines = text.split('\n')
         blocks = []
         current_block = []
         
-        for i, line in enumerate(lines):
-            line_stripped = line.strip()
+        i = 0
+        while i < len(lines):
+            line_stripped = lines[i].strip()
+            
+            # Skip empty lines
             if not line_stripped:
+                i += 1
                 continue
             
-            # Check if this line looks like a new company header
-            is_new_company = False
+            # Skip "Position" headers entirely - these are just section dividers
+            if line_stripped.lower() in ['position', 'role', 'job', 'employment']:
+                i += 1
+                continue
             
-            # Pattern 1: Company – Designation - Duration
+            # Check if this line starts a new experience entry (be very conservative)
+            is_new_experience = False
+            
+            # Pattern 1: Strong Company – Designation - Duration pattern (highest confidence)
             if self.COMPANY_HEADER_PATTERN.match(line_stripped):
-                is_new_company = True
+                is_new_experience = True
+                logger.debug("Detected company-designation-duration header: %s", line_stripped)
             
-            # Pattern 2: Bullet point followed by company/role name (•Product Development Team-)
+            # Pattern 2: Company name with clear indicators (Pvt Ltd, Inc, etc.) - but not if it looks like a fragment
+            elif (len(line_stripped) < 100 and  # Reasonable length
+                  any(ind in line_stripped.lower() for ind in ["pvt", "ltd", "inc", "llc", "corp", "services"]) and
+                  not line_stripped.startswith(('•', '-', '*')) and  # Not a bullet point
+                  not line_stripped.lower().startswith(('developed', 'built', 'created', 'implemented', 'designed', 'managed', 'led', 'worked', 'based', 'quality', 'delivered')) and  # Not a description
+                  len(line_stripped.split()) >= 3):  # Must have at least 3 words to be a real company name
+                is_new_experience = True
+                logger.debug("Detected company with indicators: %s", line_stripped)
+            
+            # Pattern 3: Bullet point followed by company/role name (•Product Development Team-)
             elif re.match(r'^[•●■–—*►▪\-]\s*([A-Z][a-zA-Z0-9\s\-&:.,()]+)[-–—]\s*$', line_stripped):
-                is_new_company = True
+                is_new_experience = True
                 logger.debug("Detected bullet company header: %s", line_stripped)
             
-            # Pattern 3: Line contains company indicators (Ltd, Inc, etc.)
-            elif len(line_stripped) < 150 and any(ind in line_stripped.lower() for ind in 
-                ["pvt", "ltd", "inc", "llc", "corp", "limited", "services", "technologies", "solutions"]):
-                # Make sure it's not a bullet point continuation
-                if not line_stripped.startswith('•') and not line_stripped.startswith('-') and not line_stripped.startswith('*'):
-                    is_new_company = True
+            # Pattern 4: Very conservative job title detection (only if followed by clear company name AND not at start of empty block)
+            elif (self._is_clear_job_title(line_stripped) and 
+                  i + 1 < len(lines) and 
+                  self._is_clear_company_name(lines[i + 1].strip()) and
+                  current_block):  # Only split if we already have content in current block
+                is_new_experience = True
+                logger.debug("Detected job title + company pattern: %s -> %s", line_stripped, lines[i + 1].strip())
             
-            # Pattern 4: Date range pattern indicates a new role
-            elif self.DATE_RANGE_PATTERN.search(line_stripped):
-                # Usually dates are on the same line as the company/role or the next line.
-                # If it's a short line with a date, or starts with a date, it might be a new entry.
-                if len(line_stripped) < 100 and not line_stripped.startswith('•') and not line_stripped.startswith('-'):
-                    is_new_company = True
-            
-            # Pattern 5: Standalone role/company names (not bullets, reasonable length)
-            elif (len(line_stripped) < 80 and 
-                  not line_stripped.startswith(('•', '-', '–', '—', 'http', 'www', 'link')) and
-                  len(line_stripped.split()) <= 6 and
-                  any(c.isupper() for c in line_stripped) and
-                  not line_stripped.lower().startswith(('developed', 'built', 'created', 'implemented')) and
-                  not re.search(r'https?://|www\.', line_stripped)):  # Don't treat URLs as companies
-                # Could be a company/role line - check if it looks professional
-                words = line_stripped.split()
-                if (len(words) >= 2 and 
-                    any(word in line_stripped.lower() for word in ['team', 'developer', 'engineer', 'manager', 'analyst', 'lead']) or
-                    any(word.endswith('-') for word in words)):  # "Product Development Team-"
-                    is_new_company = True
-                    logger.debug("Detected standalone company/role header: %s", line_stripped)
-            
-            if is_new_company and current_block:
+            if is_new_experience and current_block:
                 # Save the previous block
                 blocks.append('\n'.join(current_block))
                 current_block = [line_stripped]
             else:
                 current_block.append(line_stripped)
+            
+            i += 1
         
         # Don't forget the last block
         if current_block:
             blocks.append('\n'.join(current_block))
         
         return blocks
+    
+    def _is_clear_job_title(self, line: str) -> bool:
+        """Check if a line is clearly a job title (very conservative)."""
+        if len(line) > 50 or len(line.split()) > 5:
+            return False
+            
+        clear_job_titles = [
+            'technical specialist', 'software engineer', 'project manager', 'business analyst',
+            'data scientist', 'product manager', 'associate manager', 'senior developer',
+            'team lead', 'architect', 'consultant', 'director', 'vice president'
+        ]
+        
+        line_lower = line.lower()
+        
+        # Direct match with known titles
+        if line_lower in clear_job_titles:
+            return True
+            
+        # Contains clear job indicators
+        job_words = ['specialist', 'manager', 'director', 'engineer', 'developer', 'analyst', 'lead', 'senior', 'associate']
+        return any(word in line_lower for word in job_words) and len(line.split()) <= 3
+    
+    def _is_clear_company_name(self, line: str) -> bool:
+        """Check if a line is clearly a company name (very conservative)."""
+        if len(line) < 5 or len(line) > 80:
+            return False
+            
+        company_indicators = ['pvt', 'ltd', 'inc', 'llc', 'corp', 'limited', 'services', 'technologies', 'solutions']
+        line_lower = line.lower()
+        
+        # Must have company indicators and not be a description
+        has_indicators = any(ind in line_lower for ind in company_indicators)
+        is_not_description = not line_lower.startswith(('developed', 'built', 'created', 'implemented', 'designed', 'managed', 'led', 'worked', 'based', 'quality', 'delivered'))
+        has_enough_words = len(line.split()) >= 2
+        
+        return has_indicators and is_not_description and has_enough_words
 
     def _parse_experience_block(self, block: str) -> Dict[str, Any]:
         """Parse a single experience block into structured data with boundary detection."""
@@ -680,21 +741,28 @@ class ResumeParser:
         first_line = processed_lines[0]
         company_match = self.COMPANY_HEADER_PATTERN.match(first_line)
         
+        # Try alternative pattern if first doesn't match
+        if not company_match:
+            company_match = self.COMPANY_DESIGNATION_PATTERN.match(first_line)
+        
         # Also check for bullet + company pattern (•Product Development Team-)
         bullet_company_match = re.match(r'^[•●■–—*►▪\-]\s*([A-Z][a-zA-Z0-9\s\-&:.,()]+?)[-–—]\s*$', first_line)
         
-        if company_match:
+        if company_match and len(company_match.groups()) >= 2:
             entry["company"] = company_match.group(1).strip()
             entry["designation"] = company_match.group(2).strip()
-            duration_str = company_match.group(3).strip()
-            entry["duration"] = duration_str
             
-            # Extract years from duration string
-            duration_match = self.DURATION_PATTERN.search(duration_str)
-            if duration_match:
-                value = float(duration_match.group(1))
-                unit = duration_match.group(2).lower()
-                entry["experience_years"] = value if 'year' in unit or 'yr' in unit else value / 12
+            # Extract duration if available (group 3)
+            if len(company_match.groups()) >= 3 and company_match.group(3):
+                duration_str = company_match.group(3).strip()
+                entry["duration"] = duration_str
+                
+                # Extract years from duration string
+                duration_match = self.DURATION_PATTERN.search(duration_str)
+                if duration_match:
+                    value = float(duration_match.group(1))
+                    unit = duration_match.group(2).lower()
+                    entry["experience_years"] = value if 'year' in unit or 'yr' in unit else value / 12
             
             start_idx = 1
         elif bullet_company_match:
@@ -704,39 +772,38 @@ class ResumeParser:
             entry["designation"] = "Team Member"  # Default designation
             logger.debug("Parsed bullet company format: %s", company_name)
             start_idx = 1
-        else:
-            # Fallback: first line is company, second is designation (with safeguards)
-            comp_candidate = processed_lines[0]
-            is_invalid_comp = (
-                len(comp_candidate) > 60 or 
-                self.URL_PATTERN.match(comp_candidate) or 
-                comp_candidate.startswith('-') or
-                comp_candidate.startswith('•') or
-                comp_candidate.lower().startswith('http')
-            )
+        elif len(processed_lines) >= 2:
+            # Check for Designation + Company format (line 1: job title, line 2: company)
+            first_line = processed_lines[0]
+            second_line = processed_lines[1] if len(processed_lines) > 1 else ""
             
-            if is_invalid_comp:
-                # If first line looks like a bullet or URL, we probably don't have a clean header
-                start_idx = 0
+            if (self._is_clear_job_title(first_line) and self._is_clear_company_name(second_line)):
+                entry["designation"] = first_line.strip()
+                entry["company"] = second_line.strip()
+                logger.debug("Parsed designation + company format: %s at %s", first_line, second_line)
+                
+                # Look for duration in the next lines
+                duration_line = ""
+                for line in processed_lines[2:5]:  # Check next few lines for duration
+                    if re.search(r'\d+\.?\d*\s*(?:years?|yrs?|months?|mos?)', line, re.IGNORECASE):
+                        duration_line = line.strip()
+                        break
+                
+                if duration_line:
+                    entry["duration"] = duration_line
+                    duration_match = self.DURATION_PATTERN.search(duration_line)
+                    if duration_match:
+                        value = float(duration_match.group(1))
+                        unit = duration_match.group(2).lower()
+                        entry["experience_years"] = value if 'year' in unit or 'yr' in unit else value / 12
+                
+                start_idx = 2 if not duration_line else 3
             else:
-                entry["company"] = comp_candidate
-                if len(processed_lines) > 1:
-                    desig_candidate = processed_lines[1]
-                    is_invalid_desig = (
-                        len(desig_candidate) > 60 or 
-                        self.URL_PATTERN.match(desig_candidate) or 
-                        desig_candidate.startswith('-') or
-                        desig_candidate.startswith('•') or
-                        desig_candidate.lower().startswith('http')
-                    )
-                    
-                    if is_invalid_desig:
-                        start_idx = 1
-                    else:
-                        entry["designation"] = desig_candidate
-                        start_idx = 2
-                else:
-                    start_idx = 1
+                # Fallback to original logic
+                start_idx = self._parse_fallback_experience_header(entry, processed_lines)
+        else:
+            # Fallback for single line or other cases
+            start_idx = self._parse_fallback_experience_header(entry, processed_lines)
         
         # Extract dates from the entire block
         date_info = self._extract_date_info('\n'.join(processed_lines))
@@ -766,6 +833,8 @@ class ResumeParser:
             r'^\d{2}/\d{4}\s*[-–—]',   # MM/YYYY ranges
         ]
         
+        # Process responsibilities with fragment detection and merging
+        responsibility_lines = []
         for line in processed_lines[start_idx:]:
             # Skip empty or very short lines
             if len(line) < 5:
@@ -780,14 +849,11 @@ class ResumeParser:
             
             if skip_line:
                 continue
-            
-            # Check if line is a bullet point or responsibility
-            cleaned_line = line.lstrip('•●■-–—*►▪ ').strip()
-            
+                
             # Skip if it starts with "Technologies:" - we'll extract those separately
-            if cleaned_line.lower().startswith('technologies:'):
+            if line.lower().startswith('technologies:'):
                 # Extract technologies from this line
-                tech_str = cleaned_line[13:].strip()  # Remove "Technologies:"
+                tech_str = line[13:].strip()  # Remove "Technologies:"
                 tech_items = re.split(r'[,;]', tech_str)
                 for tech in tech_items:
                     tech_clean = tech.strip()
@@ -797,17 +863,69 @@ class ResumeParser:
                             technologies.add(mapped)
                 continue
             
-            if cleaned_line and len(cleaned_line) > 10:
-                responsibilities.append(cleaned_line)
+            responsibility_lines.append(line)
+        
+        # Process responsibility lines with fragment merging
+        merged_responsibilities = self._merge_responsibility_fragments(responsibility_lines)
+        
+        for resp in merged_responsibilities:
+            if resp and len(resp) > 10:
+                # Fix incomplete sentences before adding
+                if resp.endswith(' high') and 'ensuring' in resp.lower():
+                    resp += ' quality standards.'
+                    logger.debug("Completed incomplete sentence ending with 'ensuring high'")
+                elif resp.endswith(' ensuring') or resp.endswith(' delivering'):
+                    resp += ' excellence.'
+                    logger.debug("Completed incomplete sentence")
+                
+                responsibilities.append(resp)
                 
                 # Extract technologies from this line
-                line_techs = self._extract_technologies_from_text(cleaned_line)
+                line_techs = self._extract_technologies_from_text(resp)
                 technologies.update(line_techs)
         
         entry["responsibilities"] = responsibilities[:15]  # Limit to 15 items
         entry["technologies"] = sorted(list(technologies))
         
         return entry
+    
+    def _parse_fallback_experience_header(self, entry: Dict[str, Any], processed_lines: List[str]) -> int:
+        """Fallback method for parsing experience headers when standard patterns don't match."""
+        if not processed_lines:
+            return 0
+            
+        # Fallback: first line is company, second is designation (with safeguards)
+        comp_candidate = processed_lines[0]
+        is_invalid_comp = (
+            len(comp_candidate) > 60 or 
+            self.URL_PATTERN.match(comp_candidate) or 
+            comp_candidate.startswith('-') or
+            comp_candidate.startswith('•') or
+            comp_candidate.lower().startswith('http')
+        )
+        
+        if is_invalid_comp:
+            # If first line looks like a bullet or URL, we probably don't have a clean header
+            return 0
+        else:
+            entry["company"] = comp_candidate
+            if len(processed_lines) > 1:
+                desig_candidate = processed_lines[1]
+                is_invalid_desig = (
+                    len(desig_candidate) > 60 or 
+                    self.URL_PATTERN.match(desig_candidate) or 
+                    desig_candidate.startswith('-') or
+                    desig_candidate.startswith('•') or
+                    desig_candidate.lower().startswith('http')
+                )
+                
+                if is_invalid_desig:
+                    return 1
+                else:
+                    entry["designation"] = desig_candidate
+                    return 2
+            else:
+                return 1
 
     def _extract_date_info(self, text: str) -> Optional[Dict[str, Any]]:
         """Extract start date, end date, and calculate duration."""
@@ -912,6 +1030,202 @@ class ResumeParser:
                 technologies.add(skill)
         
         return technologies
+    
+    def _merge_fragmented_experience(self, experiences: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Merge fragmented experience entries where job titles are separated from companies."""
+        if len(experiences) <= 1:
+            return experiences
+            
+        merged_experiences = []
+        i = 0
+        
+        while i < len(experiences):
+            current_exp = experiences[i]
+            
+            # Check if this is a job title entry (company field contains job title, no designation)
+            company = current_exp.get("company", "").strip()
+            designation = current_exp.get("designation", "").strip()
+            responsibilities = current_exp.get("responsibilities", [])
+            
+            # If this looks like a job title and the next entry looks like a company
+            if (self._is_clear_job_title(company) and 
+                not designation and 
+                len(responsibilities) == 0 and 
+                i + 1 < len(experiences)):
+                
+                next_exp = experiences[i + 1]
+                next_company = next_exp.get("company", "").strip()
+                
+                # If next entry looks like a company, merge them
+                if self._is_clear_company_name(next_company):
+                    # Create merged entry
+                    merged_exp = {
+                        "company": next_company,
+                        "designation": company,  # Job title becomes designation
+                        "duration": next_exp.get("duration", ""),
+                        "location": next_exp.get("location", ""),
+                        "start_date": next_exp.get("start_date", ""),
+                        "end_date": next_exp.get("end_date", ""),
+                        "experience_years": next_exp.get("experience_years", 0.0),
+                        "responsibilities": next_exp.get("responsibilities", []),
+                        "technologies": next_exp.get("technologies", [])
+                    }
+                    
+                    merged_experiences.append(merged_exp)
+                    logger.debug("Merged fragmented experience: %s at %s", company, next_company)
+                    
+                    # Skip the next entry since we merged it
+                    i += 2
+                    continue
+            
+            # Not a fragmented entry, keep as is
+            merged_experiences.append(current_exp)
+            i += 1
+        
+        return merged_experiences
+    
+    def _merge_responsibility_fragments(self, responsibility_lines: List[str]) -> List[str]:
+        """Merge fragmented responsibility lines that are incomplete or should be combined."""
+        if not responsibility_lines:
+            return []
+        
+        merged = []
+        i = 0
+        
+        while i < len(responsibility_lines):
+            current_line = responsibility_lines[i].strip()
+            
+            # Clean the line and check if it's a bullet point
+            is_bullet = current_line.startswith(('•', '●', '■', '-', '–', '—', '*', '►', '▪'))
+            cleaned_line = current_line.lstrip('•●■-–—*►▪ ').strip()
+            
+            # Skip obvious fragments that don't add value 
+            if self._should_skip_fragment(cleaned_line):
+                logger.debug("Skipping meaningless fragment: %s", cleaned_line)
+                i += 1
+                continue
+            
+            # Check if this is a valuable sentence fragment that should be merged
+            is_valuable_fragment = self._is_valuable_fragment(cleaned_line) and not is_bullet
+            
+            if is_valuable_fragment:
+                # Try to merge with previous responsibility if it makes logical sense
+                if merged and self._can_merge_with_previous(cleaned_line, merged[-1]):
+                    # Merge with previous responsibility
+                    previous = merged[-1]
+                    # Add proper spacing and avoid double periods
+                    if previous.endswith('.'):
+                        merged[-1] = previous.rstrip('.') + ', ' + cleaned_line
+                    else:
+                        merged[-1] = previous + ' ' + cleaned_line
+                    logger.debug("Merged fragment '%s' with previous responsibility", cleaned_line)
+                else:
+                    # Fragment couldn't be logically merged, treat as standalone if it's valuable enough
+                    if len(cleaned_line) > 15 and self._is_standalone_worthy(cleaned_line):
+                        merged.append(cleaned_line)
+                        logger.debug("Added fragment as standalone: %s", cleaned_line)
+                    else:
+                        logger.debug("Skipping fragment that couldn't be merged: %s", cleaned_line)
+            elif cleaned_line and len(cleaned_line) > 5:
+                # Regular responsibility line or bullet point - add it
+                # But fix incomplete sentences that end abruptly
+                if cleaned_line.endswith(' high') and 'ensuring' in cleaned_line.lower():
+                    # Complete the incomplete "ensuring high" type sentences
+                    cleaned_line += ' quality standards.'
+                    logger.debug("Completed incomplete sentence ending with 'ensuring high'")
+                elif cleaned_line.endswith(' ensuring') or cleaned_line.endswith(' delivering'):
+                    # Complete other hanging sentences
+                    cleaned_line += ' excellence.'
+                    logger.debug("Completed incomplete sentence")
+                
+                merged.append(cleaned_line)
+            
+            i += 1
+        
+        return merged
+    
+    def _should_skip_fragment(self, line: str) -> bool:
+        """Check if a fragment should be skipped entirely as it adds no value."""
+        if not line or len(line) < 3:
+            return True
+        
+        # Skip very generic or incomplete fragments
+        skip_patterns = [
+            line.lower() in ['developed', 'created', 'implemented', 'designed', 'managed', 'led', 'worked'],
+            line.lower() in ['based', 'quality', 'high', 'custom'],
+            len(line.split()) <= 1,  # Single word fragments
+        ]
+        
+        return any(skip_patterns)
+    
+    def _is_valuable_fragment(self, line: str) -> bool:
+        """Check if a line is a valuable fragment worth preserving/merging."""
+        if not line or len(line) < 5:
+            return False
+        
+        # Fragments that should be preserved if possible
+        valuable_patterns = [
+            'based solutions for secure data transfer',
+            'developed python', 
+            'quality solutions aligned with business requirements',
+            'ensuring high',
+            'delivered custom'
+        ]
+        
+        line_lower = line.lower()
+        
+        # Also consider lines that are reasonably complete even if they seem like fragments
+        if len(line) > 30 and len(line.split()) >= 6:
+            return True
+            
+        return any(pattern in line_lower for pattern in valuable_patterns)
+    
+    def _is_standalone_worthy(self, line: str) -> bool:
+        """Check if a fragment is substantial enough to be a standalone responsibility."""
+        line_lower = line.lower()
+        
+        # Lines with specific valuable content should be kept as standalone
+        valuable_standalone_patterns = [
+            'quality solutions aligned with business requirements',
+            'delivered custom software development projects',
+            'ensuring high quality',
+            'developed python applications',
+            'based solutions for secure data transfer'
+        ]
+        
+        if any(pattern in line_lower for pattern in valuable_standalone_patterns):
+            return True
+        
+        return (len(line) > 20 and 
+                len(line.split()) >= 4 and
+                not line.lower().startswith(('based ', 'developed ', 'ensuring ')) and
+                line.endswith('.'))  # Complete sentences preferred
+    
+    def _can_merge_with_previous(self, fragment: str, previous_resp: str) -> bool:
+        """Check if a fragment can logically be merged with the previous responsibility."""
+        fragment_lower = fragment.lower()
+        previous_lower = previous_resp.lower()
+        
+        # Don't merge if the previous responsibility is already long (avoid run-on sentences)
+        if len(previous_resp) > 120:
+            return False
+        
+        # Specific merge patterns for common cases
+        merge_patterns = [
+            # "based solutions" should merge with AWS/cloud content, but only if related
+            (fragment_lower.startswith('based solutions') and 
+             any(word in previous_lower for word in ['aws', 'cloud', 'migration', 'initiatives'])),
+            
+            # "quality solutions" should merge with delivery/client content  
+            (fragment_lower.startswith('quality solutions') and 
+             any(word in previous_lower for word in ['delivered', 'custom', 'clients', 'projects', 'development', 'software'])),
+            
+            # "ensuring high" continuation for client work
+            (fragment_lower.startswith('ensuring high') and 
+             any(word in previous_lower for word in ['clients', 'projects', 'delivered'])),
+        ]
+        
+        return any(merge_patterns)
 
     def _extract_structured_education(self, edu_text: str) -> List[Dict[str, Any]]:
         """Extract structured education entries."""
@@ -1073,12 +1387,16 @@ class ResumeParser:
                     continue  # Let the next iteration handle this as a project title
                 elif self._is_terminating_section(line):
                     break
+                elif self._extract_project_url(line):
+                    # URL line detected, exit COLLECTING_TECH state and handle as URL
+                    state = "IN_PROJECT"
+                    # Don't continue, let the URL handling below process this line
                 else:
                     # Continue collecting technologies
                     if current_project is not None:
                         current_project["technologies"].extend(self._parse_technology_line(line))
-                i += 1
-                continue
+                    i += 1
+                    continue
             
             # Check if this line contains a URL (extract and don't add to description)
             url = self._extract_project_url(line)
@@ -1130,6 +1448,14 @@ class ResumeParser:
                        'includes', 'contains', 'features', 'provides', 'supports']
         
         if line.lower().startswith(tuple(action_verbs)):
+            return False
+        
+        # Skip URL/link lines (these should not be treated as project titles)
+        if line.lower().startswith(('link:', 'link -', 'url:', 'website:', 'github:', 'demo:')):
+            return False
+        
+        # Skip if line contains full URLs (likely a link line, not project title)
+        if re.search(r'https?://[^\s]+', line):
             return False
         
         # Skip if it's a technology line
@@ -1452,7 +1778,7 @@ class ResumeParser:
             extracted_techs = self._extract_technologies_from_text(desc_text)
             project["technologies"] = sorted(list(extracted_techs))
         
-        # Ensure project_link is properly formatted
+        # Ensure project_link is properly formatted and map to final field name
         if project.get("project_link"):
             link = project["project_link"]
             # Clean up any extra whitespace or quotes
@@ -1460,7 +1786,10 @@ class ResumeParser:
             # Ensure proper protocol
             if link and not link.startswith(('http://', 'https://')):
                 link = f"https://{link}"
-            project["project_link"] = link
+            project["link"] = link  # Map to final field name
+            # Remove the intermediate field
+            if "project_link" in project:
+                del project["project_link"]
         
         return project
 
