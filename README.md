@@ -9,13 +9,26 @@ A talent acquisition platform designed for scalable recruitment processes. It fe
 
 ---
 
-## Platform Highlights
+## Core Features
 
-- **Hybrid Search Fusion**: Integrates lexical exact matching (BM25) with semantic dense vectors (FAISS index) using Reciprocal Rank Fusion (RRF).
-- **Job Description (JD) Parsing Engine**: Supports parsing of `.txt`, `.docx` (via native zip XML traversal), and `.pdf` (via `pypdf`) files to automatically extract requirements, competencies, notice periods, and weight profiles.
+### Recruiter & Sourcing Suite
+- **Leaderboard (Dashboard)**: Centralized overview of top-ranked candidates with quick actions.
+- **Job Description (JD) Parsing Engine**: High-performance extraction from `.txt`, `.docx`, and `.pdf` files to generate structured requirements, notice periods, and weighting profiles.
+- **Real-Time Candidates**: Live tracking and synchronization of active candidates in the pipeline.
 - **Recruiter Copilot**: An AI-assisted advisor providing explainable candidate fit verdicts, behavioral consistency checks, availability timelines, and join probability estimates.
-- **System Observability Dashboard**: An interactive panel tracking Core Web Vitals, API latency telemetry, diagnostic checks, environment node status, and configuration verification.
-- **Presentation and Administration Suite**: Includes dynamic system tours, database backup and restoration controls, and final submission data packaging.
+- **Finalist Comparison**: Side-by-side comparative analysis of shortlisted candidates across semantic match scores and core competencies.
+- **Analytics Hub**: Metrics and insights on recruitment performance, AI evaluation metrics, and system latency.
+- **Export & Reports**: Generate and download comprehensive candidate dossiers and recruitment cycle summaries.
+
+### Candidate Portal
+- **Candidate Dashboard**: Personalized portal for applicants to track application status.
+- **Profile Management**: Maintain professional details, availability, and contact preferences.
+- **Resume Upload**: Secure document submission for AI parsing and matching.
+
+### System Administration
+- **Hybrid Search Fusion**: Integrates lexical exact matching (BM25) with semantic dense vectors (FAISS index) using Reciprocal Rank Fusion (RRF).
+- **Admin Console & Settings**: Role-based access control, preference management, and system-wide configurations.
+- **Launch Center**: Interactive panel tracking Core Web Vitals, API latency telemetry, diagnostic checks, environment node status, and configuration verification. Includes database backup and restoration controls.
 
 ---
 

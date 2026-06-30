@@ -16,7 +16,8 @@ import {
   Terminal,
   User as UserIcon,
   FileText,
-  Users
+  Users,
+  Briefcase
 } from "lucide-react";
 import { NavItem } from "../../components/navigation/NavItem";
 import { NavSection } from "../../components/navigation/NavSection";
@@ -136,6 +137,12 @@ export const Sidebar: React.FC<SidebarProps> = () => {
                 icon={Users}
                 isCollapsed={!isSidebarOpen}
               />
+              <NavItem
+                label="Create Job Posting"
+                path="/jobs/create"
+                icon={Briefcase}
+                isCollapsed={!isSidebarOpen}
+              />
             </SidebarGroup>
 
             {/* Calibrations & Reports */}
@@ -204,6 +211,18 @@ export const Sidebar: React.FC<SidebarProps> = () => {
                 label="Dashboard"
                 path="/user-dashboard"
                 icon={LayoutDashboard}
+                isCollapsed={!isSidebarOpen}
+              />
+              <NavItem
+                label="Jobs"
+                path="/portal/jobs"
+                icon={Briefcase}
+                isCollapsed={!isSidebarOpen}
+              />
+              <NavItem
+                label="My Applications"
+                path="/portal/applications"
+                icon={FileText}
                 isCollapsed={!isSidebarOpen}
               />
               <NavItem

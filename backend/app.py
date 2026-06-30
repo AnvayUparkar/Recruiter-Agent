@@ -136,6 +136,7 @@ def create_app(config_name: str = None) -> Flask:
     from api.routes.user_routes import user_bp
     from api.routes.job_routes import job_bp
     from api.routes.chat_routes import chat_bp
+    from api.routes.candidate_portal_routes import candidate_portal_bp
     from api.auth import auth_bp
 
     api_v1.register_blueprint(auth_bp, url_prefix="/auth")
@@ -149,6 +150,7 @@ def create_app(config_name: str = None) -> Flask:
     api_v1.register_blueprint(submission_bp)
     api_v1.register_blueprint(job_bp, url_prefix="/jobs")
     api_v1.register_blueprint(chat_bp, url_prefix="/chat")
+    api_v1.register_blueprint(candidate_portal_bp, url_prefix="/portal")
 
     app.register_blueprint(api_v1)
 

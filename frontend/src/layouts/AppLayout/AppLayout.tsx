@@ -7,7 +7,7 @@ import { Footer } from "./Footer";
 import { MobileMenu } from "../../components/navigation/MobileMenu";
 import { CommandPalette } from "../../components/navigation/CommandPalette";
 import { useLayoutStore } from "../../store/layoutStore";
-import { LayoutDashboard, FileSearch, Bot, GitCompare, BarChart3, FileDown, Settings, Shield, Terminal, User as UserIcon, FileText, Users } from "lucide-react";
+import { LayoutDashboard, FileSearch, Bot, GitCompare, BarChart3, FileDown, Settings, Shield, Terminal, User as UserIcon, FileText, Users, Briefcase } from "lucide-react";
 import { useCandidateStore } from "../../store/candidateStore";
 import { useAuthStore } from "../../store/authStore";
 import GuidedTour from "../../pages/Demo/components/GuidedTour.tsx";
@@ -63,6 +63,7 @@ const AppLayoutContent: React.FC<AppLayoutContentProps> = ({ children }) => {
     { label: "JD Parser", path: "/jd-analysis", icon: FileSearch },
     { label: "Leaderboard", path: "/dashboard", icon: LayoutDashboard },
     { label: "Real-Time Candidates", path: "/real-time-candidates", icon: Users },
+    { label: "Create Job Posting", path: "/jobs/create", icon: Briefcase },
     { label: "Copilot Report", path: "/copilot", icon: Bot },
     {
       label: "Finalist Comparison",

@@ -6,15 +6,17 @@ import io
 import os
 from bson.objectid import ObjectId
 
-from services.resume_parser import ResumeParser
 from api.db import get_db
 from utils.logger import get_logger
+from services.resume_parser import ResumeParser
 from api.auth.auth_utils import require_auth
+from services.match_score_service import MatchScoreService
 from flask import g
 
 logger = get_logger(__name__)
 
 user_bp = Blueprint("user_routes", __name__)
+_match_score_service = MatchScoreService()
 _resume_parser = ResumeParser()
 
 # In-memory storage or local storage helper if you don't use MongoDB GridFS
@@ -111,7 +113,7 @@ def get_recent_candidates():
     if db is None:
         return jsonify({"error": "Database not available"}), 500
         
-    jd_skills = []
+    job = None
     
     # Optional auth for personalized score
     auth_header = request.headers.get("Authorization")
@@ -122,18 +124,7 @@ def get_recent_candidates():
             payload = decode_token(token)
             recruiter_id = payload.get("sub")
             if recruiter_id:
-                try:
-                    query_id = ObjectId(recruiter_id)
-                except Exception:
-                    query_id = recruiter_id
-                    
-                recruiter = db.users.find_one({"_id": query_id})
-                if recruiter and recruiter.get("parsed_jd") and isinstance(recruiter["parsed_jd"].get("skills"), list):
-                    raw_jd_skills = recruiter["parsed_jd"]["skills"]
-                    jd_skills = [
-                        str(s.get("name") if isinstance(s, dict) else s).strip().lower()
-                        for s in raw_jd_skills if s
-                    ]
+                job = _match_score_service.get_latest_job_for_recruiter(recruiter_id)
         except Exception as e:
             logger.warning(f"Optional auth token decoding failed: {e}")
 
@@ -142,18 +133,13 @@ def get_recent_candidates():
     candidates = []
     
     for user in cursor:
-        cand_skills = []
-        if user.get("resume_data") and isinstance(user["resume_data"].get("skills"), list):
-            raw_cand_skills = user["resume_data"]["skills"]
-            cand_skills = [
-                str(s.get("name") if isinstance(s, dict) else s).strip().lower() 
-                for s in raw_cand_skills if s
-            ]
-            
         score = 0
-        if jd_skills:
-            intersection = set(jd_skills).intersection(set(cand_skills))
-            score = int((len(intersection) / len(jd_skills)) * 100)
+        if job and user.get("resume_data"):
+            try:
+                match_data = _match_score_service.calculate_match(str(user["_id"]), job, user["resume_data"])
+                score = match_data.get("score", 0)
+            except Exception as e:
+                logger.error(f"Error calculating match for {user['_id']}: {e}")
             
         candidates.append({
             "candidate_id": str(user.get("_id")),

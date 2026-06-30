@@ -78,7 +78,7 @@ export default function UserProfilePage() {
                 </div>
               </div>
               <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
-                {profileData.name || "Unknown Candidate"}
+                {(profileData.name || "Unknown Candidate").replace(/^contact\s+/i, '')}
               </h2>
               <p className="text-slate-500 dark:text-slate-400 text-sm font-medium mb-6">
                 Candidate Profile
@@ -140,6 +140,7 @@ export default function UserProfilePage() {
               className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm p-8"
             >
               <div className="flex items-center gap-3 mb-6">
+
                 <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                   <Award size={20} />
                 </div>
@@ -186,7 +187,13 @@ export default function UserProfilePage() {
                       {profileData.experience.map((exp: any, i: number) => (
                         <div key={i} className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
                           <h5 className="font-bold text-slate-800 dark:text-slate-200 text-base mb-1">{exp.title}</h5>
-                          <p className="text-sm text-slate-600 dark:text-slate-400 whitespace-pre-wrap">{exp.description}</p>
+                          <ul className="list-disc pl-5 space-y-1 mt-2">
+                            {exp.description.split('\n').filter((item: string) => item.trim()).map((item: string, idx: number) => (
+                              <li key={idx} className="text-sm text-slate-600 dark:text-slate-400">
+                                {item.replace(/^[-•*]\s*/, '')}
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       ))}
                     </div>
@@ -203,7 +210,13 @@ export default function UserProfilePage() {
                       {profileData.education.map((edu: any, i: number) => (
                         <div key={i} className="bg-slate-50 dark:bg-slate-900/50 p-4 rounded-xl border border-slate-100 dark:border-slate-700">
                           <h5 className="font-bold text-slate-800 dark:text-slate-200 text-base mb-1">{edu.institution}</h5>
-                          <p className="text-sm text-slate-600 dark:text-slate-400 whitespace-pre-wrap">{edu.description}</p>
+                          <ul className="list-disc pl-5 space-y-1 mt-2">
+                            {edu.description.split('\n').filter((item: string) => item.trim()).map((item: string, idx: number) => (
+                              <li key={idx} className="text-sm text-slate-600 dark:text-slate-400">
+                                {item.replace(/^[-•*]\s*/, '')}
+                              </li>
+                            ))}
+                          </ul>
                         </div>
                       ))}
                     </div>

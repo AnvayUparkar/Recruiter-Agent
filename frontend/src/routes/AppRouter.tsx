@@ -21,6 +21,8 @@ const DesignSystemPreview = lazy(() => import("../pages/DesignSystemPreview"));
 const Demo = lazy(() => import("../pages/Demo"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 const LaunchCenterPage = lazy(() => import("../pages/System/LaunchCenterPage"));
+const JobPostingForm = lazy(() => import("../pages/JobPosting").then(module => ({ default: module.JobPostingForm })));
+const JobPostingCandidates = lazy(() => import("../pages/JobPosting").then(module => ({ default: module.JobPostingCandidates })));
 
 // Auth pages
 const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
@@ -31,6 +33,10 @@ const ForgotPasswordPage = lazy(() => import("../pages/auth/ForgotPasswordPage")
 const UserProfilePage = lazy(() => import("../pages/user/UserProfilePage"));
 const UserDashboardPage = lazy(() => import("../pages/user/UserDashboardPage"));
 const UserResumePage = lazy(() => import("../pages/user/UserResumePage"));
+const CandidateJobsPage = lazy(() => import("@/pages/user/CandidateJobsPage"));
+const CandidateJobDetailsPage = lazy(() => import("@/pages/user/CandidateJobDetailsPage"));
+const MyApplicationsPage = lazy(() => import("@/pages/user/MyApplicationsPage"));
+// End user candidate pages
 
 // Layout wrappers
 const AppLayout = lazy(() => import("../layouts/AppLayout/AppLayout"));
@@ -141,6 +147,14 @@ export const router = createBrowserRouter([
     element: <RouteWrapper element={<Analytics />} allowedRoles={["recruiter"]} />,
   },
   {
+    path: "/jobs/create",
+    element: <RouteWrapper element={<JobPostingForm />} allowedRoles={["recruiter"]} />,
+  },
+  {
+    path: "/jobs/:id/candidates",
+    element: <RouteWrapper element={<JobPostingCandidates />} allowedRoles={["recruiter"]} />,
+  },
+  {
     path: "/reports",
     element: <RouteWrapper element={<Reports />} allowedRoles={["recruiter"]} />,
   },
@@ -168,6 +182,18 @@ export const router = createBrowserRouter([
   {
     path: "/resume",
     element: <RouteWrapper element={<UserResumePage />} allowedRoles={["user"]} />,
+  },
+  {
+    path: "/portal/jobs",
+    element: <RouteWrapper element={<CandidateJobsPage />} allowedRoles={["user"]} />,
+  },
+  {
+    path: "/portal/jobs/:id",
+    element: <RouteWrapper element={<CandidateJobDetailsPage />} allowedRoles={["user"]} />,
+  },
+  {
+    path: "/portal/applications",
+    element: <RouteWrapper element={<MyApplicationsPage />} allowedRoles={["user"]} />,
   },
   // Public Shared
   {

@@ -58,3 +58,4 @@ def init_app(app):
 def _setup_indices(db):
     """Create necessary indices for collections."""
     db.users.create_index("email", unique=True)
+    db.jobs.create_index("recruiter_id")

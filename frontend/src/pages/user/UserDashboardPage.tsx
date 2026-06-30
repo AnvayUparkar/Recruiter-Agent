@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Briefcase, Building, MapPin, DollarSign, ExternalLink, Activity, Target, MessageCircle, ArrowLeft, User } from "lucide-react";
+import { Briefcase, Building, MapPin, IndianRupee, ExternalLink, Activity, Target, MessageCircle, ArrowLeft, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { jobService, RecommendedJob } from "../../services/jobService";
 import { ChatWindow } from "../../components/chat/ChatWindow";
@@ -182,11 +182,10 @@ export default function UserDashboardPage() {
                     </div>
                     {(job.salary_min || job.salary_max) && (
                       <div className="flex items-center gap-2 text-sm font-medium text-emerald-600 dark:text-emerald-400">
-                        <DollarSign size={16} className="shrink-0" />
                         <span>
-                          {job.salary_min ? `$${job.salary_min.toLocaleString()}` : ""}
+                          {job.salary_min ? `₹${job.salary_min.toLocaleString('en-IN')}` : ""}
                           {job.salary_min && job.salary_max ? " - " : ""}
-                          {job.salary_max ? `$${job.salary_max.toLocaleString()}` : ""}
+                          {job.salary_max ? `₹${job.salary_max.toLocaleString('en-IN')}` : ""}
                         </span>
                       </div>
                     )}

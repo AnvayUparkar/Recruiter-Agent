@@ -43,7 +43,7 @@ export const Footer: React.FC = () => {
   return (
     <footer className="py-5 px-6 border-t border-slate-200/10 dark:border-slate-800/40 bg-slate-200/10 dark:bg-slate-900/10 text-slate-500 flex flex-col sm:flex-row justify-between items-center text-xs gap-3">
       <div className="flex items-center gap-1.5">
-        <span>© {new Date().getFullYear()} Antigravity TA. All rights reserved.</span>
+        <span>© {new Date().getFullYear()} Nexa AI TRC. All rights reserved.</span>
       </div>
 
       <div className="flex items-center gap-4">
@@ -61,13 +61,12 @@ export const Footer: React.FC = () => {
             {health.version}
           </span>
           <span
-            className={`w-1.5 h-1.5 rounded-full ${
-              health.status === "healthy"
+            className={`w-1.5 h-1.5 rounded-full ${health.status === "healthy"
                 ? "bg-emerald-500 shadow-sm shadow-emerald-500/50"
                 : health.status === "offline"
-                ? "bg-rose-500 shadow-sm shadow-rose-500/50"
-                : "bg-amber-500 animate-pulse"
-            }`}
+                  ? "bg-rose-500 shadow-sm shadow-rose-500/50"
+                  : "bg-amber-500 animate-pulse"
+              }`}
             title={`System status: ${health.status}`}
           />
         </div>

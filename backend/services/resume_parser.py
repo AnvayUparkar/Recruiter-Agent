@@ -116,7 +116,15 @@ class ResumeParser:
             # simple heuristic: first line that doesn't look like an email or phone
             for line in lines[:5]:
                 if len(line) < 40 and not '@' in line and not any(c.isdigit() for c in line):
-                    resume.name = line
+                    cleaned_line = line.strip()
+                    if cleaned_line.lower() in ["contact", "contact info", "contact information", "resume", "curriculum vitae", "cv", "profile"]:
+                        continue
+                        
+                    # If it starts with "CONTACT ", remove the prefix
+                    if cleaned_line.lower().startswith("contact "):
+                        cleaned_line = cleaned_line[8:].strip()
+                        
+                    resume.name = cleaned_line
                     break
 
         # Extract Skills
@@ -194,13 +202,31 @@ class ResumeParser:
         lines = text.split('\n')
         for line in lines:
             line_clean = line.strip().lower()
-            if line_clean in ["experience", "work experience", "employment", "professional experience", "employment history"]:
+            # Clean non-alpha characters to handle bullets, colons, extra spaces
+            line_clean_alpha = re.sub(r'[^a-z\s]', '', line_clean).strip()
+            
+            # Use 'in' for multi-word keywords, exact match for single words
+            # And ensure the line isn't a long paragraph (must be < 80 chars)
+            if len(line_clean) < 80 and (
+                any(kw in line_clean_alpha for kw in ["work experience", "professional experience", "employment history"]) 
+                or line_clean_alpha == "experience"
+                or line_clean_alpha.endswith(" experience")
+            ):
                 current_section = "experience"
                 continue
-            elif line_clean in ["education", "academic background", "academics", "education & credentials"]:
+            elif len(line_clean) < 80 and (
+                any(kw in line_clean_alpha for kw in ["academic background", "education credentials"]) 
+                or line_clean_alpha in ["education", "academics"]
+                or line_clean_alpha.endswith(" education")
+                or " education " in f" {line_clean_alpha} "
+            ):
                 current_section = "education"
                 continue
-            elif line_clean in ["skills", "technical skills", "projects", "certifications", "achievements", "summary", "objective"]:
+            elif len(line_clean) < 80 and (
+                any(kw in line_clean_alpha for kw in ["technical skills"]) 
+                or line_clean_alpha in ["skills", "projects", "certifications", "achievements", "summary", "objective", "profile", "contact"]
+                or any(kw in line_clean_alpha.split() for kw in ["skills", "profile"])
+            ):
                 current_section = None
                 continue
                 

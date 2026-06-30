@@ -1,5 +1,5 @@
 import { apiClient } from "../api/client";
-import { ENDPOINTS } from "../api/endpoints";
+import { ENDPOINTS, API_BASE_PREFIX } from "../api/endpoints";
 
 export interface RecommendedJob {
   title: string;
@@ -22,6 +22,12 @@ export interface JobRecommendationsResponse {
     jobs: RecommendedJob[];
   };
 }
+
+export interface JobPostingDataResponse {
+  status: string;
+  data: any;
+}
+
 
 export const jobService = {
   /**
@@ -48,5 +54,46 @@ export const jobService = {
       console.error("Failed to fetch job recommendations:", error);
       return [];
     }
+  },
+
+  async createJob(jobData: any): Promise<any> {
+    const response = await apiClient.post<JobPostingDataResponse>(`${API_BASE_PREFIX}/jobs`, jobData);
+    return response.data.data;
+  },
+
+  async getJobs(): Promise<any[]> {
+    const response = await apiClient.get<JobPostingDataResponse>(`${API_BASE_PREFIX}/jobs`);
+    return response.data.data || [];
+  },
+
+  async getJob(id: string): Promise<any> {
+    const response = await apiClient.get<JobPostingDataResponse>(`${API_BASE_PREFIX}/jobs/${id}`);
+    return response.data.data;
+  },
+
+  async updateJob(id: string, jobData: any): Promise<void> {
+    await apiClient.put(`${API_BASE_PREFIX}/jobs/${id}`, jobData);
+  },
+
+  async deleteJob(id: string): Promise<void> {
+    await apiClient.delete(`${API_BASE_PREFIX}/jobs/${id}`);
+  },
+
+  async publishJob(id: string): Promise<void> {
+    await apiClient.post(`${API_BASE_PREFIX}/jobs/${id}/publish`);
+  },
+
+  async getJobCandidates(id: string): Promise<any[]> {
+    const response = await apiClient.get<JobPostingDataResponse>(`${API_BASE_PREFIX}/jobs/${id}/candidates`);
+    return response.data.data || [];
+  },
+
+  async regenerateMatches(id: string): Promise<void> {
+    await apiClient.post(`${API_BASE_PREFIX}/jobs/${id}/regenerate`);
+  },
+
+  async getJobAnalytics(id: string): Promise<any> {
+    const response = await apiClient.get<JobPostingDataResponse>(`${API_BASE_PREFIX}/jobs/${id}/analytics`);
+    return response.data.data;
   }
 };

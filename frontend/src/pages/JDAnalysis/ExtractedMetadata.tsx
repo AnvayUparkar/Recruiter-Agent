@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { MapPin, DollarSign, Calendar, Clock } from "lucide-react";
+import { MapPin, IndianRupee, Calendar, Clock } from "lucide-react";
 
 interface ExtractedMetadataProps {
   location?: string;
@@ -27,7 +27,7 @@ export const ExtractedMetadata: React.FC<ExtractedMetadataProps> = ({
     {
       label: "Salary Indicator",
       value: salaryRange,
-      icon: DollarSign,
+      icon: IndianRupee,
       color: "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
     },
     {
