@@ -115,13 +115,13 @@ export default function UserProfilePage() {
                 <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-5">Web Links</h3>
                 <div className="space-y-3">
                   {profileData.linkedin && (
-                    <a href={profileData.linkedin} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+                    <a href={profileData.linkedin.startsWith("http") ? profileData.linkedin : `https://${profileData.linkedin}`} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
                       <Link2 size={18} className="text-blue-500" />
                       <span className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate">LinkedIn Profile</span>
                     </a>
                   )}
                   {profileData.github && (
-                    <a href={profileData.github} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
+                    <a href={profileData.github.startsWith("http") ? profileData.github : `https://${profileData.github}`} target="_blank" rel="noreferrer" className="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-700/30 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-700">
                       <Github size={18} className="text-slate-800 dark:text-white" />
                       <span className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate">GitHub Profile</span>
                     </a>

@@ -143,6 +143,7 @@ def get_jobs():
     
     for j in jobs:
         j["_id"] = str(j["_id"])
+        j["applications"] = db.applications.count_documents({"job_id": j["_id"]})
         
     return jsonify({"status": "success", "data": jobs}), 200
 
@@ -322,6 +323,31 @@ def job_analytics(job_id):
             }
         }), 200
     except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+@job_bp.route("/<job_id>/applicants/<candidate_id>/stage", methods=["PUT"])
+def update_applicant_stage(job_id, candidate_id):
+    db = get_db()
+    if db is None: return jsonify({"error": "Database not available"}), 500
+    
+    data = request.json or {}
+    new_stage = data.get("stage")
+    if not new_stage:
+        return jsonify({"error": "stage is required"}), 400
+        
+    try:
+        # Update the application status
+        result = db.applications.update_one(
+            {"job_id": job_id, "candidate_id": candidate_id},
+            {"$set": {"status": new_stage, "updated_at": datetime.utcnow().isoformat()}}
+        )
+        
+        if result.matched_count == 0:
+            return jsonify({"error": "Application not found"}), 404
+            
+        return jsonify({"status": "success", "message": "Stage updated successfully"}), 200
+    except Exception as e:
+        logger.error(f"Error updating applicant stage: {e}")
         return jsonify({"error": str(e)}), 400
 
 # Original recommendations endpoint

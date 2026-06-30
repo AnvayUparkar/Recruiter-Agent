@@ -20,7 +20,7 @@ interface ClassifiedSkill {
   category: SkillCategory;
 }
 
-const normalize = (s: string) => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+const normalize = (s: string) => (s || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 
 const CATEGORY_META: Record<
   SkillCategory,

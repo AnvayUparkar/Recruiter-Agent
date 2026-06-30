@@ -70,6 +70,9 @@ export const jdService = {
    * @param parsedJd The structured ParsedJD object to save.
    */
   async saveParsedJD(parsedJd: ParsedJD): Promise<void> {
+    const token = localStorage.getItem("recruiter_auth_token");
+    if (!token) return;
+    
     await apiClient.post(ENDPOINTS.USER_JD_SAVE, {
       parsed_jd: parsedJd
     });

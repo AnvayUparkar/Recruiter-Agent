@@ -138,8 +138,8 @@ export const Sidebar: React.FC<SidebarProps> = () => {
                 isCollapsed={!isSidebarOpen}
               />
               <NavItem
-                label="Create Job Posting"
-                path="/jobs/create"
+                label="View Job Postings"
+                path="/recruiter/jobs"
                 icon={Briefcase}
                 isCollapsed={!isSidebarOpen}
               />

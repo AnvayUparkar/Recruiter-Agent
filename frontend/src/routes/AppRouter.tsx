@@ -22,7 +22,8 @@ const Demo = lazy(() => import("../pages/Demo"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 const LaunchCenterPage = lazy(() => import("../pages/System/LaunchCenterPage"));
 const JobPostingForm = lazy(() => import("../pages/JobPosting").then(module => ({ default: module.JobPostingForm })));
-const JobPostingCandidates = lazy(() => import("../pages/JobPosting").then(module => ({ default: module.JobPostingCandidates })));
+const JobPostingsList = lazy(() => import("../pages/JobPosting/JobPostingsList"));
+const JobWorkspace = lazy(() => import("../pages/JobPosting/JobWorkspace"));
 
 // Auth pages
 const LoginPage = lazy(() => import("../pages/auth/LoginPage"));
@@ -116,11 +117,11 @@ export const router = createBrowserRouter([
   // Recruiter TA Pages (Protected, using AppLayout)
   {
     path: "/dashboard",
-    element: <RouteWrapper element={<RankingDashboard />} allowedRoles={["recruiter"]} />,
+    element: <RouteWrapper element={<RankingDashboard />} protectedRoute={false} />,
   },
   {
     path: "/jd-analysis",
-    element: <RouteWrapper element={<JDAnalysis />} allowedRoles={["recruiter"]} />,
+    element: <RouteWrapper element={<JDAnalysis />} protectedRoute={false} />,
   },
   {
     path: "/candidates",
@@ -128,39 +129,47 @@ export const router = createBrowserRouter([
   },
   {
     path: "/candidates/:candidateId",
-    element: <RouteWrapper element={<CandidateProfile />} allowedRoles={["recruiter"]} />,
+    element: <RouteWrapper element={<CandidateProfile />} protectedRoute={false} />,
   },
   {
     path: "/copilot",
-    element: <RouteWrapper element={<RecruiterCopilot />} allowedRoles={["recruiter"]} />,
+    element: <RouteWrapper element={<RecruiterCopilot />} protectedRoute={false} />,
   },
   {
     path: "/comparison",
-    element: <RouteWrapper element={<CandidateComparison />} allowedRoles={["recruiter"]} />,
+    element: <RouteWrapper element={<CandidateComparison />} protectedRoute={false} />,
   },
   {
     path: "/real-time-candidates",
-    element: <RouteWrapper element={<RealTimeCandidatesPage />} allowedRoles={["recruiter"]} />,
+    element: <RouteWrapper element={<RealTimeCandidatesPage />} protectedRoute={false} />,
   },
   {
     path: "/analytics",
-    element: <RouteWrapper element={<Analytics />} allowedRoles={["recruiter"]} />,
+    element: <RouteWrapper element={<Analytics />} protectedRoute={false} />,
   },
   {
     path: "/jobs/create",
-    element: <RouteWrapper element={<JobPostingForm />} allowedRoles={["recruiter"]} />,
+    element: <RouteWrapper element={<JobPostingForm />} protectedRoute={false} />,
+  },
+  {
+    path: "/recruiter/jobs",
+    element: <RouteWrapper element={<JobPostingsList />} protectedRoute={false} />,
+  },
+  {
+    path: "/recruiter/jobs/:jobId",
+    element: <RouteWrapper element={<JobWorkspace />} protectedRoute={false} />,
   },
   {
     path: "/jobs/:id/candidates",
-    element: <RouteWrapper element={<JobPostingCandidates />} allowedRoles={["recruiter"]} />,
+    element: <Navigate to="/recruiter/jobs" replace />,
   },
   {
     path: "/reports",
-    element: <RouteWrapper element={<Reports />} allowedRoles={["recruiter"]} />,
+    element: <RouteWrapper element={<Reports />} protectedRoute={false} />,
   },
   {
     path: "/settings",
-    element: <RouteWrapper element={<Settings />} allowedRoles={["recruiter", "user"]} />,
+    element: <RouteWrapper element={<Settings />} protectedRoute={false} />,
   },
   {
     path: "/admin",

@@ -129,7 +129,7 @@ class FeatureService:
         """
         start = time.time()
 
-        hybrid_candidates = list(pool.fused_candidates) if pool else []
+        hybrid_candidates = list(pool.candidates) if pool else []
 
         vectors = self.engine.generate_batch_features(
             candidates=candidates,

@@ -1,17 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useJobStore } from "../../store/jobStore";
 import { useAppStore } from "../../store/appStore";
 import { jobService } from "../../services/jobService";
 import { motion, AnimatePresence, Reorder } from "framer-motion";
 import { Plus, X, GripVertical, CheckCircle2, ChevronRight, Save } from "lucide-react";
+import { useAuthStore } from "../../store/authStore";
 
 export const JobPostingForm: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { jobData, setJobData, initializeFromJD } = useJobStore();
   const { parsedJD } = useAppStore();
+  const { isAuthenticated } = useAuthStore();
   const [newSkill, setNewSkill] = useState("");
   const [isPublishing, setIsPublishing] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated && location.search.includes('action=publish')) {
+      setShowConfirmModal(true);
+      navigate(location.pathname, { replace: true });
+    }
+  }, [isAuthenticated, location.search, navigate, location.pathname]);
 
   useEffect(() => {
     // If we have a parsed JD in the app store, and we haven't initialized our form yet
@@ -21,6 +32,12 @@ export const JobPostingForm: React.FC = () => {
   }, [parsedJD, initializeFromJD, jobData.title, jobData.company]);
 
   const handleSave = async (publish = false) => {
+    if (!isAuthenticated) {
+      alert("Please log in or sign up to save or publish jobs.");
+      navigate("/login", { state: { from: { pathname: location.pathname } } });
+      return;
+    }
+
     try {
       setIsPublishing(true);
       const dataToSave = { ...jobData, status: publish ? "Published" : "Draft" };
@@ -82,6 +99,15 @@ export const JobPostingForm: React.FC = () => {
     setJobData({ required_skills: req, preferred_skills: pref, nice_to_have_skills: nice });
   };
 
+  const handlePublishClick = () => {
+    if (!isAuthenticated) {
+      alert("Please log in or sign up to publish jobs.");
+      navigate("/login", { state: { from: { pathname: `${location.pathname}?action=publish` } } });
+      return;
+    }
+    setShowConfirmModal(true);
+  };
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 space-y-10">
       <div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-6">
@@ -97,7 +123,7 @@ export const JobPostingForm: React.FC = () => {
             <Save size={18} /> Save Draft
           </button>
           <button 
-            onClick={() => handleSave(true)}
+            onClick={handlePublishClick}
             disabled={isPublishing}
             className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold flex items-center gap-2 shadow-lg shadow-blue-500/20 transition-all disabled:opacity-50"
           >
@@ -300,6 +326,39 @@ export const JobPostingForm: React.FC = () => {
           </section>
         </div>
       </div>
+
+      {showConfirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 w-full max-w-md shadow-2xl border border-slate-200 dark:border-slate-800">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white">Confirm Publish</h3>
+              <button onClick={() => setShowConfirmModal(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                <X size={20} />
+              </button>
+            </div>
+            <p className="text-slate-600 dark:text-slate-400 mb-6">
+              Are you sure you want to publish this job posting? Candidates will be able to see and apply for it immediately.
+            </p>
+            <div className="flex justify-end gap-3">
+              <button 
+                onClick={() => setShowConfirmModal(false)}
+                className="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 font-semibold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors"
+              >
+                No, Cancel
+              </button>
+              <button 
+                onClick={() => {
+                  setShowConfirmModal(false);
+                  handleSave(true);
+                }}
+                className="px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold transition-colors"
+              >
+                Yes, Publish
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

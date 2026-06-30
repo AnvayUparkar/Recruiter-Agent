@@ -200,10 +200,12 @@ class MatchScoreService:
         
         cand = self.build_dummy_candidate_from_resume(candidate_id, resume_data)
         
+        from models.candidate_pool import CandidatePool, PoolStatistics
+        
         # Mock pool for feature service
-        pool = HybridRetrievalResponse(
+        pool = CandidatePool(
             query_id="mock",
-            fused_candidates=[HybridCandidate(
+            candidates=[HybridCandidate(
                 candidate_id=cand.candidate_id,
                 lexical_result=LexicalMatch(
                     candidate_id=cand.candidate_id,
@@ -221,10 +223,15 @@ class MatchScoreService:
                 retrieval_rank=1,
                 retrieval_score=RetrievalScore(fusion_score=0.8, is_new_discovery=False)
             )],
-            total_semantic=1,
-            total_lexical=1,
-            total_fused=1,
-            retrieval_time_ms=10.0
+            candidate_count=1,
+            generation_time_ms=10.0,
+            pool_statistics=PoolStatistics(
+                total_semantic_only=0,
+                total_lexical_only=0,
+                total_hybrid=1,
+                average_coverage_score=0.8,
+                average_final_score=0.8
+            )
         )
 
         profiles = self._candidate_intel_service.build_batch_profiles([cand])

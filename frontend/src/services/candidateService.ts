@@ -34,14 +34,24 @@ function mapBackendCandidateToFrontend(c: any): Candidate {
     currentIndustry: profile.current_industry || profile.currentIndustry || "",
   };
 
-  const mappedSkills = (c.skills || []).map((s: any) => ({
-    name: s.name,
-    proficiency: s.proficiency || "intermediate",
-    endorsements: s.endorsements || 0,
-    durationMonths: s.duration_months ?? s.durationMonths ?? 0,
-  }));
+  const mappedSkills = (c.skills || []).map((s: any) => {
+    if (typeof s === "string") {
+      return {
+        name: s,
+        proficiency: "intermediate",
+        endorsements: 0,
+        durationMonths: 0,
+      };
+    }
+    return {
+      name: s.name || "Unknown Skill",
+      proficiency: s.proficiency || "intermediate",
+      endorsements: s.endorsements || 0,
+      durationMonths: s.duration_months ?? s.durationMonths ?? 0,
+    };
+  });
 
-  const mappedEducation = (c.education || []).map((e: any) => ({
+  const mappedEducation = (Array.isArray(c.education) ? c.education : []).map((e: any) => ({
     institution: e.institution,
     degree: e.degree,
     fieldOfStudy: e.field_of_study || e.fieldOfStudy || "",
@@ -51,7 +61,7 @@ function mapBackendCandidateToFrontend(c: any): Candidate {
     tier: e.tier || "unknown",
   }));
 
-  const mappedCareerHistory = (c.career_history || c.careerHistory || []).map((job: any) => {
+  const mappedCareerHistory = (Array.isArray(c.career_history || c.careerHistory) ? (c.career_history || c.careerHistory) : []).map((job: any) => {
     const companyLower = (job.company || "").toLowerCase();
     const consultingAndAgencies = [
       "services", "consulting", "outsourcing", "agency", "solutions",

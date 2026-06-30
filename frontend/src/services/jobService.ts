@@ -62,6 +62,9 @@ export const jobService = {
   },
 
   async getJobs(): Promise<any[]> {
+    const token = localStorage.getItem("recruiter_auth_token");
+    if (!token) return [];
+    
     const response = await apiClient.get<JobPostingDataResponse>(`${API_BASE_PREFIX}/jobs`);
     return response.data.data || [];
   },
@@ -95,5 +98,9 @@ export const jobService = {
   async getJobAnalytics(id: string): Promise<any> {
     const response = await apiClient.get<JobPostingDataResponse>(`${API_BASE_PREFIX}/jobs/${id}/analytics`);
     return response.data.data;
+  },
+
+  async updateApplicantStage(jobId: string, candidateId: string, stage: string): Promise<void> {
+    await apiClient.put(`${API_BASE_PREFIX}/jobs/${jobId}/applicants/${candidateId}/stage`, { stage });
   }
 };

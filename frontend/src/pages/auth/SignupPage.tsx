@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   UserPlus, Mail, Lock, User as UserIcon, Loader, CheckCircle,
@@ -100,6 +100,7 @@ export default function SignupPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuthStore();
 
   const handleNextStep = () => {
@@ -129,8 +130,14 @@ export default function SignupPage() {
       login(access_token, user);
       setSuccess('Account created! Redirecting...');
 
+      const from = location.state?.from?.pathname || null;
+
       setTimeout(() => {
-        navigate(user.role === 'recruiter' ? '/dashboard' : '/profile');
+        if (from) {
+          navigate(from, { replace: true });
+        } else {
+          navigate(user.role === 'recruiter' ? '/dashboard' : '/profile');
+        }
       }, 800);
     } catch (err: any) {
       setError(err.response?.data?.error || 'Connection failed. Is the backend running?');

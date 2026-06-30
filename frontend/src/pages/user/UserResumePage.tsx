@@ -272,7 +272,7 @@ export default function UserResumePage() {
                 <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Links</h4>
                 <div className="space-y-2">
                   {parsedData.linkedin ? (
-                    <a href={parsedData.linkedin} target="_blank" rel="noreferrer" className="block text-sm text-blue-500 hover:underline">
+                    <a href={parsedData.linkedin.startsWith("http") ? parsedData.linkedin : `https://${parsedData.linkedin}`} target="_blank" rel="noreferrer" className="block text-sm text-blue-500 hover:underline">
                       {parsedData.linkedin}
                     </a>
                   ) : <span className="text-sm text-slate-500">No LinkedIn found</span>}

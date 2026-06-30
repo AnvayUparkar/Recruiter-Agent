@@ -39,6 +39,7 @@ class ParsedResume(BaseModel):
     certifications: List[str] = Field(default_factory=list)
     achievements: List[str] = Field(default_factory=list)
     languages: List[str] = Field(default_factory=list)
+    years_of_experience: int = 0
     raw_text: str = ""
 
 class ResumeParser:
@@ -134,7 +135,9 @@ class ResumeParser:
         sections = self._split_into_sections(text)
         
         # Very basic heuristics for experience and education
-        resume.experience = self._extract_experience(sections.get("experience", ""))
+        exp_text = sections.get("experience", "")
+        resume.experience = self._extract_experience(exp_text)
+        resume.years_of_experience = self._estimate_years_of_experience(exp_text)
         resume.education = self._extract_education(sections.get("education", ""))
         
         return resume
@@ -252,6 +255,38 @@ class ResumeParser:
                     "description": "\n".join(lines[1:]).strip()
                 })
         return res
+
+    def _estimate_years_of_experience(self, exp_text: str) -> int:
+        if not exp_text:
+            return 0
+            
+        import datetime
+        current_year = datetime.datetime.now().year
+        
+        # Look for explicit mentions like "5+ years of experience" or "5 years"
+        explicit_match = re.search(r'(\d+)\+?\s*years?\s*(?:of\s*)?experience', exp_text, re.IGNORECASE)
+        if explicit_match:
+            try:
+                return int(explicit_match.group(1))
+            except:
+                pass
+                
+        # Look for years (1970 to current_year)
+        years = [int(y) for y in re.findall(r'\b(19\d{2}|20\d{2})\b', exp_text)]
+        if not years:
+            return 0
+            
+        valid_years = [y for y in years if 1970 <= y <= current_year]
+        if not valid_years:
+            return 0
+            
+        min_year = min(valid_years)
+        max_year = max(valid_years)
+        
+        if re.search(r'\b(present|current|now)\b', exp_text, re.IGNORECASE):
+            max_year = current_year
+            
+        return max(0, max_year - min_year)
 
     def _extract_education(self, edu_text: str) -> List[Dict]:
         """Simple heuristic extraction for education block."""

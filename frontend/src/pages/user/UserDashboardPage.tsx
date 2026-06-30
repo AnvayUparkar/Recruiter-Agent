@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Briefcase, Building, MapPin, IndianRupee, ExternalLink, Activity, Target, MessageCircle, ArrowLeft, User } from "lucide-react";
+import { Briefcase, Building, MapPin, ExternalLink, Activity, Target, MessageCircle, ArrowLeft, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { jobService, RecommendedJob } from "../../services/jobService";
 import { ChatWindow } from "../../components/chat/ChatWindow";
