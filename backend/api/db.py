@@ -10,6 +10,9 @@ logger = logging.getLogger(__name__)
 DEFAULT_MONGO_URI = "mongodb://localhost:27017/recruiter_agent"
 DEFAULT_DB_NAME   = "recruiter_agent"
 
+# Cache connection failures to prevent 21-second DNS blocking on every request
+_MONGO_AVAILABLE = True
+
 
 def _resolve_uri_and_dbname() -> tuple[str, str]:
     """Return (mongo_uri, db_name), always guaranteed non-empty."""
@@ -28,6 +31,10 @@ def _resolve_uri_and_dbname() -> tuple[str, str]:
 
 def get_db():
     """Return the MongoDB database, reusing the per-request connection."""
+    global _MONGO_AVAILABLE
+    if not _MONGO_AVAILABLE:
+        return None
+
     if "db" not in g:
         mongo_uri, db_name = _resolve_uri_and_dbname()
 
@@ -37,8 +44,9 @@ def get_db():
             g.db_client = client
             g.db        = client[db_name]
             _setup_indices(g.db)
-        except ConnectionFailure as exc:
+        except Exception as exc:
             logger.error(f"MongoDB connection failed: {exc}")
+            _MONGO_AVAILABLE = False
             return None
 
     return g.db

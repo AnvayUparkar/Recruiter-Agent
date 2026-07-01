@@ -261,10 +261,9 @@ class CandidatePoolGenerator:
             candidate_activity_map=candidate_activity_map,
         )
 
-        # 4. Sort by final_retrieval_score DESC
+        # 4. Sort by final_retrieval_score DESC, candidate_id ASC for deterministic tie-breaking
         candidates.sort(
-            key=lambda c: c.retrieval_score.final_retrieval_score,
-            reverse=True,
+            key=lambda c: (-c.retrieval_score.final_retrieval_score, c.candidate_id),
         )
 
         # 5. Cap to pool_size and assign final ranks

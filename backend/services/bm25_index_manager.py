@@ -265,7 +265,7 @@ class Bm25IndexManager:
                 from config import Config
                 
                 dataset_path = Config.DATASET_PATH if hasattr(Config, "DATASET_PATH") else (
-                    Path(__file__).resolve().parent.parent.parent / "[PUB] India_runs_data_and_ai_challenge" / "India_runs_data_and_ai_challenge" / "sample_candidates.json"
+                    Path(__file__).resolve().parent.parent.parent / "[PUB] India_runs_data_and_ai_challenge" / "India_runs_data_and_ai_challenge" / "candidates.jsonl"
                 )
                 repo = JSONLCandidateRepository(dataset_path)
                 

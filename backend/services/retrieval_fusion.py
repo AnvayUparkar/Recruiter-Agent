@@ -170,7 +170,7 @@ class RetrievalFusion:
             semantic_results, lexical_results
         )
 
-        all_ids = list(set(sem_scores) | set(lex_scores))
+        all_ids = sorted(list(set(sem_scores) | set(lex_scores)))
 
         # Normalize each channel independently
         sem_raw = [sem_scores.get(cid, 0.0) for cid in all_ids]
@@ -230,7 +230,7 @@ class RetrievalFusion:
 
         n_sem = len(semantic_results)
         n_lex = len(lexical_results)
-        all_ids = list(set(sem_scores) | set(lex_scores))
+        all_ids = sorted(list(set(sem_scores) | set(lex_scores)))
 
         borda: Dict[str, float] = defaultdict(float)
         for cand_id in all_ids:

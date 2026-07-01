@@ -73,3 +73,7 @@ backend/data/jobs/
 candidates.jsonl
 backend.log
 candidate_report_*
+submission.csv
+submission (9).csv
+submission_new.csv
+submission_run_final.csv

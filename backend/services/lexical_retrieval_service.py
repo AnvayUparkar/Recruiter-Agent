@@ -113,16 +113,60 @@ class LexicalRetrievalService:
         # Load repository dynamically to fetch filters metadata
         from services.candidate_repository import JSONLCandidateRepository
         from config import Config
-        dataset_path = Config.DATASET_PATH if hasattr(Config, "DATASET_PATH") else Path("d:/Engineering/Hackathon Projects/Finance Agent/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/sample_candidates.json")
+        dataset_path = Config.DATASET_PATH if hasattr(Config, "DATASET_PATH") else Path("d:/Engineering/Hackathon Projects/Recruiter Agent/[PUB] India_runs_data_and_ai_challenge/India_runs_data_and_ai_challenge/candidates.jsonl")
         repo = JSONLCandidateRepository(dataset_path)
 
-        for res in raw_results:
-            if filters:
-                cand_id = res.candidate_id
-                c = repo.find_by_id(cand_id)
-                if not c:
-                    continue
+        cand_ids = [res.candidate_id for res in raw_results]
+        
+        # 1. Check MongoDB cache
+        db = None
+        try:
+            from flask import has_app_context
+            if has_app_context():
+                from api.db import get_db
+                db = get_db()
+        except ImportError:
+            pass
 
+        cached_cands = {}
+        if db is not None:
+            docs = list(db.candidate_cache.find({"_id": {"$in": cand_ids}}))
+            for doc in docs:
+                try:
+                    doc["candidate_id"] = doc["_id"] # ensure ID is set
+                    from models.candidate import Candidate
+                    cached_cands[doc["_id"]] = Candidate(**doc)
+                except Exception as e:
+                    logger.warning(f"Failed to parse cached candidate {doc['_id']}: {e}")
+
+        # 2. Fetch missing candidates from repo
+        missing_ids = [cid for cid in cand_ids if cid not in cached_cands]
+        newly_fetched = {}
+        if missing_ids:
+            fetched_list = repo.find_many(missing_ids)
+            for c in fetched_list:
+                newly_fetched[c.candidate_id] = c
+                # 3. Store in MongoDB cache
+                if db is not None:
+                    try:
+                        doc = c.model_dump()
+                        doc["_id"] = doc["candidate_id"]
+                        db.candidate_cache.update_one(
+                            {"_id": doc["_id"]},
+                            {"$set": doc},
+                            upsert=True
+                        )
+                    except Exception as e:
+                        logger.error(f"Failed to cache candidate {c.candidate_id}: {e}")
+
+        cand_map = {**cached_cands, **newly_fetched}
+
+        for res in raw_results:
+            c = cand_map.get(res.candidate_id)
+            if not c:
+                continue
+            
+            if filters:
                 # Experience filter
                 if "min_experience" in filters:
                     if c.total_years_experience < filters["min_experience"]:

@@ -128,6 +128,8 @@ class ScoreAggregator:
         # 6. Calculate final score
         # Formula: (Weighted * Reliability) + Bonus - Penalty
         final_score = (weighted_score * reliability_mult) + total_bonus - total_penalty
+        final_score = max(0.0, min(1.0, final_score))
+        final_score = round(final_score, 4)
 
         # 7. Compute Confidence score
         # Confidence reflects how clean, complete, and consistent the signals are.

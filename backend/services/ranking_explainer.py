@@ -48,7 +48,13 @@ class RankingExplainer:
             strengths.append("highly credible and consistent profile history (no fraud risk).")
 
         # Must-have skill match checks
-        jd_skills = parsed_jd.get_required_skills()
+        jd_skills = []
+        seen = set()
+        for req in parsed_jd.must_have:
+            if req.name not in seen:
+                seen.add(req.name)
+                jd_skills.append(req.name)
+                
         cand_skills = {s.name.lower() for s in candidate.skills}
         matching_skills = [s for s in jd_skills if s.lower() in cand_skills]
         if len(matching_skills) >= 3:

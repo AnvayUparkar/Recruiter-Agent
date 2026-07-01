@@ -20,12 +20,12 @@ export const rankingService = {
       strategy,
       limit,
     }, {
-      timeout: 120000,
+      timeout: 600000,
     });
-    
+
     const data = response.data;
     const rawCandidates = data.candidates || data.ranked_candidates || data.rankedCandidates || [];
-    
+
     const mappedCandidates = rawCandidates.map((c: any) => {
       const candidateId = c.candidate_id || c.candidateId;
       const score = c.score ?? c.final_score ?? c.finalScore;

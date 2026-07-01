@@ -50,8 +50,8 @@ def rank_candidates():
         # 2. Analyze job description text
         parsed_jd = _jd_analyzer.analyze_jd(req.job_description)
 
-        # 3. Retrieve matching candidate pool of exactly 200 candidates
-        pool = _retrieval_service.retrieve_candidate_pool(parsed_jd, pool_size=200)
+        # 3. Retrieve matching candidate pool of exactly 1000 candidates
+        pool = _retrieval_service.retrieve_candidate_pool(parsed_jd, pool_size=5000)
         candidate_ids = [c.candidate_id for c in pool.candidates]
 
         if not candidate_ids:

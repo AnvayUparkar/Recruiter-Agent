@@ -78,11 +78,16 @@ class VectorSearch:
                 SearchResult(
                     candidate_id=candidate_id,
                     similarity_score=round(sim_score, 4),
-                    rank=idx + 1,
+                    rank=1,  # Will be assigned after deterministic sort
                     distance=dist,
                     search_time_ms=round(duration_ms, 2),
                 )
             )
+
+        # Deterministic sort to break ties stably using candidate_id
+        results.sort(key=lambda r: (-r.similarity_score, r.candidate_id))
+        for idx, res in enumerate(results):
+            res.rank = idx + 1
 
         return results
 

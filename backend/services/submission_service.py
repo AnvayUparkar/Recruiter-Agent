@@ -42,7 +42,7 @@ class SubmissionService:
             with open(csv_path, mode="w", newline="", encoding="utf-8") as f:
                 writer = csv.writer(f)
                 # Header row matching standard format
-                writer.writerow(["candidate_id", "rank", "final_score", "confidence", "explanation"])
+                writer.writerow(["candidate_id", "rank", "score", "reasoning"])
 
                 for rc in ranked_candidates:
                     expl_text = rc.explanation.summary if rc.explanation else ""
@@ -50,7 +50,6 @@ class SubmissionService:
                         rc.candidate_id,
                         rc.rank,
                         f"{rc.final_score:.4f}",
-                        f"{rc.confidence:.4f}",
                         expl_text.replace("\n", " ").strip(),
                     ])
         except Exception as e:
@@ -103,7 +102,7 @@ class SubmissionService:
                 header = next(reader, None)
 
                 # Check header structure
-                expected_header = ["candidate_id", "rank", "final_score", "confidence", "explanation"]
+                expected_header = ["candidate_id", "rank", "score", "reasoning"]
                 if header != expected_header:
                     return False, f"Invalid columns: expected {expected_header}, got {header}"
 
@@ -112,10 +111,10 @@ class SubmissionService:
                 last_score = float("inf")
 
                 for row_idx, row in enumerate(reader, start=2):
-                    if len(row) != 5:
-                        return False, f"Row {row_idx} has invalid length {len(row)} (expected 5)."
+                    if len(row) != 4:
+                        return False, f"Row {row_idx} has invalid length {len(row)} (expected 4)."
 
-                    cid, rank_str, score_str, conf_str, explanation = row
+                    cid, rank_str, score_str, explanation = row
 
                     # Check candidate_id formatting
                     if not cid.startswith("CAND_") or len(cid) != 12:
@@ -141,12 +140,11 @@ class SubmissionService:
                     # Check score ordering
                     try:
                         score_val = float(score_str)
-                        conf_val = float(conf_str)
                     except ValueError:
-                        return False, f"Row {row_idx}: score or confidence values are non-numeric."
+                        return False, f"Row {row_idx}: score value is non-numeric."
 
-                    if not (0.0 <= score_val <= 1.0) or not (0.0 <= conf_val <= 1.0):
-                        return False, f"Row {row_idx}: score or confidence out of bounds [0, 1]."
+                    if not (0.0 <= score_val <= 1.0):
+                        return False, f"Row {row_idx}: score out of bounds [0, 1]."
 
                     # CSV must be sorted by score descending (so rank ascending)
                     # We check that rank matches row position

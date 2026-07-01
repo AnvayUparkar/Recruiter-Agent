@@ -71,7 +71,6 @@ class Bm25Search:
         top_indices = top_indices[np.argsort(scores[top_indices])[::-1]]
 
         results = []
-        rank = 1
         for idx in top_indices:
             score = float(scores[idx])
             # A score of 0.0 means no matching terms; skip
@@ -98,13 +97,17 @@ class Bm25Search:
                     bm25_score=round(score, 2),
                     matched_terms=matched_terms,
                     match_count=match_count,
-                    rank=rank,
+                    rank=1,  # Assigned after deterministic sort
                     retrieval_reason=reason,
                 )
             )
-            rank += 1
             if len(results) >= search_k:
                 break
+
+        # Deterministic sort to break ties stably using candidate_id
+        results.sort(key=lambda r: (-r.bm25_score, r.candidate_id))
+        for idx, res in enumerate(results):
+            res.rank = idx + 1
 
         return results
 

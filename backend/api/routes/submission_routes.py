@@ -58,7 +58,7 @@ def export_submission():
         parsed_jd = _jd_analyzer.analyze_jd(req.job_description)
 
         # 2. Retrieve pool matches
-        pool = _retrieval_service.retrieve_candidate_pool(parsed_jd, pool_size=100)
+        pool = _retrieval_service.retrieve_candidate_pool(parsed_jd, pool_size=1000)
         candidate_ids = [c.candidate_id for c in pool.candidates]
 
         if not candidate_ids:
@@ -102,7 +102,8 @@ def export_submission():
 
         # 6. Call Submission service
         output_dir = Path(current_app.config.get("OUTPUT_PATH")) / "submissions"
-        sub_res = SubmissionService.generate_submission(result.ranked_candidates, output_dir)
+        top_candidates = result.ranked_candidates[:100]
+        sub_res = SubmissionService.generate_submission(top_candidates, output_dir)
 
         # 7. Package and return response
         

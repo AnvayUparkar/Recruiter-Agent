@@ -45,11 +45,11 @@ const Reports: React.FC = () => {
     setCsvResult(null);
 
     try {
-      if (!rankingResults || rankingResults.length !== 50) {
+      if (!rankingResults || rankingResults.length !== 100) {
         throw new Error(
-          `Invalid candidate count: expected exactly 50 candidates to compile the submission, but found ${
+          `Invalid candidate count: expected exactly 100 candidates to compile the submission, but found ${
             rankingResults?.length || 0
-          } ranked candidates in the store. Please ensure you execute the ranking leaderboard with a limit of 50 first.`
+          } ranked candidates in the store. Please ensure you execute the ranking leaderboard with a limit of 100 first.`
         );
       }
 
@@ -57,10 +57,10 @@ const Reports: React.FC = () => {
 
       const ranks = sortedByRank.map((r) => r.rank);
       const uniqueRanks = new Set(ranks);
-      if (uniqueRanks.size !== 50) {
+      if (uniqueRanks.size !== 100) {
         throw new Error("Validation Error: candidate ranks are not unique.");
       }
-      for (let i = 1; i <= 50; i++) {
+      for (let i = 1; i <= 100; i++) {
         if (!uniqueRanks.has(i)) {
           throw new Error(`Validation Error: missing rank ${i} in results.`);
         }

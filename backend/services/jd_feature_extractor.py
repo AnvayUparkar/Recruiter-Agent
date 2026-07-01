@@ -87,7 +87,7 @@ class JdFeatureExtractor:
 
         all_terms = list(self.taxonomy._synonym_lookup.keys()) + list(self.taxonomy._category_lookup.keys())
         # Sort by length descending so multi-word terms like "Hugging Face Transformers" match before "Transformers"
-        all_terms = sorted(list(set(all_terms)), key=len, reverse=True)
+        all_terms = sorted(list(set(all_terms)), key=lambda x: (len(x), x), reverse=True)
 
         matches = []
 
