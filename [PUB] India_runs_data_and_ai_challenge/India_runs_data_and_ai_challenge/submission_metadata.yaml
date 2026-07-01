@@ -1,0 +1,99 @@
+# Redrob Hackathon — Submission Metadata Template
+#
+# Copy this file to your repo root as `submission_metadata.yaml` and fill it in.
+# The fields here should match what you submit via the portal at upload time.
+# Stage 3 review uses this file to verify your portal metadata.
+
+# ============================================================================
+# Team identity
+# ============================================================================
+team_name: "Synapse Vertex"  # Used in leaderboard and announcements
+
+primary_contact:
+  name: "Anvay Uparkar"
+  email: "anvay.18077@sakec.ac.in"   # Used for all organizer communication
+  phone: "+91-9702017203"        # Used for top-50 / top-10 outreach
+
+team_members:
+  - name: "Anvay Mahesh Uparkar"
+    email: "anvay.18077@sakec.ac.in"
+    role: "AI/ML Engineer"          # Optional, e.g. "Team Lead", "Backend", "Data"
+  - name: "Shreyasi Ghorband"
+    email: "shreyasi.178361@sakec.ac.in "
+    role: "Full Stack Developer"
+  # Add more members as needed; solo participants list just one member
+
+# ============================================================================
+# Code and reproducibility
+# ============================================================================
+github_repo: "https://github.com/AnvayUparkar/Recruiter-Agent"
+# Required. Must be reachable. Private repos OK if you can grant organizer
+# access at Stage 3 (the email to add will be communicated then).
+
+sandbox_link: "https://huggingface.co/spaces/YOUR_USERNAME/redrob-ranker"
+# Required. A working hosted environment where the ranker can be run on a small
+# candidate sample. See Section 10.5 of submission_spec.md for acceptable
+# platforms (HuggingFace Spaces, Streamlit Cloud, Replit, Colab, Docker, Binder).
+
+reproduce_command: "python rank.py --candidates ./candidates.jsonl --out ./submission.csv"
+# The single command that produces submission.csv from candidates.jsonl.
+# Should run end-to-end within 5 minutes on CPU with 16GB RAM and no network.
+
+# ============================================================================
+# Compute environment
+# ============================================================================
+compute:
+  platform: "Local Windows"                    # Or: "AWS EC2 c5.4xlarge", "Local Linux box", etc.
+  cpu_cores: 8                                  # Number of CPU cores used
+  ram_gb: 16                                    # Available RAM in GB
+  python_version: "3.11.8"                      # python --version
+  os: "Windows 10"                              # Or "Ubuntu 22.04 LTS", etc.
+  uses_gpu_for_inference: false                 # Must be false — see compute constraints
+  has_network_during_ranking: false             # Must be false — no API calls during ranking
+  pre_computation_required: false               # true if you pre-compute embeddings or train models offline
+  pre_computation_time_minutes: 0               # Approximate, if applicable
+
+# ============================================================================
+# AI tools declaration
+# ============================================================================
+# Transparency only — declared use is NOT penalized. Be honest. Stage 5 interview
+# may verify these declarations against your code; declarations that contradict
+# your code or your interview are flagged.
+ai_tools_used:
+  - "Claude Sonnet 4.5 "        # e.g. for architecture discussion, code review 
+  - "Gemini 3.1 Pro - Antigravity" # e.g. for autocomplete
+  - "Chatgpt"                      # e.g. for feature extraction & understanding the content
+  # Other options: "ChatGPT", "Cursor", "Gemini", "Codeium", "Other", "None"
+
+ai_usage_summary: |
+  Briefly describe how AI tools were used. Examples:
+  - "Claude Sonnet 4.5 was primarily used for frontend development, including designing responsive React components, improving UI/UX, optimizing layouts, implementing animations, fixing mobile responsiveness, and refining TypeScript and Tailwind CSS code.
+  - Gemini 3.1 Pro was primarily used for backend development, assisting in designing Flask APIs, implementing MongoDB integration, developing the resume parser, JD parser, hybrid candidate ranking engine (BM25 + FAISS), AI matching logic, and overall backend architecture.
+  - ChatGPT was used for feature ideation and requirement analysis, helping understand hackathon problem statements, generate implementation strategies, refine system workflows, and provide technical guidance throughout development.
+  - ChatGPT assisted in generating technical documentation, README content, architecture explanations, feature descriptions, API documentation, and presentation scripts.
+  - ChatGPT was used for prompt engineering to create optimized prompts for Cursor, Claude, and Gemini, accelerating feature implementation and debugging.
+  - AI tools were used for code reviews, debugging runtime issues, improving code quality, optimizing parser logic, and suggesting best practices for scalable software architecture.
+  - AI-assisted development accelerated the implementation of recruiter workflows, candidate portals, AI-powered ranking, explainability features, real-time job postings, analytics dashboards, and PDF export functionality.
+  - AI tools also supported brainstorming new features, improving recruiter experience, enhancing candidate matching workflows, and refining the overall product design and user experience."
+
+
+# ============================================================================
+# Approach summary (optional but recommended)
+# ============================================================================
+methodology_summary: |
+  Our Recruiter Agent utilizes a hybrid ranking approach designed for scale and precision. 
+  The system employs a two-stage pipeline: First, a Retrieval stage combines BM25 lexical matching with FAISS-based semantic vector search. These dual signals are synthesized using Reciprocal Rank Fusion (RRF) to identify high-potential candidates efficiently from the full dataset. 
+  
+  The second stage, Ranking, applies a multi-dimensional scoring model that evaluates deep alignment across technical skills, professional experience, and behavioral indicators. We explicitly incorporate a "Recruiter Trust Service" layer to filter for candidate quality, penalizing potential resume keyword stuffing and verifying tenure patterns. By balancing semantic relevance with structured profile constraints, our model ensures that top-ranked candidates are both technically qualified and professionally authentic. 
+  
+  The final output is optimized for both individual candidate discovery and high-volume recruiting workflows, providing a transparent, robust scoring mechanism that allows recruiters to filter and export high-confidence dossiers while maintaining system performance within local compute constraints.
+
+# ============================================================================
+# Declarations
+# ============================================================================
+declarations:
+  read_submission_spec: true        # I have read submission_spec.md in full
+  code_is_original_work: true       # My code is my team's original work (using AI as a tool is fine)
+  no_collusion: true                # I have not coordinated my submission with other teams
+  honeypot_check_done: false        # OPTIONAL — set true if you explicitly checked for honeypots in your ranking
+  reproduction_tested: true         # I have tested that my reproduce_command runs end-to-end
